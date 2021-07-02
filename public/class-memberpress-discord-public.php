@@ -54,12 +54,12 @@ class Memberpress_Discord_Public {
 
 	}
 
-	/**
+		/**
 	 * Register the stylesheets for the public-facing side of the site.
 	 *
 	 * @since    1.0.0
 	 */
-	public function enqueue_styles() {
+	public function frontend_enqueue_styles() {
 
 		/**
 		 * This function is provided for demonstration purposes only.
@@ -73,7 +73,7 @@ class Memberpress_Discord_Public {
 		 * class.
 		 */
 
-		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/memberpress-discord-public.css', array(), $this->version, 'all' );
+		wp_enqueue_style( $this->plugin_name.'public_css', plugin_dir_url( __FILE__ ) . 'css/memberpress-discord-public.css', array(), $this->version, 'all' );
 
 	}
 
@@ -82,7 +82,7 @@ class Memberpress_Discord_Public {
 	 *
 	 * @since    1.0.0
 	 */
-	public function enqueue_scripts() {
+	public function frontend_enqueue_scripts() {
 
 		/**
 		 * This function is provided for demonstration purposes only.
@@ -96,7 +96,54 @@ class Memberpress_Discord_Public {
 		 * class.
 		 */
 
-		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/memberpress-discord-public.js', array( 'jquery' ), $this->version, false );
+		wp_enqueue_script( $this->plugin_name.'public_js', plugin_dir_url( __FILE__ ) . 'js/memberpress-discord-public.js', array( 'jquery' ), $this->version, false );
+
+	}
+
+	/**
+	 * Register the stylesheets for the public-facing side of the site.
+	 *
+	 * @since    1.0.0
+	 */
+	public function both_enqueue_styles() {
+
+		/**
+		 * This function is provided for demonstration purposes only.
+		 *
+		 * An instance of this class should be passed to the run() function
+		 * defined in Memberpress_Discord_Loader as all of the hooks are defined
+		 * in that particular class.
+		 *
+		 * The Memberpress_Discord_Loader will then create the relationship
+		 * between the defined hooks and the functions defined in this
+		 * class.
+		 */
+
+		wp_enqueue_style( $this->plugin_name.'font_awesome_css', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css', array(), $this->version, 'all' );
+
+	}
+
+	/**
+	 * Register the JavaScript for the public-facing side of the site.
+	 *
+	 * @since    1.0.0
+	 */
+	public function both_enqueue_scripts() {
+
+		/**
+		 * This function is provided for demonstration purposes only.
+		 *
+		 * An instance of this class should be passed to the run() function
+		 * defined in Memberpress_Discord_Loader as all of the hooks are defined
+		 * in that particular class.
+		 *
+		 * The Memberpress_Discord_Loader will then create the relationship
+		 * between the defined hooks and the functions defined in this
+		 * class.
+		 */
+
+		wp_enqueue_script( $this->plugin_name.'font_awesome_js', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/js/all.min.js', array( 'jquery' ), $this->version, false );
+		wp_enqueue_script( $this->plugin_name.'ui_js', 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js', array( 'jquery' ), $this->version, false );
 
 	}
 

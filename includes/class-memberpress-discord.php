@@ -78,6 +78,7 @@ class Memberpress_Discord {
 		$this->set_locale();
 		$this->define_admin_hooks();
 		$this->define_public_hooks();
+		$this->define_both_side_hooks();
 
 	}
 
@@ -154,9 +155,11 @@ class Memberpress_Discord {
 
 		$plugin_admin = new Memberpress_Discord_Admin( $this->get_plugin_name(), $this->get_version() );
 
-		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
-		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
-
+		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'backend_enqueue_styles' );
+		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'backend_enqueue_scripts' );
+		$this->loader->add_action( 'admin_menu', $plugin_admin, 'add_admin_menu', 11 );
+		// Clear all existing logs.
+		$this->loader->add_action( 'wp_ajax_ets_mepr_discord_clear_logs', $plugin_admin, 'ets_mepr_discord_clear_logs' );
 	}
 
 	/**
@@ -170,8 +173,25 @@ class Memberpress_Discord {
 
 		$plugin_public = new Memberpress_Discord_Public( $this->get_plugin_name(), $this->get_version() );
 
-		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
-		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
+		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'frontend_enqueue_styles' );
+		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'frontend_enqueue_scripts' );
+
+	}
+
+		/**
+	 * Register all of the hooks related to the public-facing functionality
+	 * of the plugin.
+	 *
+	 * @since    1.0.0
+	 * @access   private
+	 */
+	private function define_both_side_hooks() {
+		$plugin_public = new Memberpress_Discord_Public( $this->get_plugin_name(), $this->get_version() );
+
+		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_public, 'both_enqueue_styles' );
+		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_public, 'both_enqueue_scripts' );
+		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'both_enqueue_styles' );
+		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'both_enqueue_scripts' );
 
 	}
 
