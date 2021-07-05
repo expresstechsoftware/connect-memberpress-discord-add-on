@@ -1,25 +1,25 @@
 <?php
 $user_id             = sanitize_text_field( trim( get_current_user_id() ) );
 $mpr_memberships        = get_posts( array('post_type' => 'memberpressproduct', 'post_status' => 'publish') );
-$default_role        = sanitize_text_field( trim( get_option( '_ets_mepr_discord_default_role_id' ) ) );
-$allow_none_member = sanitize_text_field( trim( get_option( 'ets_mepr_allow_none_member' ) ) );
+$default_role        = sanitize_text_field( trim( get_option( '_ets_memberpress_discord_default_role_id' ) ) );
+$allow_none_member = sanitize_text_field( trim( get_option( 'ets_memberpress_allow_none_member' ) ) );
 ?>
 <div class="notice notice-warning ets-notice">
-  <p><i class='fas fa-info'></i> <?php echo __( 'Drag and Drop the Discord Roles over to the MEPR Levels', 'ets_mepr_discord' ); ?></p>
+  <p><i class='fas fa-info'></i> <?php echo __( 'Drag and Drop the Discord Roles over to the MEPR Levels', 'ets_memberpress_discord' ); ?></p>
 </div>
 <div class="notice notice-warning ets-notice">
-  <p><i class='fas fa-info'></i> <?php echo __( 'Note: Inactive memberships will not display', 'ets_mepr_discord' ); ?></p>
+  <p><i class='fas fa-info'></i> <?php echo __( 'Note: Inactive memberships will not display', 'ets_memberpress_discord' ); ?></p>
 </div>
 <div class="row-container">
   <div class="ets-column discord-roles-col">
-	<h2><?php echo __( 'Discord Roles', 'ets_mepr_discord' ); ?></h2>
+	<h2><?php echo __( 'Discord Roles', 'ets_memberpress_discord' ); ?></h2>
 	<hr>
 	<div class="discord-roles">
 	  <span class="spinner"></span>
 	</div>
   </div>
   <div class="ets-column">
-	<h2><?php echo __( 'MEPR Memberships', 'ets_mepr_discord' ); ?></h2>
+	<h2><?php echo __( 'MEPR Memberships', 'ets_memberpress_discord' ); ?></h2>
 	<hr>
 	<div class="pmpro-levels">
 	<?php
@@ -36,18 +36,18 @@ $allow_none_member = sanitize_text_field( trim( get_option( 'ets_mepr_allow_none
   <table class="form-table" role="presentation">
 	<tbody>
 	  <tr>
-		<th scope="row"><label for="defaultRole"><?php echo __( 'Default Role', 'ets_mepr_discord' ); ?></label></th>
+		<th scope="row"><label for="defaultRole"><?php echo __( 'Default Role', 'ets_memberpress_discord' ); ?></label></th>
 		<td>
 		  <?php wp_nonce_field( 'discord_role_mappings_nonce', 'ets_pmpor_discord_role_mappings_nonce' ); ?>
 		  <input type="hidden" id="selected_default_role" value="<?php echo $default_role; ?>">
 		  <select id="defaultRole" name="defaultRole">
-			<option value="none"><?php echo __( '-None-', 'ets_mepr_discord' ); ?></option>
+			<option value="none"><?php echo __( '-None-', 'ets_memberpress_discord' ); ?></option>
 		  </select>
-		  <p class="description"><?php echo __( 'This Role will be assigned to all level members', 'ets_mepr_discord' ); ?></p>
+		  <p class="description"><?php echo __( 'This Role will be assigned to all level members', 'ets_memberpress_discord' ); ?></p>
 		</td>
 	  </tr>
 	  <tr>
-		<th scope="row"><label><?php echo __( 'Allow none members', 'ets_mepr_discord' ); ?></label></th>
+		<th scope="row"><label><?php echo __( 'Allow none members', 'ets_memberpress_discord' ); ?></label></th>
 		<td>
 		  <fieldset>
 		  <label><input type="radio" name="allow_none_member" value="yes"  
@@ -55,13 +55,13 @@ $allow_none_member = sanitize_text_field( trim( get_option( 'ets_mepr_allow_none
 			if ( $allow_none_member == 'yes' ) {
 				echo 'checked="checked"'; }
 			?>
-			 > <span><?php echo __( 'Yes', 'ets_mepr_discord' ); ?></span></label><br>
+			 > <span><?php echo __( 'Yes', 'ets_memberpress_discord' ); ?></span></label><br>
 		  <label><input type="radio" name="allow_none_member" value="no" 
 		  <?php
 			if ( empty( $allow_none_member ) || $allow_none_member == 'no' ) {
 				echo 'checked="checked"'; }
 			?>
-			 > <span><?php echo __( 'No', 'ets_mepr_discord' ); ?></span></label>
+			 > <span><?php echo __( 'No', 'ets_memberpress_discord' ); ?></span></label>
 		  <p class="description"><?php echo __( 'This setting will apply on Cancel and Expiry of Membership' ); ?></p>
 		  </fieldset>
 		</td>
@@ -79,10 +79,10 @@ $allow_none_member = sanitize_text_field( trim( get_option( 'ets_mepr_allow_none
   </div>
   <div class="bottom-btn">
 	<button type="submit" name="submit" value="ets_submit" class="ets-submit ets-bg-green">
-	  <?php echo __( 'Save Settings', 'ets_mepr_discord' ); ?>
+	  <?php echo __( 'Save Settings', 'ets_memberpress_discord' ); ?>
 	</button>
 	<button id="revertMapping" name="flush" class="ets-submit ets-bg-red">
-	  <?php echo __( 'Flush Mappings', 'ets_mepr_discord' ); ?>
+	  <?php echo __( 'Flush Mappings', 'ets_memberpress_discord' ); ?>
 	</button>
   </div>
 </form>

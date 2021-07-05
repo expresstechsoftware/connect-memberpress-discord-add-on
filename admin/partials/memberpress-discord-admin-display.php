@@ -13,6 +13,15 @@
  */
 ?>
 <!-- This file should primarily consist of HTML with a little bit of PHP. -->
+<?php 
+	if( isset($_GET['save_settings_msg']) ){
+		?>
+			<div class="notice notice-success is-dismissible support-success-msg">
+				<p><?php echo __( $_GET['save_settings_msg'], 'ets_memberpress_discord' ); ?></p>
+			</div>
+		<?php
+	}
+?>
 <h1><?php echo __( 'Memberpress Discord Add On Settings', 'ets_memberpress_discord' ); ?></h1>
 		<div id="outer" class="skltbs-theme-light" data-skeletabs='{ "startIndex": 1 }'>
 			<ul class="skltbs-tab-group">
@@ -43,24 +52,24 @@
 			</ul>
 			<div class="skltbs-panel-group">
 				<div class="skltbs-panel">
-				<?php require_once plugin_dir_path( __FILE__ ) . 'pages/mpr-discord-settings.php'; ?>
+				<?php require_once plugin_dir_path( __FILE__ ) . 'pages/memberpress-discord-settings.php'; ?>
 				</div>
 				<?php if ( ! empty( $ets_memberpress_discord_client_id ) && ! empty( $discord_client_secret ) && ! empty( $discord_bot_token ) && ! empty( $ets_memberpress_discord_redirect_url ) && ! empty( $ets_memberpress_discord_guild_id ) ) : ?>
 				<div class="skltbs-panel">
-				<?php require_once plugin_dir_path( __FILE__ ) . 'pages/mpr-discord-role-level-map.php'; ?>
+				<?php require_once plugin_dir_path( __FILE__ ) . 'pages/memberpress-discord-role-level-map.php'; ?>
 				</div>
 				<?php endif; ?>
 				<div class="skltbs-panel">
-				<?php require_once plugin_dir_path( __FILE__ ) . 'pages/mpr-discord-advance.php'; ?>
+				<?php require_once plugin_dir_path( __FILE__ ) . 'pages/memberpress-discord-advance.php'; ?>
 				</div>
 				<div class="skltbs-panel">
-				<?php require_once plugin_dir_path( __FILE__ ) . 'pages/mpr-discord-error-log.php'; ?>
+				<?php require_once plugin_dir_path( __FILE__ ) . 'pages/memberpress-discord-error-log.php'; ?>
 				</div>
 				<div class="skltbs-panel">
-				<?php require_once plugin_dir_path( __FILE__ ) . 'pages/mpr-discord-documentation.php'; ?>
+				<?php require_once plugin_dir_path( __FILE__ ) . 'pages/memberpress-discord-documentation.php'; ?>
 				</div>
 				<div class="skltbs-panel">
-				<?php require_once plugin_dir_path( __FILE__ ) . 'pages/mpr-discord-get-support.php'; ?>
+				<?php require_once plugin_dir_path( __FILE__ ) . 'pages/memberpress-discord-get-support.php'; ?>
 				</div>
 			</div>
 		</div>

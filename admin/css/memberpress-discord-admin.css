@@ -461,7 +461,7 @@ div.mapping-json{
 }
 .discord-roles .spinner,.initialtab.spinner{
   display: inline-block;
-}';;;'
+}
 .spinner{
   display: none;
 }
@@ -476,4 +476,4 @@ select#defaultRole{
   display: none;
   color: #2ca450;
 }
-.ets_pmpro_discord_dm_textarea{height:130px;}
+.ets_memberpress_discord_dm_textarea{height:130px;}
