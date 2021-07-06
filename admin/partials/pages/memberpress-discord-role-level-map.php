@@ -21,7 +21,7 @@ $allow_none_member = sanitize_text_field( trim( get_option( 'ets_memberpress_all
   <div class="ets-column">
 	<h2><?php echo __( 'MEPR Memberships', 'ets_memberpress_discord' ); ?></h2>
 	<hr>
-	<div class="pmpro-levels">
+	<div class="memberpress-levels">
 	<?php
 	foreach ( array_reverse($mpr_memberships) as $key => $value ) {
 			?>
@@ -32,7 +32,8 @@ $allow_none_member = sanitize_text_field( trim( get_option( 'ets_memberpress_all
 	</div>
   </div>
 </div>
-<form method="post" action="#">
+<form method="post" action="<?php echo get_site_url().'/wp-admin/admin-post.php' ?>">
+	<input type="hidden" name="action" value="memberpress_discord_role_mapping">
   <table class="form-table" role="presentation">
 	<tbody>
 	  <tr>
