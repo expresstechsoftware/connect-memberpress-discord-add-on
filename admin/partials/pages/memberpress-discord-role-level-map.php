@@ -5,7 +5,7 @@ $default_role        = sanitize_text_field( trim( get_option( '_ets_memberpress_
 $allow_none_member = sanitize_text_field( trim( get_option( 'ets_memberpress_allow_none_member' ) ) );
 ?>
 <div class="notice notice-warning ets-notice">
-  <p><i class='fas fa-info'></i> <?php echo __( 'Drag and Drop the Discord Roles over to the MEPR Levels', 'ets_memberpress_discord' ); ?></p>
+  <p><i class='fas fa-info'></i> <?php echo __( 'Drag and Drop the Discord Roles over to the MemberPress Levels', 'ets_memberpress_discord' ); ?></p>
 </div>
 <div class="notice notice-warning ets-notice">
   <p><i class='fas fa-info'></i> <?php echo __( 'Note: Inactive memberships will not display', 'ets_memberpress_discord' ); ?></p>
@@ -19,7 +19,7 @@ $allow_none_member = sanitize_text_field( trim( get_option( 'ets_memberpress_all
 	</div>
   </div>
   <div class="ets-column">
-	<h2><?php echo __( 'MEPR Memberships', 'ets_memberpress_discord' ); ?></h2>
+	<h2><?php echo __( 'MemberPress Memberships', 'ets_memberpress_discord' ); ?></h2>
 	<hr>
 	<div class="memberpress-levels">
 	<?php
@@ -39,7 +39,7 @@ $allow_none_member = sanitize_text_field( trim( get_option( 'ets_memberpress_all
 	  <tr>
 		<th scope="row"><label for="defaultRole"><?php echo __( 'Default Role', 'ets_memberpress_discord' ); ?></label></th>
 		<td>
-		  <?php wp_nonce_field( 'discord_role_mappings_nonce', 'ets_pmpor_discord_role_mappings_nonce' ); ?>
+		  <?php wp_nonce_field( 'discord_role_mappings_nonce', 'ets_memberpress_discord_role_mappings_nonce' ); ?>
 		  <input type="hidden" id="selected_default_role" value="<?php echo $default_role; ?>">
 		  <select id="defaultRole" name="defaultRole">
 			<option value="none"><?php echo __( '-None-', 'ets_memberpress_discord' ); ?></option>
@@ -71,7 +71,7 @@ $allow_none_member = sanitize_text_field( trim( get_option( 'ets_memberpress_all
   </table>
 	<br>
   <div class="mapping-json">
-	<textarea id="maaping_json_val" name="ets_pmpor_discord_role_mapping">
+	<textarea id="maaping_json_val" name="ets_memberpress_discord_role_mapping">
 	<?php
 	if ( isset( $ets_discord_roles ) ) {
 		echo stripslashes( $ets_discord_roles );}
@@ -82,7 +82,7 @@ $allow_none_member = sanitize_text_field( trim( get_option( 'ets_memberpress_all
 	<button type="submit" name="submit" value="ets_submit" class="ets-submit ets-bg-green">
 	  <?php echo __( 'Save Settings', 'ets_memberpress_discord' ); ?>
 	</button>
-	<button id="revertMapping" name="flush" class="ets-submit ets-bg-red">
+	<button id="MemberPressRevertMapping" name="flush" class="ets-submit ets-bg-red">
 	  <?php echo __( 'Flush Mappings', 'ets_memberpress_discord' ); ?>
 	</button>
   </div>

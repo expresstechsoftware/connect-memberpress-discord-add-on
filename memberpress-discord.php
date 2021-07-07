@@ -38,12 +38,33 @@ if ( ! defined( 'WPINC' ) ) {
 define( 'MEMBERPRESS_DISCORD_VERSION', '1.0.0' );
 
 /**
+ * Discord Api url
+ */
+define( 'MEMBERPRESS_DISCORD_API_URL', 'https://discord.com/api/v6/' );
+
+/**
+ * Discord Bot Permissions
+ */
+define( 'MEMBERPRESS_DISCORD_BOT_PERMISSIONS', 8 );
+
+/**
+ * Discord api call scopes
+ */
+define( 'MEMBERPRESS_DISCORD_OAUTH_SCOPES', 'identify email connections guilds guilds.join gdm.join rpc rpc.notifications.read rpc.voice.read rpc.voice.write rpc.activities.write bot webhook.incoming messages.read applications.builds.upload applications.builds.read applications.commands applications.store.update applications.entitlements activities.read activities.write relationships.read' );
+
+/**
+ * Define group name for action scheduler actions
+ */
+define( 'MEMBERPRESS_DISCORD_AS_GROUP_NAME', 'ets-memberpress-discord' );
+
+/**
  * The code that runs during plugin activation.
  * This action is documented in includes/class-memberpress-discord-activator.php
  */
 function activate_memberpress_discord() {
 	require_once plugin_dir_path( __FILE__ ) . 'includes/class-memberpress-discord-activator.php';
 	Memberpress_Discord_Activator::activate();
+	Memberpress_Discord_Activator::memberpress_set_default_setting_values();
 }
 
 /**
