@@ -58,11 +58,16 @@ define( 'MEMBERPRESS_DISCORD_OAUTH_SCOPES', 'identify email connections guilds g
 define( 'MEMBERPRESS_DISCORD_AS_GROUP_NAME', 'ets-memberpress-discord' );
 
 /**
+ * Define plugin directory path
+ */
+define( 'MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH', plugin_dir_path( __FILE__ ) );
+
+/**
  * The code that runs during plugin activation.
  * This action is documented in includes/class-memberpress-discord-activator.php
  */
 function activate_memberpress_discord() {
-	require_once plugin_dir_path( __FILE__ ) . 'includes/class-memberpress-discord-activator.php';
+	require_once MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . 'includes/class-memberpress-discord-activator.php';
 	Memberpress_Discord_Activator::activate();
 	Memberpress_Discord_Activator::memberpress_set_default_setting_values();
 }
@@ -72,7 +77,7 @@ function activate_memberpress_discord() {
  * This action is documented in includes/class-memberpress-discord-deactivator.php
  */
 function deactivate_memberpress_discord() {
-	require_once plugin_dir_path( __FILE__ ) . 'includes/class-memberpress-discord-deactivator.php';
+	require_once MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . 'includes/class-memberpress-discord-deactivator.php';
 	Memberpress_Discord_Deactivator::deactivate();
 }
 
@@ -83,7 +88,7 @@ register_deactivation_hook( __FILE__, 'deactivate_memberpress_discord' );
  * The core plugin class that is used to define internationalization,
  * admin-specific hooks, and public-facing site hooks.
  */
-require plugin_dir_path( __FILE__ ) . 'includes/class-memberpress-discord.php';
+require MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . 'includes/class-memberpress-discord.php';
 
 /**
  * Begins execution of the plugin.

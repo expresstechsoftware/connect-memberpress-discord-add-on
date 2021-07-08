@@ -265,7 +265,7 @@ class Memberpress_Discord_Admin {
 		$ets_discord_roles        = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_role_mapping' ) ) );
 		$ets_memberpress_discord_guild_id     = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_guild_id' ) ) );
 
-		require_once plugin_dir_path( __FILE__ ) . 'partials/memberpress-discord-admin-display.php';
+		require_once MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . 'admin/partials/memberpress-discord-admin-display.php';
 	}
 
 	/**
@@ -383,8 +383,8 @@ class Memberpress_Discord_Admin {
 		}
 		try {
 			$file_name = $this::$log_file_name;
-			if ( fopen( plugin_dir_url( __FILE__ ) . $file_name, 'w' ) ) {
-				$myfile = fopen( plugin_dir_url( __FILE__ ) . $file_name, 'w' );
+			if ( fopen( MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . $file_name, 'w' ) ) {
+				$myfile = fopen( MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . $file_name, 'w' );
 				$txt    = current_time( 'mysql' ) . " => Clear logs Successfully\n";
 				fwrite( $myfile, $txt );
 				fclose( $myfile );

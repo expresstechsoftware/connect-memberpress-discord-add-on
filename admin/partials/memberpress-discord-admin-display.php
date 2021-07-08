@@ -52,24 +52,24 @@
 			</ul>
 			<div class="skltbs-panel-group">
 				<div class="skltbs-panel">
-				<?php require_once plugin_dir_path( __FILE__ ) . 'pages/memberpress-discord-settings.php'; ?>
+				<?php require_once MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . 'admin/partials/pages/memberpress-discord-settings.php'; ?>
 				</div>
 				<?php if ( ! empty( $ets_memberpress_discord_client_id ) && ! empty( $discord_client_secret ) && ! empty( $discord_bot_token ) && ! empty( $ets_memberpress_discord_redirect_url ) && ! empty( $ets_memberpress_discord_guild_id ) ) : ?>
 				<div class="skltbs-panel">
-				<?php require_once plugin_dir_path( __FILE__ ) . 'pages/memberpress-discord-role-level-map.php'; ?>
+				<?php require_once MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . 'admin/partials/pages/memberpress-discord-role-level-map.php'; ?>
 				</div>
 				<?php endif; ?>
 				<div class="skltbs-panel">
-				<?php require_once plugin_dir_path( __FILE__ ) . 'pages/memberpress-discord-advance.php'; ?>
+				<?php require_once MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . 'admin/partials/pages/memberpress-discord-advance.php'; ?>
 				</div>
 				<div class="skltbs-panel">
-				<?php require_once plugin_dir_path( __FILE__ ) . 'pages/memberpress-discord-error-log.php'; ?>
+				<?php require_once MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . 'admin/partials/pages/memberpress-discord-error-log.php'; ?>
 				</div>
 				<div class="skltbs-panel">
-				<?php require_once plugin_dir_path( __FILE__ ) . 'pages/memberpress-discord-documentation.php'; ?>
+				<?php require_once MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . 'admin/partials/pages/memberpress-discord-documentation.php'; ?>
 				</div>
 				<div class="skltbs-panel">
-				<?php require_once plugin_dir_path( __FILE__ ) . 'pages/memberpress-discord-get-support.php'; ?>
+				<?php require_once MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . 'admin/partials/pages/memberpress-discord-get-support.php'; ?>
 				</div>
 			</div>
 		</div>
