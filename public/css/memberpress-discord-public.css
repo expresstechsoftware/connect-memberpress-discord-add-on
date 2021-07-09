@@ -2,3 +2,36 @@
  * All of the CSS for your public-facing functionality should be
  * included in this file.
  */
+ .ets-btn{
+  padding: 10px 20px;
+  color: #fff;
+  font-size: 14px;
+  box-shadow: 0px 0px 0px 0px;
+  border: 0px;
+  text-decoration: none;
+  display: inline-block;
+  font-weight: 600;
+  letter-spacing: 0.0333em;
+  line-height: 1.25;
+  margin: 0;
+  opacity: 1;
+  text-transform: uppercase;
+}
+.ets-btn.btn-connect-to-bot{
+  font-weight:normal;
+  display: none;
+  text-transform: none;
+}
+.ets-btn.not-active {
+  pointer-events: none;
+  cursor: default;
+  text-decoration: none;
+  background-color:#77A02E;
+  color: #ffffff;
+}
+.btn-connect{
+  background-color: #77A02E;
+}
+.ets_assigned_role{
+  font-size: 10px;
+ }
