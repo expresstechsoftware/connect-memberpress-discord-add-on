@@ -263,7 +263,7 @@ class Memberpress_Discord_Admin {
 		$discord_bot_token        = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_bot_token' ) ) );
 		$ets_memberpress_discord_redirect_url = sanitize_text_field( trim( get_site_url().'/account' ) );
 		$ets_discord_roles        = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_role_mapping' ) ) );
-		$ets_memberpress_discord_guild_id     = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_guild_id' ) ) );
+		$ets_memberpress_discord_server_id     = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_server_id' ) ) );
 
 		require_once MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . 'admin/partials/memberpress-discord-admin-display.php';
 	}
@@ -286,7 +286,7 @@ class Memberpress_Discord_Admin {
 
 		$ets_memberpress_discord_redirect_url = isset( $_POST['ets_memberpress_discord_redirect_url'] ) ? sanitize_text_field( trim( $_POST['ets_memberpress_discord_redirect_url'] ) ) : '';
 
-		$ets_memberpress_discord_guild_id = isset( $_POST['ets_memberpress_discord_guild_id'] ) ? sanitize_text_field( trim( $_POST['ets_memberpress_discord_guild_id'] ) ) : '';
+		$ets_memberpress_discord_server_id = isset( $_POST['ets_memberpress_discord_server_id'] ) ? sanitize_text_field( trim( $_POST['ets_memberpress_discord_server_id'] ) ) : '';
 
 		if ( isset( $_POST['submit'] ) && ! isset( $_POST['ets_memberpress_discord_role_mapping'] ) ) {
 			if ( isset( $_POST['ets_discord_save_settings'] ) && wp_verify_nonce( $_POST['ets_discord_save_settings'], 'save_discord_settings' ) ) {
@@ -308,8 +308,8 @@ class Memberpress_Discord_Admin {
 					update_option( 'ets_memberpress_discord_redirect_url', $ets_memberpress_discord_redirect_url );
 				}
 
-				if ( $ets_memberpress_discord_guild_id ) {
-					update_option( 'ets_memberpress_discord_guild_id', $ets_memberpress_discord_guild_id );
+				if ( $ets_memberpress_discord_server_id ) {
+					update_option( 'ets_memberpress_discord_server_id', $ets_memberpress_discord_server_id );
 				}
 				
 				$message = 'Your settings are saved successfully.';
@@ -455,10 +455,10 @@ class Memberpress_Discord_Admin {
 	
 	$user_id = get_current_user_id();
 
-	$guild_id          = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_guild_id' ) ) );
+	$server_id          = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_server_id' ) ) );
 	$discord_bot_token = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_bot_token' ) ) );
-	if ( $guild_id && $discord_bot_token ) {
-		$discod_server_roles_api = MEMBERPRESS_DISCORD_API_URL . 'guilds/' . $guild_id . '/roles';
+	if ( $server_id && $discord_bot_token ) {
+		$discod_server_roles_api = MEMBERPRESS_DISCORD_API_URL . 'guilds/' . $server_id . '/roles';
 		$guild_args              = array(
 			'method'  => 'GET',
 			'headers' => array(

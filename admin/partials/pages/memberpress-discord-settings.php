@@ -20,11 +20,10 @@
 		<input type="text" class="ets-input" name="ets_memberpress_discord_bot_token" value="<?php if ( isset( $discord_bot_token ) ) { echo $discord_bot_token;} ?>" required placeholder="Discord Bot Token">
 	</div>
 	<div class="ets-input-group">
-	  <label><?php echo __( 'Guild Id', 'ets_memberpress_discord' ); ?> :</label>
-		<input type="text" class="ets-input" name="ets_memberpress_discord_guild_id"
-		placeholder="Discord Guild Id" value="<?php if ( isset( $ets_memberpress_discord_guild_id ) ) { echo $ets_memberpress_discord_guild_id;} ?>" required>
+	  <label><?php echo __( 'Server Id', 'ets_memberpress_discord' ); ?> :</label>
+		<input type="text" class="ets-input" name="ets_memberpress_discord_server_id" placeholder="Discord Server Id" value="<?php if ( isset( $ets_memberpress_discord_server_id ) ) { echo $ets_memberpress_discord_server_id;} ?>" required>
 	</div>
-	<?php if ( empty( $ets_memberpress_discord_client_id ) || empty( $discord_client_secret ) || empty( $discord_bot_token ) || empty( $ets_memberpress_discord_redirect_url ) || empty( $ets_memberpress_discord_guild_id ) ) { ?>
+	<?php if ( empty( $ets_memberpress_discord_client_id ) || empty( $discord_client_secret ) || empty( $discord_bot_token ) || empty( $ets_memberpress_discord_redirect_url ) || empty( $ets_memberpress_discord_server_id ) ) { ?>
 	  <p class="ets-danger-text description">
 		<?php echo __( 'Please save your form', 'ets_memberpress_discord' ); ?>
 	  </p>
