@@ -304,7 +304,7 @@ class Memberpress_Discord_Admin {
 
 				if ( $ets_memberpress_discord_redirect_url ) {
 					// add a query string param `via` GH #185.
-					$ets_memberpress_discord_redirect_url = $this->get_memberpress_formated_discord_redirect_url( $ets_memberpress_discord_redirect_url );
+					$ets_memberpress_discord_redirect_url = get_memberpress_formated_discord_redirect_url( $ets_memberpress_discord_redirect_url );
 					update_option( 'ets_memberpress_discord_redirect_url', $ets_memberpress_discord_redirect_url );
 				}
 
@@ -499,23 +499,4 @@ class Memberpress_Discord_Admin {
 	}
 	 
  }
-
- /**
-	 * This method parse url and append a query param to it.
-	 *
-	 * @param STRING $url
-	 * @return STRING $url
-	 */
-	function get_memberpress_formated_discord_redirect_url( $url ) {
-		$parsed = parse_url( $url, PHP_URL_QUERY );
-		if ( $parsed === null ) {
-			return $url .= '?via=discord';
-		} else {
-			if ( stristr( $url, 'via=discord' ) !== false ) {
-				return $url;
-			} else {
-				return $url .= '&via=discord';
-			}
-		}
-	}
 }

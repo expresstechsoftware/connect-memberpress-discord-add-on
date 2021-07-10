@@ -144,7 +144,7 @@ class Memberpress_Discord_Public {
 			} elseif ( current_user_can('memberpress_authorized') || $allow_none_member == 'yes' ) {
 				?>
 				<label class="ets-connection-lbl"><?php echo __( 'Discord connection', 'ets_memberpress_discord' ); ?></label>
-				<a href="?action=discord-login" class="btn-connect ets-btn" ><?php echo __( 'Connect To Discord', 'ets_memberpress_discord' ); ?> <i class='fab fa-discord'></i></a>
+				<a href="?action=memberpress-discord-login" class="btn-connect ets-btn" ><?php echo __( 'Connect To Discord', 'ets_memberpress_discord' ); ?> <i class='fab fa-discord'></i></a>
 				<?php if ( $mapped_role_name ) { ?>
 					<p class="ets_assigned_role">
 					<?php
@@ -195,6 +195,162 @@ class Memberpress_Discord_Public {
 		}
 
 		return $status;
+	}
+
+	/**
+	 * For authorization process call discord API
+	 *
+	 * @param NONE
+	 * @return OBJECT REST API response
+	 */
+	public function ets_memberpress_discord_discord_api_callback() {
+		if ( is_user_logged_in() ) {
+			$user_id = get_current_user_id();
+			if ( isset( $_GET['action'] ) && $_GET['action'] == 'memberpress-discord-login' ) {
+				$params                    = array(
+					'client_id'     => sanitize_text_field( trim( get_option( 'ets_memberpress_discord_client_id' ) ) ),
+					'redirect_uri'  => sanitize_text_field( trim( get_option( 'ets_memberpress_discord_redirect_url' ) ) ),
+					'response_type' => 'code',
+					'scope'         => 'identify email connections guilds guilds.join messages.read',
+				);
+				$discord_authorise_api_url = MEMBERPRESS_DISCORD_API_URL . 'oauth2/authorize?' . http_build_query( $params );
+
+				wp_redirect( $discord_authorise_api_url, 302, get_site_url() );
+				exit;
+			}
+
+			if ( isset( $_GET['action'] ) && $_GET['action'] == 'discord-connectToBot' ) {
+				$params                    = array(
+					'client_id'   => sanitize_text_field( trim( get_option( 'ets_memberpress_discord_client_id' ) ) ),
+					'permissions' => MEMBERPRESS_DISCORD_BOT_PERMISSIONS,
+					'scope'       => 'bot',
+					'guild_id'    => sanitize_text_field( trim( get_option( 'ets_memberpress_discord_guild_id' ) ) ),
+				);
+				$discord_authorise_api_url = MEMBERPRESS_DISCORD_API_URL . 'oauth2/authorize?' . http_build_query( $params );
+
+				wp_redirect( $discord_authorise_api_url, 302, get_site_url() );
+				exit;
+			}
+			if ( isset( $_GET['code'] ) && isset( $_GET['via'] ) ) {
+				$code     = sanitize_text_field( trim( $_GET['code'] ) );
+				$response = $this->memberpress_create_discord_auth_token( $code, $user_id );
+
+				if ( ! empty( $response ) && ! is_wp_error( $response ) ) {
+					$res_body              = json_decode( wp_remote_retrieve_body( $response ), true );
+					$discord_exist_user_id = sanitize_text_field( trim( get_user_meta( $user_id, '_ets_memberpress_discord_user_id', true ) ) );
+					if ( is_array( $res_body ) ) {
+						if ( array_key_exists( 'access_token', $res_body ) ) {
+							$access_token = sanitize_text_field( trim( $res_body['access_token'] ) );
+							update_user_meta( $user_id, '_ets_memberpress_discord_access_token', $access_token );
+							if ( array_key_exists( 'refresh_token', $res_body ) ) {
+								$refresh_token = sanitize_text_field( trim( $res_body['refresh_token'] ) );
+								update_user_meta( $user_id, '_ets_memberpress_discord_refresh_token', $refresh_token );
+							}
+							if ( array_key_exists( 'expires_in', $res_body ) ) {
+								$expires_in = $res_body['expires_in'];
+								$date       = new DateTime();
+								$date->add( DateInterval::createFromDateString( '' . $expires_in . ' seconds' ) );
+								$token_expiry_time = $date->getTimestamp();
+								update_user_meta( $user_id, '_ets_memberpress_discord_expires_in', $token_expiry_time );
+							}
+							$user_body = $this->get_discord_current_user( $access_token );
+
+							if ( array_key_exists( 'discriminator', $user_body ) ) {
+								$discord_user_number           = $user_body['discriminator'];
+								$discord_user_name             = $user_body['username'];
+								$discord_user_name_with_number = $discord_user_name . '#' . $discord_user_number;
+								update_user_meta( $user_id, '_ets_memberpress_discord_username', $discord_user_name_with_number );
+							}
+							if ( is_array( $user_body ) && array_key_exists( 'id', $user_body ) ) {
+								$_ets_memberpress_discord_user_id = sanitize_text_field( trim( $user_body['id'] ) );
+								if ( $discord_exist_user_id == $_ets_memberpress_discord_user_id ) {
+									$_ets_memberpress_discord_role_id = sanitize_text_field( trim( get_user_meta( $user_id, '_ets_memberpress_discord_role_id', true ) ) );
+									if ( ! empty( $_ets_memberpress_discord_role_id ) && $_ets_memberpress_discord_role_id != 'none' ) {
+										$this->delete_discord_role( $user_id, $_ets_memberpress_discord_role_id );
+									}
+								}
+								update_user_meta( $user_id, '_ets_memberpress_discord_user_id', $_ets_memberpress_discord_user_id );
+								$this->add_discord_member_in_guild( $_ets_memberpress_discord_user_id, $user_id, $access_token );
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	/**
+	 * Create authentication token for discord API
+	 *
+	 * @param STRING $code
+	 * @param INT    $user_id
+	 * @return OBJECT API response
+	 */
+	public function memberpress_create_discord_auth_token( $code, $user_id ) {
+		if ( ! is_user_logged_in() ) {
+			wp_send_json_error( 'Unauthorized user', 401 );
+			exit();
+		}
+		// stop users who having the direct URL of discord Oauth.
+		// We must check IF NONE members is set to NO and user having no active membership.
+		$allow_none_member = sanitize_text_field( trim( get_option( 'ets_memberpress_allow_none_member' ) ) );
+		$mepr_current_user = MeprUtils::get_currentuserinfo();
+		$curr_level_id     = sanitize_text_field( trim( ets_memberpress_discord_get_current_level_id( $mepr_current_user ) ) );
+		if ( $curr_level_id == null && $allow_none_member == 'no' ) {
+			return;
+		}
+		$response              = '';
+		$refresh_token         = sanitize_text_field( trim( get_user_meta( $user_id, '_ets_memberpress_discord_refresh_token', true ) ) );
+		$token_expiry_time     = sanitize_text_field( trim( get_user_meta( $user_id, '_ets_memberpress_discord_expires_in', true ) ) );
+		$discord_token_api_url = MEMBERPRESS_DISCORD_API_URL . 'oauth2/token';
+		if ( $refresh_token ) {
+			$date              = new DateTime();
+			$current_timestamp = $date->getTimestamp();
+			if ( $current_timestamp > $token_expiry_time ) {
+				$args     = array(
+					'method'  => 'POST',
+					'headers' => array(
+						'Content-Type' => 'application/x-www-form-urlencoded',
+					),
+					'body'    => array(
+						'client_id'     => sanitize_text_field( trim( get_option( 'ets_memberpress_discord_client_id' ) ) ),
+						'client_secret' => sanitize_text_field( trim( get_option( 'ets_memberpress_discord_client_secret' ) ) ),
+						'grant_type'    => 'refresh_token',
+						'refresh_token' => $refresh_token,
+						'redirect_uri'  => sanitize_text_field( trim( get_option( 'ets_memberpress_discord_redirect_url' ) ) ),
+						'scope'         => MEMBERPRESS_DISCORD_OAUTH_SCOPES,
+					),
+				);
+				$response = wp_remote_post( $discord_token_api_url, $args );
+				ets_memberpress_discord_log_api_response( $user_id, $discord_token_api_url, $args, $response );
+				if ( ets_memberpress_discord_check_api_errors( $response ) ) {
+					$response_arr = json_decode( wp_remote_retrieve_body( $response ), true );
+					memberpress_Discord_Logs::write_api_response_logs( $response_arr, $user_id, debug_backtrace()[0] );
+				}
+			}
+		} else {
+			$args     = array(
+				'method'  => 'POST',
+				'headers' => array(
+					'Content-Type' => 'application/x-www-form-urlencoded',
+				),
+				'body'    => array(
+					'client_id'     => sanitize_text_field( trim( get_option( 'ets_memberpress_discord_client_id' ) ) ),
+					'client_secret' => sanitize_text_field( trim( get_option( 'ets_memberpress_discord_client_secret' ) ) ),
+					'grant_type'    => 'authorization_code',
+					'code'          => $code,
+					'redirect_uri'  => sanitize_text_field( trim( get_option( 'ets_memberpress_discord_redirect_url' ) ) ),
+					'scope'         => MEMBERPRESS_DISCORD_OAUTH_SCOPES,
+				),
+			);
+			$response = wp_remote_post( $discord_token_api_url, $args );
+			ets_memberpress_discord_log_api_response( $user_id, $discord_token_api_url, $args, $response );
+			if ( ets_memberpress_discord_check_api_errors( $response ) ) {
+				$response_arr = json_decode( wp_remote_retrieve_body( $response ), true );
+				memberpress_Discord_Logs::write_api_response_logs( $response_arr, $user_id, debug_backtrace()[0] );
+			}
+		}
+		return $response;
 	}
 	
 }

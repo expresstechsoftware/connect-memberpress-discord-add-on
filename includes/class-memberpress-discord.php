@@ -122,6 +122,12 @@ class Memberpress_Discord {
 		 */
 		require_once MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . 'public/class-memberpress-discord-public.php';
 
+		/**
+		 * The class responsible for defining all methods that occur in the public-facing and admin
+		 * side of the site.
+		 */
+		require_once MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . 'includes/functions.php';
+
 		$this->loader = new Memberpress_Discord_Loader();
 
 	}
@@ -177,7 +183,7 @@ class Memberpress_Discord {
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
 		$this->loader->add_action( 'mepr-account-home-fields', $plugin_public, 'ets_memberpress_discord_add_field' );
-		
+		$this->loader->add_action( 'init', $plugin_public, 'ets_memberpress_discord_discord_api_callback' );
 	}
 
 	/**
