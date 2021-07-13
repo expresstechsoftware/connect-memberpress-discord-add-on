@@ -134,7 +134,7 @@ class Memberpress_Discord_Public {
 		if ( $default_role != 'none' && is_array( $all_roles ) && array_key_exists( $default_role, $all_roles ) ) {
 			$default_role_name = $all_roles[ $default_role ];
 		}
-		if ( $this->Check_saved_settings_status() ) {
+		if ( Check_saved_settings_status() ) {
 			if ( $access_token ) {
 				?>
 				<label class="ets-connection-lbl"><?php echo __( 'Discord connection', 'ets_memberpress_discord' ); ?></label>
@@ -174,27 +174,6 @@ class Memberpress_Discord_Public {
 		} else {
 			return null;
 		}
-	}
-	/**
-	 * To check settings values saved or not
-	 *
-	 * @param NONE
-	 * @return BOOL $status
-	 */
-	public function Check_saved_settings_status() {
-		$ets_memberpress_discord_client_id     = get_option( 'ets_memberpress_discord_client_id' );
-		$ets_memberpress_discord_client_secret = get_option( 'ets_memberpress_discord_client_secret' );
-		$ets_memberpress_discord_bot_token     = get_option( 'ets_memberpress_discord_bot_token' );
-		$ets_memberpress_discord_redirect_url  = get_option( 'ets_memberpress_discord_redirect_url' );
-		$ets_memberpress_discord_guild_id      = get_option( 'ets_memberpress_discord_guild_id' );
-
-		if ( $ets_memberpress_discord_client_id && $ets_memberpress_discord_client_secret && $ets_memberpress_discord_bot_token && $ets_memberpress_discord_redirect_url && $ets_memberpress_discord_guild_id ) {
-			$status = true;
-		} else {
-			$status = false;
-		}
-
-		return $status;
 	}
 
 	/**

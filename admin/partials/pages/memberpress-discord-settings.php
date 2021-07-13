@@ -1,3 +1,11 @@
+<?php
+$ets_memberpress_discord_client_id    = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_client_id' ) ) );
+$discord_client_secret                = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_client_secret' ) ) );
+$discord_bot_token                    = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_bot_token' ) ) );
+$ets_memberpress_discord_redirect_url = sanitize_text_field( trim( get_site_url() . '/account' ) );
+$ets_discord_roles                    = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_role_mapping' ) ) );
+$ets_memberpress_discord_server_id    = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_server_id' ) ) );
+?>
 <form method="post" action="<?php echo get_site_url().'/wp-admin/admin-post.php' ?>">
 <input type="hidden" name="action" value="memberpress_discord_general_settings">
 	<?php wp_nonce_field( 'save_discord_settings', 'ets_discord_save_settings' ); ?>

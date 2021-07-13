@@ -26,9 +26,9 @@
 		<div id="outer" class="skltbs-theme-light" data-skeletabs='{ "startIndex": 1 }'>
 			<ul class="skltbs-tab-group">
 				<li class="skltbs-tab-item">
-				<button class="skltbs-tab" data-identity="settings" ><?php echo __( 'Discord Settings', 'ets_memberpress_discord' ); ?><span class="initialtab spinner"></span></button>
+				<button class="skltbs-tab" data-identity="settings" ><?php echo __( 'Application details', 'ets_memberpress_discord' ); ?><span class="initialtab spinner"></span></button>
 				</li>
-				<?php if ( ! empty( $ets_memberpress_discord_client_id ) && ! empty( $discord_client_secret ) && ! empty( $discord_bot_token ) && ! empty( $ets_memberpress_discord_redirect_url ) && ! empty( $ets_memberpress_discord_server_id ) ) : ?>
+				<?php if ( Check_saved_settings_status() ) : ?>
 				<li class="skltbs-tab-item">
 				<button class="skltbs-tab" data-identity="level-mapping" ><?php echo __( 'Role Mappings', 'ets_memberpress_discord' ); ?></button>
 				</li>
@@ -54,7 +54,7 @@
 				<div class="skltbs-panel">
 				<?php require_once MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . 'admin/partials/pages/memberpress-discord-settings.php'; ?>
 				</div>
-				<?php if ( ! empty( $ets_memberpress_discord_client_id ) && ! empty( $discord_client_secret ) && ! empty( $discord_bot_token ) && ! empty( $ets_memberpress_discord_redirect_url ) && ! empty( $ets_memberpress_discord_server_id ) ) : ?>
+				<?php if ( Check_saved_settings_status() ) : ?>
 				<div class="skltbs-panel">
 				<?php require_once MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . 'admin/partials/pages/memberpress-discord-role-level-map.php'; ?>
 				</div>

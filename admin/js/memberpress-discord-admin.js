@@ -30,10 +30,6 @@
 	 */
 	 $( document ).ready(function() {
 			if (etsMemberpressParams.is_admin) {
-				/*Tab options*/
-				$.skeletabs.setDefaults({
-					keyboard: false,
-				});
 				/*Load all roles from discord server*/
 				$.ajax({
 					type: "POST",
@@ -258,5 +254,8 @@
 				}
 			}
 		});
-	
+		/*Tab options*/
+		$.skeletabs.setDefaults({
+			keyboard: false,
+		});
 })( jQuery );

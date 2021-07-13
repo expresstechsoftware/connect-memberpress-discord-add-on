@@ -163,6 +163,28 @@ function ets_memberpress_discord_get_current_level_id( $user_id ) {
 }
 
 /**
+	 * To check settings values saved or not
+	 *
+	 * @param NONE
+	 * @return BOOL $status
+	 */
+	 function Check_saved_settings_status() {
+		$ets_memberpress_discord_client_id     = get_option( 'ets_memberpress_discord_client_id' );
+		$ets_memberpress_discord_client_secret = get_option( 'ets_memberpress_discord_client_secret' );
+		$ets_memberpress_discord_bot_token     = get_option( 'ets_memberpress_discord_bot_token' );
+		$ets_memberpress_discord_redirect_url  = get_option( 'ets_memberpress_discord_redirect_url' );
+		$ets_memberpress_discord_guild_id      = get_option( 'ets_memberpress_discord_guild_id' );
+
+		if ( $ets_memberpress_discord_client_id && $ets_memberpress_discord_client_secret && $ets_memberpress_discord_bot_token && $ets_memberpress_discord_redirect_url && $ets_memberpress_discord_guild_id ) {
+			$status = true;
+		} else {
+			$status = false;
+		}
+
+		return $status;
+	}
+
+/**
  * Get formatted message to send in DM
  *
  * @param INT $user_id
