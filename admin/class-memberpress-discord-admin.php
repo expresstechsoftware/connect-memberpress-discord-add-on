@@ -136,6 +136,117 @@ class Memberpress_Discord_Admin {
 			exit();
 		}
 
+		require_once MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . 'admin/partials/memberpress-discord-admin-display.php';
+	}
+
+	/**
+	 * Save plugin general settings.
+	 *
+	 * @since    1.0.0
+	 */
+	public function ets_memberpress_discord_general_settings() {
+		if ( ! current_user_can( 'administrator' ) ) {
+			wp_send_json_error( 'You do not have sufficient rights', 403 );
+			exit();
+		}
+		$ets_memberpress_discord_client_id = isset( $_POST['ets_memberpress_discord_client_id'] ) ? sanitize_text_field( trim( $_POST['ets_memberpress_discord_client_id'] ) ) : '';
+
+		$discord_client_secret = isset( $_POST['ets_memberpress_discord_client_secret'] ) ? sanitize_text_field( trim( $_POST['ets_memberpress_discord_client_secret'] ) ) : '';
+
+		$discord_bot_token = isset( $_POST['ets_memberpress_discord_bot_token'] ) ? sanitize_text_field( trim( $_POST['ets_memberpress_discord_bot_token'] ) ) : '';
+
+		$ets_memberpress_discord_redirect_url = isset( $_POST['ets_memberpress_discord_redirect_url'] ) ? sanitize_text_field( trim( $_POST['ets_memberpress_discord_redirect_url'] ) ) : '';
+
+		$ets_memberpress_discord_server_id = isset( $_POST['ets_memberpress_discord_server_id'] ) ? sanitize_text_field( trim( $_POST['ets_memberpress_discord_server_id'] ) ) : '';
+
+		if ( isset( $_POST['submit'] ) && ! isset( $_POST['ets_memberpress_discord_role_mapping'] ) ) {
+			if ( isset( $_POST['ets_discord_save_settings'] ) && wp_verify_nonce( $_POST['ets_discord_save_settings'], 'save_discord_settings' ) ) {
+				if ( $ets_memberpress_discord_client_id ) {
+					update_option( 'ets_memberpress_discord_client_id', $ets_memberpress_discord_client_id );
+				}
+
+				if ( $discord_client_secret ) {
+					update_option( 'ets_memberpress_discord_client_secret', $discord_client_secret );
+				}
+
+				if ( $discord_bot_token ) {
+					update_option( 'ets_memberpress_discord_bot_token', $discord_bot_token );
+				}
+
+				if ( $ets_memberpress_discord_redirect_url ) {
+					// add a query string param `via` GH #185.
+					$ets_memberpress_discord_redirect_url = ets_memberpress_discord_get_memberpress_formated_discord_redirect_url( $ets_memberpress_discord_redirect_url );
+					update_option( 'ets_memberpress_discord_redirect_url', $ets_memberpress_discord_redirect_url );
+				}
+
+				if ( $ets_memberpress_discord_server_id ) {
+					update_option( 'ets_memberpress_discord_server_id', $ets_memberpress_discord_server_id );
+				}
+
+				$message      = 'Your settings are saved successfully.';
+				$pre_location = $_SERVER['HTTP_REFERER'] . '&save_settings_msg=' . $message . '#skeletabsPanel1';
+				wp_safe_redirect( $pre_location );
+			}
+		}
+	}
+
+	/**
+	 * Save plugin general settings.
+	 *
+	 * @since    1.0.0
+	 */
+	public function ets_memberpress_discord_role_mapping() {
+		if ( ! current_user_can( 'administrator' ) ) {
+			wp_send_json_error( 'You do not have sufficient rights', 403 );
+			exit();
+		}
+
+		$ets_discord_roles = isset( $_POST['ets_memberpress_discord_role_mapping'] ) ? sanitize_textarea_field( trim( $_POST['ets_memberpress_discord_role_mapping'] ) ) : '';
+
+		$ets_memberpress_discord_default_role_id = isset( $_POST['defaultRole'] ) ? sanitize_textarea_field( trim( $_POST['defaultRole'] ) ) : '';
+
+		$allow_none_member = isset( $_POST['allow_none_member'] ) ? sanitize_textarea_field( trim( $_POST['allow_none_member'] ) ) : '';
+
+		if ( $ets_discord_roles ) {
+			$ets_discord_roles   = stripslashes( $ets_discord_roles );
+			$save_mapping_status = update_option( 'ets_memberpress_discord_role_mapping', $ets_discord_roles );
+			if ( isset( $_POST['ets_memberpress_discord_role_mappings_nonce'] ) && wp_verify_nonce( $_POST['ets_memberpress_discord_role_mappings_nonce'], 'discord_role_mappings_nonce' ) ) {
+				if ( ( $save_mapping_status || isset( $_POST['ets_memberpress_discord_role_mapping'] ) ) && ! isset( $_POST['flush'] ) ) {
+					if ( $ets_memberpress_discord_default_role_id ) {
+						update_option( 'ets_memberpress_discord_default_role_id', $ets_memberpress_discord_default_role_id );
+					}
+
+					if ( $allow_none_member ) {
+						update_option( 'ets_memberpress_allow_none_member', $allow_none_member );
+					}
+
+					$message      = 'Your mappings are saved successfully.';
+					$pre_location = $_SERVER['HTTP_REFERER'] . '&save_settings_msg=' . $message . '#skeletabsPanel2';
+					wp_safe_redirect( $pre_location );
+				}
+				if ( isset( $_POST['flush'] ) ) {
+					delete_option( 'ets_memberpress_discord_role_mapping' );
+					delete_option( 'ets_memberpress_discord_default_role_id' );
+					delete_option( 'ets_memberpress_allow_none_member' );
+					$message      = ' Your settings flushed successfully.';
+					$pre_location = $_SERVER['HTTP_REFERER'] . '&save_settings_msg=' . $message . '#skeletabsPanel2';
+					wp_safe_redirect( $pre_location );
+				}
+			}
+		}
+	}
+
+	/**
+	 * Save plugin general settings.
+	 *
+	 * @since    1.0.0
+	 */
+	public function ets_memberpress_discord_advance_settings() {
+		if ( ! current_user_can( 'administrator' ) ) {
+			wp_send_json_error( 'You do not have sufficient rights', 403 );
+			exit();
+		}
+
 		$set_job_cnrc = isset( $_POST['set_job_cnrc'] ) ? sanitize_textarea_field( trim( $_POST['set_job_cnrc'] ) ) : '';
 
 		$set_job_q_batch_size = isset( $_POST['set_job_q_batch_size'] ) ? sanitize_textarea_field( trim( $_POST['set_job_q_batch_size'] ) ) : '';
@@ -249,109 +360,9 @@ class Memberpress_Discord_Admin {
 						update_option( 'ets_memberpress_retry_api_count', $retry_api_count );
 					}
 				}
-				?>
-					<div class="notice notice-success is-dismissible support-success-msg">
-						<p><?php echo __( 'Your settings are saved successfully.', 'ets_memberpress_discord' ); ?></p>
-					</div>
-				<?php
-			}
-		}
-		require_once MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . 'admin/partials/memberpress-discord-admin-display.php';
-	}
-
-	/**
-	 * Save plugin general settings.
-	 *
-	 * @since    1.0.0
-	 */
-	public function ets_memberpress_discord_general_settings() {
-		if ( ! current_user_can( 'administrator' ) ) {
-			wp_send_json_error( 'You do not have sufficient rights', 403 );
-			exit();
-		}
-		$ets_memberpress_discord_client_id = isset( $_POST['ets_memberpress_discord_client_id'] ) ? sanitize_text_field( trim( $_POST['ets_memberpress_discord_client_id'] ) ) : '';
-
-		$discord_client_secret = isset( $_POST['ets_memberpress_discord_client_secret'] ) ? sanitize_text_field( trim( $_POST['ets_memberpress_discord_client_secret'] ) ) : '';
-
-		$discord_bot_token = isset( $_POST['ets_memberpress_discord_bot_token'] ) ? sanitize_text_field( trim( $_POST['ets_memberpress_discord_bot_token'] ) ) : '';
-
-		$ets_memberpress_discord_redirect_url = isset( $_POST['ets_memberpress_discord_redirect_url'] ) ? sanitize_text_field( trim( $_POST['ets_memberpress_discord_redirect_url'] ) ) : '';
-
-		$ets_memberpress_discord_server_id = isset( $_POST['ets_memberpress_discord_server_id'] ) ? sanitize_text_field( trim( $_POST['ets_memberpress_discord_server_id'] ) ) : '';
-
-		if ( isset( $_POST['submit'] ) && ! isset( $_POST['ets_memberpress_discord_role_mapping'] ) ) {
-			if ( isset( $_POST['ets_discord_save_settings'] ) && wp_verify_nonce( $_POST['ets_discord_save_settings'], 'save_discord_settings' ) ) {
-				if ( $ets_memberpress_discord_client_id ) {
-					update_option( 'ets_memberpress_discord_client_id', $ets_memberpress_discord_client_id );
-				}
-
-				if ( $discord_client_secret ) {
-					update_option( 'ets_memberpress_discord_client_secret', $discord_client_secret );
-				}
-
-				if ( $discord_bot_token ) {
-					update_option( 'ets_memberpress_discord_bot_token', $discord_bot_token );
-				}
-
-				if ( $ets_memberpress_discord_redirect_url ) {
-					// add a query string param `via` GH #185.
-					$ets_memberpress_discord_redirect_url = get_memberpress_formated_discord_redirect_url( $ets_memberpress_discord_redirect_url );
-					update_option( 'ets_memberpress_discord_redirect_url', $ets_memberpress_discord_redirect_url );
-				}
-
-				if ( $ets_memberpress_discord_server_id ) {
-					update_option( 'ets_memberpress_discord_server_id', $ets_memberpress_discord_server_id );
-				}
-
 				$message      = 'Your settings are saved successfully.';
-				$pre_location = $_SERVER['HTTP_REFERER'] . '&&save_settings_msg=' . $message . '#skeletabsPanel1';
+				$pre_location = $_SERVER['HTTP_REFERER'] . '&save_settings_msg=' . $message . '#skeletabsPanel3';
 				wp_safe_redirect( $pre_location );
-			}
-		}
-	}
-
-	/**
-	 * Save plugin general settings.
-	 *
-	 * @since    1.0.0
-	 */
-	public function ets_memberpress_discord_role_mapping() {
-		if ( ! current_user_can( 'administrator' ) ) {
-			wp_send_json_error( 'You do not have sufficient rights', 403 );
-			exit();
-		}
-
-		$ets_discord_roles = isset( $_POST['ets_memberpress_discord_role_mapping'] ) ? sanitize_textarea_field( trim( $_POST['ets_memberpress_discord_role_mapping'] ) ) : '';
-
-		$_ets_memberpress_discord_default_role_id = isset( $_POST['defaultRole'] ) ? sanitize_textarea_field( trim( $_POST['defaultRole'] ) ) : '';
-
-		$allow_none_member = isset( $_POST['allow_none_member'] ) ? sanitize_textarea_field( trim( $_POST['allow_none_member'] ) ) : '';
-
-		if ( $ets_discord_roles ) {
-			$ets_discord_roles   = stripslashes( $ets_discord_roles );
-			$save_mapping_status = update_option( 'ets_memberpress_discord_role_mapping', $ets_discord_roles );
-			if ( isset( $_POST['ets_memberpress_discord_role_mappings_nonce'] ) && wp_verify_nonce( $_POST['ets_memberpress_discord_role_mappings_nonce'], 'discord_role_mappings_nonce' ) ) {
-				if ( ( $save_mapping_status || isset( $_POST['ets_memberpress_discord_role_mapping'] ) ) && ! isset( $_POST['flush'] ) ) {
-					if ( $_ets_memberpress_discord_default_role_id ) {
-						update_option( '_ets_memberpress_discord_default_role_id', $_ets_memberpress_discord_default_role_id );
-					}
-
-					if ( $allow_none_member ) {
-						update_option( 'ets_memberpress_allow_none_member', $allow_none_member );
-					}
-
-					$message      = 'Your mappings are saved successfully.';
-					$pre_location = $_SERVER['HTTP_REFERER'] . '&&save_settings_msg=' . $message . '#skeletabsPanel2';
-					wp_safe_redirect( $pre_location );
-				}
-				if ( isset( $_POST['flush'] ) ) {
-					delete_option( 'ets_memberpress_discord_role_mapping' );
-					delete_option( '_ets_memberpress_discord_default_role_id' );
-					delete_option( 'ets_memberpress_allow_none_member' );
-					$message      = ' Your settings flushed successfully.';
-					$pre_location = $_SERVER['HTTP_REFERER'] . '&&save_settings_msg=' . $message . '#skeletabsPanel2';
-					wp_safe_redirect( $pre_location );
-				}
 			}
 		}
 	}

@@ -10,7 +10,7 @@
 	 * @param STRING $url
 	 * @return STRING $url
 	 */
-function get_memberpress_formated_discord_redirect_url( $url ) {
+function ets_memberpress_discord_get_memberpress_formated_discord_redirect_url( $url ) {
 	$parsed = parse_url( $url, PHP_URL_QUERY );
 	if ( $parsed === null ) {
 		return $url .= '?via=discord';
@@ -168,7 +168,7 @@ function ets_memberpress_discord_get_current_level_id( $user_id ) {
 	 * @param NONE
 	 * @return BOOL $status
 	 */
-	 function Check_saved_settings_status() {
+	 function ets_memberpress_discord_check_saved_settings_status() {
 		$ets_memberpress_discord_client_id     = get_option( 'ets_memberpress_discord_client_id' );
 		$ets_memberpress_discord_client_secret = get_option( 'ets_memberpress_discord_client_secret' );
 		$ets_memberpress_discord_bot_token     = get_option( 'ets_memberpress_discord_bot_token' );

@@ -165,6 +165,7 @@ class Memberpress_Discord {
 		$this->loader->add_action( 'admin_menu', $plugin_admin, 'add_admin_menu', 11 );
 		$this->loader->add_action( 'admin_post_memberpress_discord_general_settings', $plugin_admin, 'ets_memberpress_discord_general_settings' );
 		$this->loader->add_action( 'admin_post_memberpress_discord_role_mapping', $plugin_admin, 'ets_memberpress_discord_role_mapping' );
+		$this->loader->add_action( 'admin_post_memberpress_discord_advance_settings', $plugin_admin, 'ets_memberpress_discord_advance_settings' );
 		$this->loader->add_action( 'wp_ajax_memberpress_load_discord_roles', $plugin_admin, 'ets_memberpress_load_discord_roles' );
 		$this->loader->add_action( 'wp_ajax_memberpress_discord_clear_logs', $plugin_admin, 'ets_memberpress_discord_clear_logs' );
 	}

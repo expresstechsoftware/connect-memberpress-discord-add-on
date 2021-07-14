@@ -1,7 +1,7 @@
 <?php
 $user_id             = sanitize_text_field( trim( get_current_user_id() ) );
 $mpr_memberships        = get_posts( array('post_type' => 'memberpressproduct', 'post_status' => 'publish') );
-$default_role        = sanitize_text_field( trim( get_option( '_ets_memberpress_discord_default_role_id' ) ) );
+$default_role        = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_default_role_id' ) ) );
 $allow_none_member = sanitize_text_field( trim( get_option( 'ets_memberpress_allow_none_member' ) ) );
 ?>
 <div class="notice notice-warning ets-notice">

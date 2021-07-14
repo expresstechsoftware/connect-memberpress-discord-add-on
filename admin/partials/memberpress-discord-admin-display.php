@@ -28,7 +28,7 @@
 				<li class="skltbs-tab-item">
 				<button class="skltbs-tab" data-identity="settings" ><?php echo __( 'Application details', 'ets_memberpress_discord' ); ?><span class="initialtab spinner"></span></button>
 				</li>
-				<?php if ( Check_saved_settings_status() ) : ?>
+				<?php if ( ets_memberpress_discord_check_saved_settings_status() ) : ?>
 				<li class="skltbs-tab-item">
 				<button class="skltbs-tab" data-identity="level-mapping" ><?php echo __( 'Role Mappings', 'ets_memberpress_discord' ); ?></button>
 				</li>
@@ -54,7 +54,7 @@
 				<div class="skltbs-panel">
 				<?php require_once MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . 'admin/partials/pages/memberpress-discord-settings.php'; ?>
 				</div>
-				<?php if ( Check_saved_settings_status() ) : ?>
+				<?php if ( ets_memberpress_discord_check_saved_settings_status() ) : ?>
 				<div class="skltbs-panel">
 				<?php require_once MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . 'admin/partials/pages/memberpress-discord-role-level-map.php'; ?>
 				</div>

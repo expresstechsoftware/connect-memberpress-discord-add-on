@@ -116,7 +116,7 @@ class Memberpress_Discord_Public {
 		$access_token = sanitize_text_field( trim( get_user_meta( $user_id, '_ets_memberpress_discord_access_token', true ) ) );
 
 		$allow_none_member        = sanitize_text_field( trim( get_option( 'ets_memberpress_allow_none_member' ) ) );
-		$default_role             = sanitize_text_field( trim( get_option( '_ets_memberpress_discord_default_role_id' ) ) );
+		$default_role             = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_default_role_id' ) ) );
 		$ets_memberpress_discord_role_mapping = json_decode( get_option( 'ets_memberpress_discord_role_mapping' ), true );
 		$all_roles                = unserialize( get_option( 'ets_memberpress_discord_all_roles' ) );
 		$curr_level_id            = $this->ets_memberpress_discord_get_current_level_id( $mepr_current_user );
@@ -134,7 +134,7 @@ class Memberpress_Discord_Public {
 		if ( $default_role != 'none' && is_array( $all_roles ) && array_key_exists( $default_role, $all_roles ) ) {
 			$default_role_name = $all_roles[ $default_role ];
 		}
-		if ( Check_saved_settings_status() ) {
+		if ( ets_memberpress_discord_check_saved_settings_status() ) {
 			if ( $access_token ) {
 				?>
 				<label class="ets-connection-lbl"><?php echo __( 'Discord connection', 'ets_memberpress_discord' ); ?></label>
