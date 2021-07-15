@@ -406,40 +406,6 @@ class Memberpress_Discord_Admin {
 	}
 
 	/**
-	 * Add API error logs into log file
-	 *
-	 * @param array  $response_arr
-	 * @param array  $backtrace_arr
-	 * @param string $error_type
-	 * @return None
-	 */
-	static function write_api_response_logs( $response_arr, $user_id, $backtrace_arr = array() ) {
-		if ( ! is_user_logged_in() ) {
-			wp_send_json_error( 'Unauthorized user', 401 );
-			exit();
-		}
-
-		$error        = current_time( 'mysql' );
-		$user_details = '';
-		if ( $user_id ) {
-			$user_details = '::User Id:' . $user_id;
-		}
-		$log_api_response = get_option( 'ets_memberpress_discord_log_api_response' );
-		$log_file_name    = self::$log_file_name;
-		if ( is_array( $response_arr ) && array_key_exists( 'code', $response_arr ) ) {
-			$error .= '==>File:' . $backtrace_arr['file'] . $user_details . '::Line:' . $backtrace_arr['line'] . '::Function:' . $backtrace_arr['function'] . '::' . $response_arr['code'] . ':' . $response_arr['message'];
-			file_put_contents( plugin_dir_url( __FILE__ ) . $log_file_name, $error . PHP_EOL, FILE_APPEND | LOCK_EX );
-		} elseif ( is_array( $response_arr ) && array_key_exists( 'error', $response_arr ) ) {
-			$error .= '==>File:' . $backtrace_arr['file'] . $user_details . '::Line:' . $backtrace_arr['line'] . '::Function:' . $backtrace_arr['function'] . '::' . $response_arr['error'];
-			file_put_contents( plugin_dir_url( __FILE__ ) . $log_file_name, $error . PHP_EOL, FILE_APPEND | LOCK_EX );
-		} elseif ( $log_api_response == true ) {
-			$error .= json_encode( $response_arr ) . '::' . $user_id;
-			file_put_contents( plugin_dir_url( __FILE__ ) . $log_file_name, $error . PHP_EOL, FILE_APPEND | LOCK_EX );
-		}
-
-	}
-
-	/**
 	 * Fetch all roles from discord server
 	 *
 	 * @return OBJECT REST API response
@@ -470,13 +436,13 @@ class Memberpress_Discord_Admin {
 			  );
 			  $guild_response          = wp_remote_post( $discod_server_roles_api, $guild_args );
 
-			  // ets_memberpress_discord_log_api_response( $user_id, $discod_server_roles_api, $guild_args, $guild_response );
+			  ets_memberpress_discord_log_api_response( $user_id, $discod_server_roles_api, $guild_args, $guild_response );
 
 			  $response_arr = json_decode( wp_remote_retrieve_body( $guild_response ), true );
 
 			  if ( is_array( $response_arr ) && ! empty( $response_arr ) ) {
 				  if ( array_key_exists( 'code', $response_arr ) || array_key_exists( 'error', $response_arr ) ) {
-					  $this->write_api_response_logs( $response_arr, $user_id, debug_backtrace()[0] );
+					  write_api_response_logs( $response_arr, $user_id, debug_backtrace()[0] );
 				  } else {
 					  $response_arr['previous_mapping'] = get_option( 'ets_memberpress_discord_role_mapping' );
 

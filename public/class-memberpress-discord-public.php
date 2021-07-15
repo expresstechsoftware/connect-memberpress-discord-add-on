@@ -304,7 +304,7 @@ class Memberpress_Discord_Public {
 				ets_memberpress_discord_log_api_response( $user_id, $discord_token_api_url, $args, $response );
 				if ( ets_memberpress_discord_check_api_errors( $response ) ) {
 					$response_arr = json_decode( wp_remote_retrieve_body( $response ), true );
-					memberpress_Discord_Logs::write_api_response_logs( $response_arr, $user_id, debug_backtrace()[0] );
+					write_api_response_logs( $response_arr, $user_id, debug_backtrace()[0] );
 				}
 			}
 		} else {
@@ -326,7 +326,7 @@ class Memberpress_Discord_Public {
 			ets_memberpress_discord_log_api_response( $user_id, $discord_token_api_url, $args, $response );
 			if ( ets_memberpress_discord_check_api_errors( $response ) ) {
 				$response_arr = json_decode( wp_remote_retrieve_body( $response ), true );
-				memberpress_Discord_Logs::write_api_response_logs( $response_arr, $user_id, debug_backtrace()[0] );
+				write_api_response_logs( $response_arr, $user_id, debug_backtrace()[0] );
 			}
 		}
 		return $response;

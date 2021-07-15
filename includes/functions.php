@@ -23,25 +23,62 @@ function ets_memberpress_discord_get_memberpress_formated_discord_redirect_url( 
 	}
 }
 
-  /**
-   * Log API call response
-   *
-   * @param INT          $user_id
-   * @param STRING       $api_url
-   * @param ARRAY        $api_args
-   * @param ARRAY|OBJECT $api_response
-   */
+/**
+ * Log API call response
+ *
+ * @param INT          $user_id
+ * @param STRING       $api_url
+ * @param ARRAY        $api_args
+ * @param ARRAY|OBJECT $api_response
+ */
 function ets_memberpress_discord_log_api_response( $user_id, $api_url = '', $api_args = array(), $api_response = '' ) {
 	$log_api_response = get_option( 'ets_memberpress_discord_log_api_response' );
 	if ( $log_api_response == true ) {
 		$log_string  = '==>' . $api_url;
 		$log_string .= '-::-' . serialize( $api_args );
 		$log_string .= '-::-' . serialize( $api_response );
-
-		$logs = new memberpress_Discord_Logs();
-		$logs->write_api_response_logs( $log_string, $user_id );
+		write_api_response_logs( $log_string, $user_id );
 	}
 }
+
+/**
+ * Add API error logs into log file
+ *
+ * @param array  $response_arr
+ * @param array  $backtrace_arr
+ * @param string $error_type
+ * @return None
+ */
+	function write_api_response_logs( $response_arr, $user_id, $backtrace_arr = array() ) {
+		if ( ! is_user_logged_in() ) {
+			wp_send_json_error( 'Unauthorized user', 401 );
+			exit();
+		}
+		
+		$error        = current_time( 'mysql' );
+		$user_details = '';
+		if ( $user_id ) {
+			$user_details = '::User Id:' . $user_id;
+		}
+		$log_api_response = get_option( 'ets_memberpress_discord_log_api_response' );
+		$log_file_name    = Memberpress_Discord_Admin::$log_file_name;
+
+		if ( is_array( $response_arr ) && array_key_exists( 'code', $response_arr ) ) {
+			var_dump(MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . $log_file_name);
+		die('okokko1');
+			$error .= '==>File:' . $backtrace_arr['file'] . $user_details . '::Line:' . $backtrace_arr['line'] . '::Function:' . $backtrace_arr['function'] . '::' . $response_arr['code'] . ':' . $response_arr['message'];
+			file_put_contents( MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . $log_file_name, $error . PHP_EOL, FILE_APPEND | LOCK_EX );
+		} elseif ( is_array( $response_arr ) && array_key_exists( 'error', $response_arr ) ) {
+			$error .= '==>File:' . $backtrace_arr['file'] . $user_details . '::Line:' . $backtrace_arr['line'] . '::Function:' . $backtrace_arr['function'] . '::' . $response_arr['error'];
+			file_put_contents( MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . $log_file_name, $error . PHP_EOL, FILE_APPEND | LOCK_EX );
+			var_dump(MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . $log_file_name);
+		die('okokko2');
+		} elseif ( $log_api_response == true ) {
+			$error .= json_encode( $response_arr ) . '::' . $user_id;
+			file_put_contents( MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . $log_file_name, $error . PHP_EOL, FILE_APPEND | LOCK_EX );
+		}
+
+	}
 
 /**
  * Check API call response and detect conditions which can cause of action failure and retry should be attemped.
