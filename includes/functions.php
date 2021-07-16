@@ -64,15 +64,11 @@ function ets_memberpress_discord_log_api_response( $user_id, $api_url = '', $api
 		$log_file_name    = Memberpress_Discord_Admin::$log_file_name;
 
 		if ( is_array( $response_arr ) && array_key_exists( 'code', $response_arr ) ) {
-			var_dump(MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . $log_file_name);
-		die('okokko1');
 			$error .= '==>File:' . $backtrace_arr['file'] . $user_details . '::Line:' . $backtrace_arr['line'] . '::Function:' . $backtrace_arr['function'] . '::' . $response_arr['code'] . ':' . $response_arr['message'];
 			file_put_contents( MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . $log_file_name, $error . PHP_EOL, FILE_APPEND | LOCK_EX );
 		} elseif ( is_array( $response_arr ) && array_key_exists( 'error', $response_arr ) ) {
 			$error .= '==>File:' . $backtrace_arr['file'] . $user_details . '::Line:' . $backtrace_arr['line'] . '::Function:' . $backtrace_arr['function'] . '::' . $response_arr['error'];
 			file_put_contents( MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . $log_file_name, $error . PHP_EOL, FILE_APPEND | LOCK_EX );
-			var_dump(MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . $log_file_name);
-		die('okokko2');
 		} elseif ( $log_api_response == true ) {
 			$error .= json_encode( $response_arr ) . '::' . $user_id;
 			file_put_contents( MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . $log_file_name, $error . PHP_EOL, FILE_APPEND | LOCK_EX );
@@ -189,10 +185,10 @@ function ets_memberpress_discord_count_of_hooks_failures( $hook ) {
  * @param INT $user_id
  * @return INT|NULL $curr_level_id
  */
-function ets_memberpress_discord_get_current_level_id( $user_id ) {
-	$membership_level = memberpress_getMembershipLevelForUser( $user_id );
-	if ( $membership_level ) {
-		$curr_level_id = sanitize_text_field( trim( $membership_level->ID ) );
+function ets_memberpress_discord_get_current_level_id( $user ) {
+	$active_prodcuts = $user->active_product_subscriptions('ids');
+	if ( $active_prodcuts ) {
+		$curr_level_id = sanitize_text_field( trim( $active_prodcuts[0] ) );
 		return $curr_level_id;
 	} else {
 		return null;

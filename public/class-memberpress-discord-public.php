@@ -97,6 +97,13 @@ class Memberpress_Discord_Public {
 		 */
 
 		wp_enqueue_script( $this->plugin_name.'public_js', plugin_dir_url( __FILE__ ) . 'js/memberpress-discord-public.js', array( 'jquery' ), $this->version, false );
+		$script_params = array(
+			'admin_ajax'                    => admin_url( 'admin-ajax.php' ),
+			'permissions_const'             => MEMBERPRESS_DISCORD_BOT_PERMISSIONS,
+			'ets_memberpress_discord_public_nonce' => wp_create_nonce( 'ets-memberpress-discord-public-ajax-nonce' ),
+		);
+
+		wp_localize_script( $this->plugin_name.'public_js', 'etsMemberpresspublicParams', $script_params );
 
 	}
 
@@ -256,6 +263,36 @@ class Memberpress_Discord_Public {
 				}
 			}
 		}
+	}
+
+	/**
+	 * Get Discord user details from API
+	 *
+	 * @param STRING $access_token
+	 * @return OBJECT REST API response
+	 */
+	public function get_discord_current_user( $access_token ) {
+		if ( ! is_user_logged_in() ) {
+			wp_send_json_error( 'Unauthorized user', 401 );
+			exit();
+		}
+		$user_id = get_current_user_id();
+
+		$discord_cuser_api_url = MEMBERPRESS_DISCORD_API_URL . 'users/@me';
+		$param                 = array(
+			'headers' => array(
+				'Content-Type'  => 'application/x-www-form-urlencoded',
+				'Authorization' => 'Bearer ' . $access_token,
+			),
+		);
+		$user_response         = wp_remote_get( $discord_cuser_api_url, $param );
+		ets_memberpress_discord_log_api_response( $user_id, $discord_cuser_api_url, $param, $user_response );
+
+		$response_arr = json_decode( wp_remote_retrieve_body( $user_response ), true );
+		write_api_response_logs( $response_arr, $user_id, debug_backtrace()[0] );
+		$user_body = json_decode( wp_remote_retrieve_body( $user_response ), true );
+		return $user_body;
+
 	}
 
 	/**

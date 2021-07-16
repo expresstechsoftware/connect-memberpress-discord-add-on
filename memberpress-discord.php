@@ -68,6 +68,11 @@ define( 'MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH', plugin_dir_path( __FILE__ ) );
 define( 'MEMBERPRESS_DISCORD_PLUGIN_DIR_URL', plugin_dir_url( __FILE__ ) );
 
 /**
+ * Define plugin directory url
+ */
+define( 'ETS_MEMBERPRESS_DISCORD_DONOT_RETRY_HTTP_CODES', array( 0, 10003, 50033, 10004, 50025, 10013, 10011 ) );
+
+/**
  * The code that runs during plugin activation.
  * This action is documented in includes/class-memberpress-discord-activator.php
  */
