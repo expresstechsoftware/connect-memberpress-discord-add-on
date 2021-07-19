@@ -100,6 +100,11 @@ class Memberpress_Discord {
 	private function load_dependencies() {
 
 		/**
+		 * The class responsible for defining all methods that help to schedule actions.
+		 */
+		require_once MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . 'includes/libraries/action-scheduler/action-scheduler.php';
+
+		/**
 		 * The class responsible for orchestrating the actions and filters of the
 		 * core plugin.
 		 */
@@ -185,6 +190,8 @@ class Memberpress_Discord {
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
 		$this->loader->add_action( 'mepr-account-home-fields', $plugin_public, 'ets_memberpress_discord_add_field' );
 		$this->loader->add_action( 'init', $plugin_public, 'ets_memberpress_discord_discord_api_callback' );
+		$this->loader->add_action( 'wp_ajax_memberpress_disconnect_from_discord', $plugin_public, 'ets_memberpress_disconnect_from_discord' );
+		$this->loader->add_action( 'ets_memberpress_discord_as_schedule_delete_member', $plugin_public, 'ets_memberpress_discord_as_handler_delete_member_from_guild' );
 	}
 
 	/**

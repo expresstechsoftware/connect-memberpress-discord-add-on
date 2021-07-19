@@ -266,6 +266,98 @@ class Memberpress_Discord_Public {
 	}
 
 	/**
+	 * Add new member into discord guild
+	 *
+	 * @param INT    $_ets_memberpress_discord_user_id
+	 * @param INT    $user_id
+	 * @param STRING $access_token
+	 * @return NONE
+	 */
+	public function add_discord_member_in_guild( $_ets_memberpress_discord_user_id, $user_id, $access_token ) {
+		if ( ! is_user_logged_in() ) {
+			wp_send_json_error( 'Unauthorized user', 401 );
+			exit();
+		}
+		$curr_level_id = sanitize_text_field( trim( ets_memberpress_discord_get_current_level_id( $user_id ) ) );
+		if ( $curr_level_id !== null ) {
+			// It is possible that we may exhaust API rate limit while adding members to guild, so handling off the job to queue.
+			as_schedule_single_action( ets_memberpress_discord_get_random_timestamp( ets_memberpress_discord_get_highest_last_attempt_timestamp() ), 'ets_memberpress_discord_as_handle_add_member_to_guild', array( $_ets_memberpress_discord_user_id, $user_id, $access_token ), ETS_MEMBERPRESS_DISCORD_AS_GROUP_NAME );
+		}
+	}
+
+	/**
+	 * Method to add new members to discord guild.
+	 *
+	 * @param INT    $_ets_memberpress_discord_user_id
+	 * @param INT    $user_id
+	 * @param STRING $access_token
+	 * @return NONE
+	 */
+	public function ets_memberpress_discord_as_handler_add_member_to_guild( $_ets_memberpress_discord_user_id, $user_id, $access_token ) {
+		// Since we using a queue to delay the API call, there may be a condition when a member is delete from DB. so put a check.
+		if ( get_userdata( $user_id ) === false ) {
+			return;
+		}
+		$guild_id                          = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_guild_id' ) ) );
+		$discord_bot_token                 = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_bot_token' ) ) );
+		$default_role                      = sanitize_text_field( trim( get_option( '_ets_memberpress_discord_default_role_id' ) ) );
+		$ets_memberpress_discord_role_mapping    = json_decode( get_option( 'ets_memberpress_discord_role_mapping' ), true );
+		$discord_role                      = '';
+		$curr_level_id                     = sanitize_text_field( trim( ets_memberpress_discord_get_current_level_id( $user_id ) ) );
+		$ets_memberpress_discord_send_welcome_dm = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_send_welcome_dm' ) ) );
+
+		if ( is_array( $ets_memberpress_discord_role_mapping ) && array_key_exists( 'level_id_' . $curr_level_id, $ets_memberpress_discord_role_mapping ) ) {
+			$discord_role = sanitize_text_field( trim( $ets_memberpress_discord_role_mapping[ 'level_id_' . $curr_level_id ] ) );
+		} elseif ( $discord_role = '' && $default_role ) {
+			$discord_role = $default_role;
+		}
+
+		$guilds_memeber_api_url = MEMBERPRESS_DISCORD_API_URL . 'guilds/' . $guild_id . '/members/' . $_ets_memberpress_discord_user_id;
+		$guild_args             = array(
+			'method'  => 'PUT',
+			'headers' => array(
+				'Content-Type'  => 'application/json',
+				'Authorization' => 'Bot ' . $discord_bot_token,
+			),
+			'body'    => json_encode(
+				array(
+					'access_token' => $access_token,
+					'roles'        => array(
+						$discord_role,
+					),
+				)
+			),
+		);
+		$guild_response         = wp_remote_post( $guilds_memeber_api_url, $guild_args );
+
+		ets_memberpress_discord_log_api_response( $user_id, $guilds_memeber_api_url, $guild_args, $guild_response );
+		if ( ets_memberpress_discord_check_api_errors( $guild_response ) ) {
+
+			$response_arr = json_decode( wp_remote_retrieve_body( $guild_response ), true );
+			memberpress_Discord_Logs::write_api_response_logs( $response_arr, $user_id, debug_backtrace()[0] );
+			// this should be catch by Action schedule failed action.
+			throw new Exception( 'Failed in function ets_as_handler_add_member_to_guild' );
+		}
+
+		update_user_meta( $user_id, '_ets_memberpress_discord_role_id', $discord_role );
+		if ( $discord_role && $discord_role != 'none' && isset( $user_id ) ) {
+			$this->put_discord_role_api( $user_id, $discord_role );
+		}
+
+		if ( $default_role && $default_role != 'none' && isset( $user_id ) ) {
+			$this->put_discord_role_api( $user_id, $default_role );
+		}
+		if ( empty( get_user_meta( $user_id, '_ets_memberpress_discord_join_date', true ) ) ) {
+			update_user_meta( $user_id, '_ets_memberpress_discord_join_date', current_time( 'Y-m-d H:i:s' ) );
+		}
+
+		// Send welcome message.
+		if ( $ets_memberpress_discord_send_welcome_dm == true ) {
+			as_schedule_single_action( ets_memberpress_discord_get_random_timestamp( ets_memberpress_discord_get_highest_last_attempt_timestamp() ), 'ets_memberpress_discord_as_send_dm', array( $user_id, $curr_level_id, 'welcome' ), 'ets-memberpress-discord' );
+		}
+	}
+	
+	/**
 	 * Get Discord user details from API
 	 *
 	 * @param STRING $access_token
@@ -307,6 +399,7 @@ class Memberpress_Discord_Public {
 			wp_send_json_error( 'Unauthorized user', 401 );
 			exit();
 		}
+		
 		// stop users who having the direct URL of discord Oauth.
 		// We must check IF NONE members is set to NO and user having no active membership.
 		$allow_none_member = sanitize_text_field( trim( get_option( 'ets_memberpress_allow_none_member' ) ) );
@@ -322,6 +415,7 @@ class Memberpress_Discord_Public {
 		if ( $refresh_token ) {
 			$date              = new DateTime();
 			$current_timestamp = $date->getTimestamp();
+			
 			if ( $current_timestamp > $token_expiry_time ) {
 				$args     = array(
 					'method'  => 'POST',
@@ -360,13 +454,95 @@ class Memberpress_Discord_Public {
 				),
 			);
 			$response = wp_remote_post( $discord_token_api_url, $args );
+			
 			ets_memberpress_discord_log_api_response( $user_id, $discord_token_api_url, $args, $response );
 			if ( ets_memberpress_discord_check_api_errors( $response ) ) {
 				$response_arr = json_decode( wp_remote_retrieve_body( $response ), true );
 				write_api_response_logs( $response_arr, $user_id, debug_backtrace()[0] );
 			}
 		}
+
 		return $response;
+	}
+
+	/**
+	 * Disconnect user from discord
+	 *
+	 * @param NONE
+	 * @return OBJECT JSON response
+	 */
+	public function ets_memberpress_disconnect_from_discord() {
+		if ( ! is_user_logged_in() ) {
+			wp_send_json_error( 'Unauthorized user', 401 );
+			exit();
+		}
+
+		
+
+		// Check for nonce security
+		if ( ! wp_verify_nonce( $_POST['ets_memberpress_discord_public_nonce'], 'ets-memberpress-discord-public-ajax-nonce' ) ) {
+				wp_send_json_error( 'You do not have sufficient rights', 403 );
+				exit();
+		}
+		$user_id = sanitize_text_field( trim( $_POST['user_id'] ) );
+		if ( $user_id ) {
+			$this->memberpress_delete_member_from_guild( $user_id, false );
+			delete_user_meta( $user_id, '_ets_memberpress_discord_access_token' );
+		}
+		$event_res = array(
+			'status'  => 1,
+			'message' => 'Successfully disconnected',
+		);
+		echo json_encode( $event_res );
+		die();
+	}
+
+	/**
+	 * Schedule delete existing user from guild
+	 *
+	 * @param INT  $user_id
+	 * @param BOOL $is_schedule
+	 * @param NONE
+	 */
+	public function memberpress_delete_member_from_guild( $user_id, $is_schedule = true ) {
+		if ( $is_schedule && isset( $user_id ) ) {
+			as_schedule_single_action( ets_memberpress_discord_get_random_timestamp( ets_memberpress_discord_get_highest_last_attempt_timestamp() ), 'ets_memberpress_discord_as_schedule_delete_member', array( $user_id, $is_schedule ), MEMBERPRESS_DISCORD_AS_GROUP_NAME );
+		} else {
+			if ( isset( $user_id ) ) {
+				$this->ets_memberpress_discord_as_handler_delete_member_from_guild( $user_id, $is_schedule );
+			}
+		}
+	}
+
+	/**
+	 * AS Handling member delete from huild
+	 *
+	 * @param INT  $user_id
+	 * @param BOOL $is_schedule
+	 * @return OBJECT API response
+	 */
+	public function ets_memberpress_discord_as_handler_delete_member_from_guild( $user_id, $is_schedule ) {
+		$guild_id                      = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_guild_id' ) ) );
+		$discord_bot_token             = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_bot_token' ) ) );
+		$_ets_memberpress_discord_user_id    = sanitize_text_field( trim( get_user_meta( $user_id, '_ets_memberpress_discord_user_id', true ) ) );
+		$guilds_delete_memeber_api_url = MEMBERPRESS_DISCORD_API_URL . 'guilds/' . $guild_id . '/members/' . $_ets_memberpress_discord_user_id;
+		$guild_args                    = array(
+			'method'  => 'DELETE',
+			'headers' => array(
+				'Content-Type'  => 'application/json',
+				'Authorization' => 'Bot ' . $discord_bot_token,
+			),
+		);
+		$guild_response                = wp_remote_post( $guilds_delete_memeber_api_url, $guild_args );
+		ets_memberpress_discord_log_api_response( $user_id, $guilds_delete_memeber_api_url, $guild_args, $guild_response );
+		if ( ets_memberpress_discord_check_api_errors( $guild_response ) ) {
+			$response_arr = json_decode( wp_remote_retrieve_body( $guild_response ), true );
+			write_api_response_logs( $response_arr, $user_id, debug_backtrace()[0] );
+			if ( $is_schedule ) {
+				// this exception should be catch by action scheduler.
+				throw new Exception( 'Failed in function ets_memberpress_discord_as_handler_delete_member_from_guild' );
+			}
+		}
 	}
 	
 }
