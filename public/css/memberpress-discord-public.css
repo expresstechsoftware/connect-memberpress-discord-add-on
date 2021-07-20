@@ -32,6 +32,9 @@
 .btn-connect{
   background-color: #77A02E;
 }
+.btn-disconnect{
+  background-color:#FF0000;
+}
 .ets_assigned_role{
   font-size: 10px;
- }
+}

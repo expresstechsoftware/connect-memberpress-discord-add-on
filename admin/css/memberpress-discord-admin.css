@@ -115,9 +115,6 @@
 .btn-connect-to-bot{
   background-color: #FF0000;
 }
-.btn-disconnect{
-  background-color:#FF0000;
-}
 .clrbtndiv{
     max-width: 230px;
     display: flex;
@@ -362,7 +359,7 @@ a{
   }
  }
  /*discord mapping css*/
- * {
+#skeletabsPanel2 * {
   box-sizing: border-box;
 }
 

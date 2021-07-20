@@ -126,14 +126,16 @@ class Memberpress_Discord_Public {
 		$default_role             = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_default_role_id' ) ) );
 		$ets_memberpress_discord_role_mapping = json_decode( get_option( 'ets_memberpress_discord_role_mapping' ), true );
 		$all_roles                = unserialize( get_option( 'ets_memberpress_discord_all_roles' ) );
-		$curr_level_id            = $this->ets_memberpress_discord_get_current_level_id( $mepr_current_user );
+		$active_prodcuts          = $this->ets_memberpress_discord_get_active_products( $mepr_current_user );
 		
-		$mapped_role_name         = '';
-		if ( $curr_level_id && is_array( $all_roles ) ) {
-			if ( is_array( $ets_memberpress_discord_role_mapping ) && array_key_exists( 'level_id_' . $curr_level_id, $ets_memberpress_discord_role_mapping ) ) {
-				$mapped_role_id = $ets_memberpress_discord_role_mapping[ 'level_id_' . $curr_level_id ];
-				if ( array_key_exists( $mapped_role_id, $all_roles ) ) {
-					$mapped_role_name = $all_roles[ $mapped_role_id ];
+		$mapped_role_names         = [];
+		if ( $active_prodcuts && is_array( $all_roles ) ) {
+			foreach($active_prodcuts as $membership_id) {
+				if ( is_array( $ets_memberpress_discord_role_mapping ) && array_key_exists( 'level_id_' . $membership_id, $ets_memberpress_discord_role_mapping ) ) {
+					$mapped_role_id = $ets_memberpress_discord_role_mapping[ 'level_id_' . $membership_id ];
+					if ( array_key_exists( $mapped_role_id, $all_roles ) ) {
+						array_push( $mapped_role_names, $all_roles[ $mapped_role_id ] );
+					}
 				}
 			}
 		}
@@ -152,13 +154,16 @@ class Memberpress_Discord_Public {
 				?>
 				<label class="ets-connection-lbl"><?php echo __( 'Discord connection', 'ets_memberpress_discord' ); ?></label>
 				<a href="?action=memberpress-discord-login" class="btn-connect ets-btn" ><?php echo __( 'Connect To Discord', 'ets_memberpress_discord' ); ?> <i class='fab fa-discord'></i></a>
-				<?php if ( $mapped_role_name ) { ?>
+				<?php if ( $mapped_role_names ) { ?>
 					<p class="ets_assigned_role">
 					<?php
 					echo __( 'Following Roles will be assigned to you in Discord: ', 'ets_memberpress_discord' );
-					echo $mapped_role_name;
+					foreach($mapped_role_names as $mapped_role_name){
+						echo $mapped_role_name.', ';
+					}
+					
 					if ( $default_role_name ) {
-						echo ', ' . $default_role_name; }
+						echo  $default_role_name; }
 					?>
 					 </p>
 				<?php } ?>
@@ -170,14 +175,13 @@ class Memberpress_Discord_Public {
 	/**
 	 * Get memberpress current level id
 	 *
-	 * @param INT $user_id
-	 * @return INT|NULL $curr_level_id
+	 * @param INT $mepr_current_user
+	 * @return INT|NULL $active_prodcuts
 	 */
-	function ets_memberpress_discord_get_current_level_id( $mepr_current_user ) {
+	function ets_memberpress_discord_get_active_products( $mepr_current_user ) {
 		$active_prodcuts = $mepr_current_user->active_product_subscriptions('ids');
 		if ( $active_prodcuts ) {
-			$curr_level_id = sanitize_text_field( trim( $active_prodcuts[0] ) );
-			return $curr_level_id;
+			return $active_prodcuts;
 		} else {
 			return null;
 		}
@@ -278,10 +282,11 @@ class Memberpress_Discord_Public {
 			wp_send_json_error( 'Unauthorized user', 401 );
 			exit();
 		}
-		$curr_level_id = sanitize_text_field( trim( ets_memberpress_discord_get_current_level_id( $user_id ) ) );
-		if ( $curr_level_id !== null ) {
+		$mepr_current_user = MeprUtils::get_currentuserinfo();
+		$active_prodcuts = $this->ets_memberpress_discord_get_active_products( $mepr_current_user );
+		if ( !empty($active_prodcuts) ) {
 			// It is possible that we may exhaust API rate limit while adding members to guild, so handling off the job to queue.
-			as_schedule_single_action( ets_memberpress_discord_get_random_timestamp( ets_memberpress_discord_get_highest_last_attempt_timestamp() ), 'ets_memberpress_discord_as_handle_add_member_to_guild', array( $_ets_memberpress_discord_user_id, $user_id, $access_token ), ETS_MEMBERPRESS_DISCORD_AS_GROUP_NAME );
+			as_schedule_single_action( ets_memberpress_discord_get_random_timestamp( ets_memberpress_discord_get_highest_last_attempt_timestamp() ), 'ets_memberpress_discord_as_handle_add_member_to_guild', array( $_ets_memberpress_discord_user_id, $user_id, $access_token ), MEMBERPRESS_DISCORD_AS_GROUP_NAME );
 		}
 	}
 
@@ -298,18 +303,23 @@ class Memberpress_Discord_Public {
 		if ( get_userdata( $user_id ) === false ) {
 			return;
 		}
+		$mepr_current_user = MeprUtils::get_currentuserinfo();
 		$guild_id                          = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_guild_id' ) ) );
 		$discord_bot_token                 = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_bot_token' ) ) );
 		$default_role                      = sanitize_text_field( trim( get_option( '_ets_memberpress_discord_default_role_id' ) ) );
 		$ets_memberpress_discord_role_mapping    = json_decode( get_option( 'ets_memberpress_discord_role_mapping' ), true );
 		$discord_role                      = '';
-		$curr_level_id                     = sanitize_text_field( trim( ets_memberpress_discord_get_current_level_id( $user_id ) ) );
+		$active_prodcuts                     = $this->ets_memberpress_discord_get_active_products( $mepr_current_user );
 		$ets_memberpress_discord_send_welcome_dm = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_send_welcome_dm' ) ) );
-
-		if ( is_array( $ets_memberpress_discord_role_mapping ) && array_key_exists( 'level_id_' . $curr_level_id, $ets_memberpress_discord_role_mapping ) ) {
-			$discord_role = sanitize_text_field( trim( $ets_memberpress_discord_role_mapping[ 'level_id_' . $curr_level_id ] ) );
-		} elseif ( $discord_role = '' && $default_role ) {
-			$discord_role = $default_role;
+		$discord_roles = [];
+		foreach($active_prodcuts as $membership_id) {
+			if ( is_array( $ets_memberpress_discord_role_mapping ) && array_key_exists( 'level_id_' . $membership_id, $ets_memberpress_discord_role_mapping ) ) {
+					$discord_role = sanitize_text_field( trim( $ets_memberpress_discord_role_mapping[ 'level_id_' . $membership_id ] ) );
+					array_push($discord_roles, $discord_role);
+			}
+		}
+		if ( empty($discord_roles) && $default_role ) {
+			array_push($discord_roles, $default_role);
 		}
 
 		$guilds_memeber_api_url = MEMBERPRESS_DISCORD_API_URL . 'guilds/' . $guild_id . '/members/' . $_ets_memberpress_discord_user_id;
@@ -322,9 +332,7 @@ class Memberpress_Discord_Public {
 			'body'    => json_encode(
 				array(
 					'access_token' => $access_token,
-					'roles'        => array(
-						$discord_role,
-					),
+					'roles'        => $discord_roles,
 				)
 			),
 		);
@@ -334,14 +342,15 @@ class Memberpress_Discord_Public {
 		if ( ets_memberpress_discord_check_api_errors( $guild_response ) ) {
 
 			$response_arr = json_decode( wp_remote_retrieve_body( $guild_response ), true );
-			memberpress_Discord_Logs::write_api_response_logs( $response_arr, $user_id, debug_backtrace()[0] );
+			write_api_response_logs( $response_arr, $user_id, debug_backtrace()[0] );
 			// this should be catch by Action schedule failed action.
 			throw new Exception( 'Failed in function ets_as_handler_add_member_to_guild' );
 		}
-
-		update_user_meta( $user_id, '_ets_memberpress_discord_role_id', $discord_role );
-		if ( $discord_role && $discord_role != 'none' && isset( $user_id ) ) {
-			$this->put_discord_role_api( $user_id, $discord_role );
+		foreach( $discord_roles as $discord_role ) {
+			update_user_meta( $user_id, '_ets_memberpress_discord_role_id', $discord_role );
+			if ( $discord_role && $discord_role != 'none' && isset( $user_id ) ) {
+				$this->put_discord_role_api( $user_id, $discord_role );
+			}
 		}
 
 		if ( $default_role && $default_role != 'none' && isset( $user_id ) ) {
@@ -352,8 +361,63 @@ class Memberpress_Discord_Public {
 		}
 
 		// Send welcome message.
-		if ( $ets_memberpress_discord_send_welcome_dm == true ) {
-			as_schedule_single_action( ets_memberpress_discord_get_random_timestamp( ets_memberpress_discord_get_highest_last_attempt_timestamp() ), 'ets_memberpress_discord_as_send_dm', array( $user_id, $curr_level_id, 'welcome' ), 'ets-memberpress-discord' );
+		// if ( $ets_memberpress_discord_send_welcome_dm == true ) {
+		// 	as_schedule_single_action( ets_memberpress_discord_get_random_timestamp( ets_memberpress_discord_get_highest_last_attempt_timestamp() ), 'ets_memberpress_discord_as_send_dm', array( $user_id, $active_prodcuts, 'welcome' ), 'ets-memberpress-discord' );
+		// }
+	}
+
+	/**
+	 * API call to change discord user role
+	 *
+	 * @param INT  $user_id
+	 * @param INT  $role_id
+	 * @param BOOL $is_schedule
+	 * @return object API response
+	 */
+	public function put_discord_role_api( $user_id, $role_id, $is_schedule = true ) {
+		if ( $is_schedule ) {
+			as_schedule_single_action( ets_memberpress_discord_get_random_timestamp( ets_memberpress_discord_get_highest_last_attempt_timestamp() ), 'ets_memberpress_discord_as_schedule_member_put_role', array( $user_id, $role_id, $is_schedule ), MEMBERPRESS_DISCORD_AS_GROUP_NAME );
+		} else {
+			$this->ets_memberpress_discord_as_handler_put_memberrole( $user_id, $role_id, $is_schedule );
+		}
+	}
+
+	/**
+	 * Action Schedule handler for mmeber change role discord.
+	 *
+	 * @param INT  $user_id
+	 * @param INT  $role_id
+	 * @param BOOL $is_schedule
+	 * @return object API response
+	 */
+	public function ets_memberpress_discord_as_handler_put_memberrole( $user_id, $role_id, $is_schedule ) {
+		$access_token                = sanitize_text_field( trim( get_user_meta( $user_id, '_ets_memberpress_discord_access_token', true ) ) );
+		$guild_id                    = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_guild_id' ) ) );
+		$_ets_memberpress_discord_user_id  = sanitize_text_field( trim( get_user_meta( $user_id, '_ets_memberpress_discord_user_id', true ) ) );
+		$discord_bot_token           = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_bot_token' ) ) );
+		$discord_change_role_api_url = MEMBERPRESS_DISCORD_API_URL . 'guilds/' . $guild_id . '/members/' . $_ets_memberpress_discord_user_id . '/roles/' . $role_id;
+
+		if ( $access_token && $_ets_memberpress_discord_user_id ) {
+			$param = array(
+				'method'  => 'PUT',
+				'headers' => array(
+					'Content-Type'   => 'application/json',
+					'Authorization'  => 'Bot ' . $discord_bot_token,
+					'Content-Length' => 0,
+				),
+			);
+
+			$response = wp_remote_get( $discord_change_role_api_url, $param );
+
+			ets_memberpress_discord_log_api_response( $user_id, $discord_change_role_api_url, $param, $response );
+			if ( ets_memberpress_discord_check_api_errors( $response ) ) {
+				$response_arr = json_decode( wp_remote_retrieve_body( $response ), true );
+				write_api_response_logs( $response_arr, $user_id, debug_backtrace()[0] );
+				if ( $is_schedule ) {
+					// this exception should be catch by action scheduler.
+					throw new Exception( 'Failed in function ets_memberpress_discord_as_handler_put_memberrole' );
+				}
+			}
 		}
 	}
 	
@@ -404,8 +468,8 @@ class Memberpress_Discord_Public {
 		// We must check IF NONE members is set to NO and user having no active membership.
 		$allow_none_member = sanitize_text_field( trim( get_option( 'ets_memberpress_allow_none_member' ) ) );
 		$mepr_current_user = MeprUtils::get_currentuserinfo();
-		$curr_level_id     = sanitize_text_field( trim( ets_memberpress_discord_get_current_level_id( $mepr_current_user ) ) );
-		if ( $curr_level_id == null && $allow_none_member == 'no' ) {
+		$active_products     = $this->ets_memberpress_discord_get_active_products( $mepr_current_user );
+		if ( empty($active_products) && $allow_none_member == 'no' ) {
 			return;
 		}
 		$response              = '';
@@ -476,9 +540,6 @@ class Memberpress_Discord_Public {
 			wp_send_json_error( 'Unauthorized user', 401 );
 			exit();
 		}
-
-		
-
 		// Check for nonce security
 		if ( ! wp_verify_nonce( $_POST['ets_memberpress_discord_public_nonce'], 'ets-memberpress-discord-public-ajax-nonce' ) ) {
 				wp_send_json_error( 'You do not have sufficient rights', 403 );
@@ -543,6 +604,121 @@ class Memberpress_Discord_Public {
 				throw new Exception( 'Failed in function ets_memberpress_discord_as_handler_delete_member_from_guild' );
 			}
 		}
+
+		/*Delete all usermeta related to discord connection*/
+		delete_user_meta( $user_id, '_ets_memberpress_discord_user_id' );
+		delete_user_meta( $user_id, '_ets_memberpress_discord_access_token' );
+		delete_user_meta( $user_id, '_ets_memberpress_discord_refresh_token' );
+		delete_user_meta( $user_id, '_ets_memberpress_discord_role_id' );
+		delete_user_meta( $user_id, '_ets_memberpress_discord_default_role_id' );
+		delete_user_meta( $user_id, '_ets_memberpress_discord_username' );
+		delete_user_meta( $user_id, '_ets_memberpress_discord_expires_in' );
 	}
 	
+	/**
+	 * Discord DM a member using bot.
+	 *
+	 * @param INT    $user_id
+	 * @param STRING $type (warning|expired)
+	 */
+	public function ets_memberpress_discord_handler_send_dm( $user_id, $active_products, $type = 'warning' ) {
+		$discord_user_id                              = sanitize_text_field( trim( get_user_meta( $user_id, '_ets_memberpress_discord_user_id', true ) ) );
+		$discord_bot_token                            = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_bot_token' ) ) );
+		$ets_memberpress_discord_expiration_warning_message = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_expiration_warning_message' ) ) );
+		$ets_memberpress_discord_expiration_expired_message = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_expiration_expired_message' ) ) );
+		$ets_memberpress_discord_welcome_message            = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_welcome_message' ) ) );
+		$ets_memberpress_discord_cancel_message             = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_cancel_message' ) ) );
+		// Check if DM channel is already created for the user.
+		$user_dm = get_user_meta( $user_id, '_ets_memberpress_discord_dm_channel', true );
+
+		if ( ! isset( $user_dm['id'] ) || $user_dm === false || empty( $user_dm ) ) {
+			$this->ets_memberpress_discord_create_member_dm_channel( $user_id );
+			$user_dm       = get_user_meta( $user_id, '_ets_memberpress_discord_dm_channel', true );
+			$dm_channel_id = $user_dm['id'];
+		} else {
+			$dm_channel_id = $user_dm['id'];
+		}
+
+		if ( $type == 'warning' ) {
+			update_user_meta( $user_id, '_ets_memberpress_discord_expitration_warning_dm_for_' . $membership_level_id, true );
+			$message = ets_memberpress_discord_get_formatted_dm( $user_id, $membership_level_id, $ets_memberpress_discord_expiration_warning_message );
+		}
+		if ( $type == 'expired' ) {
+			update_user_meta( $user_id, '_ets_memberpress_discord_expired_dm_for_' . $membership_level_id, true );
+			$message = ets_memberpress_discord_get_formatted_dm( $user_id, $membership_level_id, $ets_memberpress_discord_expiration_expired_message );
+		}
+		if ( $type == 'welcome' ) {
+			update_user_meta( $user_id, '_ets_memberpress_discord_welcome_dm_for_' . $membership_level_id, true );
+			$message = ets_memberpress_discord_get_formatted_dm( $user_id, $membership_level_id, $ets_memberpress_discord_welcome_message );
+		}
+
+		if ( $type == 'cancel' ) {
+			update_user_meta( $user_id, '_ets_memberpress_discord_cancel_dm_for_' . $membership_level_id, true );
+			$message = ets_memberpress_discord_get_formatted_dm( $user_id, $membership_level_id, $ets_memberpress_discord_cancel_message );
+		}
+
+		$creat_dm_url = MEMBERPRESS_DISCORD_API_URL . '/channels/' . $dm_channel_id . '/messages';
+		$dm_args      = array(
+			'method'  => 'POST',
+			'headers' => array(
+				'Content-Type'  => 'application/json',
+				'Authorization' => 'Bot ' . $discord_bot_token,
+			),
+			'body'    => json_encode(
+				array(
+					'content' => sanitize_text_field( trim( wp_unslash( $message ) ) ),
+				)
+			),
+		);
+		$dm_response  = wp_remote_post( $creat_dm_url, $dm_args );
+		ets_memberpress_discord_log_api_response( $user_id, $creat_dm_url, $dm_args, $dm_response );
+		$dm_response_body = json_decode( wp_remote_retrieve_body( $dm_response ), true );
+		if ( ets_memberpress_discord_check_api_errors( $dm_response ) ) {
+			write_api_response_logs( $dm_response_body, $user_id, debug_backtrace()[0] );
+			// this should be catch by Action schedule failed action.
+			throw new Exception( 'Failed in function ets_memberpress_discord_send_dm' );
+		}
+	}
+
+	/**
+	 * Create DM channel for a give user_id
+	 *
+	 * @param INT $user_id
+	 * @return MIXED
+	 */
+	public function ets_memberpress_discord_create_member_dm_channel( $user_id ) {
+		$discord_user_id       = sanitize_text_field( trim( get_user_meta( $user_id, '_ets_memberpress_discord_user_id', true ) ) );
+		$discord_bot_token     = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_bot_token' ) ) );
+		$create_channel_dm_url = MEMBERPRESS_DISCORD_API_URL . '/users/@me/channels';
+		$dm_channel_args       = array(
+			'method'  => 'POST',
+			'headers' => array(
+				'Content-Type'  => 'application/json',
+				'Authorization' => 'Bot ' . $discord_bot_token,
+			),
+			'body'    => json_encode(
+				array(
+					'recipient_id' => $discord_user_id,
+				)
+			),
+		);
+
+		$created_dm_response = wp_remote_post( $create_channel_dm_url, $dm_channel_args );
+		ets_memberpress_discord_log_api_response( $user_id, $create_channel_dm_url, $dm_channel_args, $created_dm_response );
+		$response_arr = json_decode( wp_remote_retrieve_body( $created_dm_response ), true );
+
+		if ( is_array( $response_arr ) && ! empty( $response_arr ) ) {
+			// check if there is error in create dm response
+			if ( array_key_exists( 'code', $response_arr ) || array_key_exists( 'error', $response_arr ) ) {
+				write_api_response_logs( $response_arr, $user_id, debug_backtrace()[0] );
+				if ( ets_memberpress_discord_check_api_errors( $created_dm_response ) ) {
+					// this should be catch by Action schedule failed action.
+					throw new Exception( 'Failed in function ets_memberpress_discord_create_member_dm_channel' );
+				}
+			} else {
+				update_user_meta( $user_id, '_ets_memberpress_discord_dm_channel', $response_arr );
+			}
+		}
+		return $response_arr;
+	}
 }
