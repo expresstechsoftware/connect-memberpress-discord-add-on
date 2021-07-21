@@ -226,15 +226,12 @@ function ets_memberpress_discord_get_current_level_id( $user ) {
 function ets_memberpress_discord_get_formatted_dm( $user_id, $level_id, $message ) {
 	global $wpdb;
 	$user_obj         = get_user_by( 'id', $user_id );
-	$level            = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM $wpdb->memberpress_membership_levels WHERE id = %d LIMIT 1", $level_id ) );
-	$membership_level = memberpress_getMembershipLevelForUser( $user_id );
+	$membership_level = get_posts( array('ID' => $level_id, 'post_type' => 'memberpressproduct', 'post_status' => 'publish') );
 
 	$MEMBER_USERNAME = $user_obj->user_login;
 	$MEMBER_EMAIL    = $user_obj->user_email;
 	if ( $membership_level !== false ) {
-		$MEMBERSHIP_LEVEL = $membership_level->name;
-	} elseif ( $level !== null ) {
-		$MEMBERSHIP_LEVEL = $level->name;
+		$MEMBERSHIP_LEVEL = $membership_level->post_title;
 	} else {
 		$MEMBERSHIP_LEVEL = '';
 	}
@@ -242,19 +239,19 @@ function ets_memberpress_discord_get_formatted_dm( $user_id, $level_id, $message
 	$SITE_URL  = get_bloginfo( 'url' );
 	$BLOG_NAME = get_bloginfo( 'name' );
 
-	if ( $membership_level !== false && isset( $membership_level->startdate ) && $membership_level->startdate != '' ) {
-		$MEMBERSHIP_STARTDATE = date( 'F jS, Y', $membership_level->startdate );
+	if ( $membership_level !== false && isset( $membership_level->post_date ) && $membership_level->post_date != '' ) {
+		$MEMBERSHIP_STARTDATE = date( 'F jS, Y', $membership_level->post_date );
 
 	} else {
 		$MEMBERSHIP_STARTDATE = '';
 	}
-	if ( $membership_level !== false && isset( $membership_level->enddate ) && $membership_level->enddate != '' ) {
-		$MEMBERSHIP_ENDDATE = date( 'F jS, Y', $membership_level->enddate );
-	} elseif ( $level !== null && $level->expiration_period == '' ) {
-		$MEMBERSHIP_ENDDATE = 'Never';
-	} else {
+	// if ( $membership_level !== false && isset( $membership_level->enddate ) && $membership_level->enddate != '' ) {
+	// 	$MEMBERSHIP_ENDDATE = date( 'F jS, Y', $membership_level->enddate );
+	// } elseif ( $level !== null && $level->expiration_period == '' ) {
+	// 	$MEMBERSHIP_ENDDATE = 'Never';
+	// } else {
 		$MEMBERSHIP_ENDDATE = '';
-	}
+	//}
 
 	$find    = array(
 		'[MEMBER_USERNAME]',

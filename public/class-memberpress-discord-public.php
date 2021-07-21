@@ -214,7 +214,7 @@ class Memberpress_Discord_Public {
 					'client_id'   => sanitize_text_field( trim( get_option( 'ets_memberpress_discord_client_id' ) ) ),
 					'permissions' => MEMBERPRESS_DISCORD_BOT_PERMISSIONS,
 					'scope'       => 'bot',
-					'guild_id'    => sanitize_text_field( trim( get_option( 'ets_memberpress_discord_guild_id' ) ) ),
+					'guild_id'    => sanitize_text_field( trim( get_option( 'ets_memberpress_discord_server_id' ) ) ),
 				);
 				$discord_authorise_api_url = MEMBERPRESS_DISCORD_API_URL . 'oauth2/authorize?' . http_build_query( $params );
 
@@ -223,7 +223,7 @@ class Memberpress_Discord_Public {
 			}
 			if ( isset( $_GET['code'] ) && isset( $_GET['via'] ) ) {
 				$code     = sanitize_text_field( trim( $_GET['code'] ) );
-				$response = $this->memberpress_create_discord_auth_token( $code, $user_id );
+				$response = $this->ets_memberpress_create_discord_auth_token( $code, $user_id );
 
 				if ( ! empty( $response ) && ! is_wp_error( $response ) ) {
 					$res_body              = json_decode( wp_remote_retrieve_body( $response ), true );
@@ -254,9 +254,13 @@ class Memberpress_Discord_Public {
 							if ( is_array( $user_body ) && array_key_exists( 'id', $user_body ) ) {
 								$_ets_memberpress_discord_user_id = sanitize_text_field( trim( $user_body['id'] ) );
 								if ( $discord_exist_user_id == $_ets_memberpress_discord_user_id ) {
-									$_ets_memberpress_discord_role_id = sanitize_text_field( trim( get_user_meta( $user_id, '_ets_memberpress_discord_role_id', true ) ) );
-									if ( ! empty( $_ets_memberpress_discord_role_id ) && $_ets_memberpress_discord_role_id != 'none' ) {
-										$this->delete_discord_role( $user_id, $_ets_memberpress_discord_role_id );
+									$mepr_current_user						 = MeprUtils::get_currentuserinfo();
+									$active_prodcuts               = $this->ets_memberpress_discord_get_active_products( $mepr_current_user );
+									foreach($active_prodcuts as $membership_id){
+										$_ets_memberpress_discord_role_id = sanitize_text_field( trim( get_user_meta( $user_id, '_ets_memberpress_discord_role_id_for_'.$membership_id, true ) ) );
+										if ( ! empty( $_ets_memberpress_discord_role_id ) && $_ets_memberpress_discord_role_id != 'none' ) {
+											$this->delete_discord_role( $user_id, $_ets_memberpress_discord_role_id );
+										}
 									}
 								}
 								update_user_meta( $user_id, '_ets_memberpress_discord_user_id', $_ets_memberpress_discord_user_id );
@@ -303,8 +307,8 @@ class Memberpress_Discord_Public {
 		if ( get_userdata( $user_id ) === false ) {
 			return;
 		}
-		$mepr_current_user = MeprUtils::get_currentuserinfo();
-		$guild_id                          = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_guild_id' ) ) );
+		$mepr_current_user 								 = MeprUtils::get_currentuserinfo();
+		$guild_id                          = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_server_id' ) ) );
 		$discord_bot_token                 = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_bot_token' ) ) );
 		$default_role                      = sanitize_text_field( trim( get_option( '_ets_memberpress_discord_default_role_id' ) ) );
 		$ets_memberpress_discord_role_mapping    = json_decode( get_option( 'ets_memberpress_discord_role_mapping' ), true );
@@ -337,7 +341,6 @@ class Memberpress_Discord_Public {
 			),
 		);
 		$guild_response         = wp_remote_post( $guilds_memeber_api_url, $guild_args );
-
 		ets_memberpress_discord_log_api_response( $user_id, $guilds_memeber_api_url, $guild_args, $guild_response );
 		if ( ets_memberpress_discord_check_api_errors( $guild_response ) ) {
 
@@ -346,8 +349,8 @@ class Memberpress_Discord_Public {
 			// this should be catch by Action schedule failed action.
 			throw new Exception( 'Failed in function ets_as_handler_add_member_to_guild' );
 		}
-		foreach( $discord_roles as $discord_role ) {
-			update_user_meta( $user_id, '_ets_memberpress_discord_role_id', $discord_role );
+		foreach( $discord_roles as $key => $discord_role ) {
+			update_user_meta( $user_id, '_ets_memberpress_discord_role_id_for_'.$active_prodcuts[$key], $discord_role );
 			if ( $discord_role && $discord_role != 'none' && isset( $user_id ) ) {
 				$this->put_discord_role_api( $user_id, $discord_role );
 			}
@@ -360,10 +363,10 @@ class Memberpress_Discord_Public {
 			update_user_meta( $user_id, '_ets_memberpress_discord_join_date', current_time( 'Y-m-d H:i:s' ) );
 		}
 
-		// Send welcome message.
-		// if ( $ets_memberpress_discord_send_welcome_dm == true ) {
-		// 	as_schedule_single_action( ets_memberpress_discord_get_random_timestamp( ets_memberpress_discord_get_highest_last_attempt_timestamp() ), 'ets_memberpress_discord_as_send_dm', array( $user_id, $active_prodcuts, 'welcome' ), 'ets-memberpress-discord' );
-		// }
+		//Send welcome message.
+		if ( $ets_memberpress_discord_send_welcome_dm == true ) {
+			as_schedule_single_action( ets_memberpress_discord_get_random_timestamp( ets_memberpress_discord_get_highest_last_attempt_timestamp() ), 'ets_memberpress_discord_as_send_dm', array( $user_id, $active_prodcuts, 'welcome' ), 'ets-memberpress-discord' );
+		}
 	}
 
 	/**
@@ -392,7 +395,7 @@ class Memberpress_Discord_Public {
 	 */
 	public function ets_memberpress_discord_as_handler_put_memberrole( $user_id, $role_id, $is_schedule ) {
 		$access_token                = sanitize_text_field( trim( get_user_meta( $user_id, '_ets_memberpress_discord_access_token', true ) ) );
-		$guild_id                    = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_guild_id' ) ) );
+		$guild_id                    = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_server_id' ) ) );
 		$_ets_memberpress_discord_user_id  = sanitize_text_field( trim( get_user_meta( $user_id, '_ets_memberpress_discord_user_id', true ) ) );
 		$discord_bot_token           = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_bot_token' ) ) );
 		$discord_change_role_api_url = MEMBERPRESS_DISCORD_API_URL . 'guilds/' . $guild_id . '/members/' . $_ets_memberpress_discord_user_id . '/roles/' . $role_id;
@@ -458,7 +461,7 @@ class Memberpress_Discord_Public {
 	 * @param INT    $user_id
 	 * @return OBJECT API response
 	 */
-	public function memberpress_create_discord_auth_token( $code, $user_id ) {
+	public function ets_memberpress_create_discord_auth_token( $code, $user_id ) {
 		if ( ! is_user_logged_in() ) {
 			wp_send_json_error( 'Unauthorized user', 401 );
 			exit();
@@ -583,9 +586,11 @@ class Memberpress_Discord_Public {
 	 * @return OBJECT API response
 	 */
 	public function ets_memberpress_discord_as_handler_delete_member_from_guild( $user_id, $is_schedule ) {
-		$guild_id                      = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_guild_id' ) ) );
+		$guild_id                      = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_server_id' ) ) );
 		$discord_bot_token             = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_bot_token' ) ) );
 		$_ets_memberpress_discord_user_id    = sanitize_text_field( trim( get_user_meta( $user_id, '_ets_memberpress_discord_user_id', true ) ) );
+		$mepr_current_user						 = MeprUtils::get_currentuserinfo();
+		$active_prodcuts               = $this->ets_memberpress_discord_get_active_products( $mepr_current_user );
 		$guilds_delete_memeber_api_url = MEMBERPRESS_DISCORD_API_URL . 'guilds/' . $guild_id . '/members/' . $_ets_memberpress_discord_user_id;
 		$guild_args                    = array(
 			'method'  => 'DELETE',
@@ -609,7 +614,9 @@ class Memberpress_Discord_Public {
 		delete_user_meta( $user_id, '_ets_memberpress_discord_user_id' );
 		delete_user_meta( $user_id, '_ets_memberpress_discord_access_token' );
 		delete_user_meta( $user_id, '_ets_memberpress_discord_refresh_token' );
-		delete_user_meta( $user_id, '_ets_memberpress_discord_role_id' );
+		foreach($active_prodcuts as $membership_id){
+			delete_user_meta( $user_id, '_ets_memberpress_discord_role_id_for_'.$membership_id );
+		}
 		delete_user_meta( $user_id, '_ets_memberpress_discord_default_role_id' );
 		delete_user_meta( $user_id, '_ets_memberpress_discord_username' );
 		delete_user_meta( $user_id, '_ets_memberpress_discord_expires_in' );

@@ -68,9 +68,14 @@ define( 'MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH', plugin_dir_path( __FILE__ ) );
 define( 'MEMBERPRESS_DISCORD_PLUGIN_DIR_URL', plugin_dir_url( __FILE__ ) );
 
 /**
+ * Follwing response codes not cosider for re-try API calls.
+ */
+define( 'ETS_MEMBERPRESS_DISCORD_DONOT_RETRY_THESE_API_CODES', array( 0, 10003, 50033, 10004, 50025, 10013, 10011 ) );
+
+/**
  * Define plugin directory url
  */
-define( 'ETS_MEMBERPRESS_DISCORD_DONOT_RETRY_HTTP_CODES', array( 0, 10003, 50033, 10004, 50025, 10013, 10011 ) );
+define( 'ETS_MEMBERPRESS_DISCORD_DONOT_RETRY_HTTP_CODES', array( 400, 401, 403, 404, 405, 502 ) );
 
 /**
  * The code that runs during plugin activation.

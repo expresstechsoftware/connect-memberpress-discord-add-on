@@ -191,9 +191,10 @@ class Memberpress_Discord {
 		$this->loader->add_action( 'mepr-account-home-fields', $plugin_public, 'ets_memberpress_discord_add_field' );
 		$this->loader->add_action( 'init', $plugin_public, 'ets_memberpress_discord_discord_api_callback' );
 		$this->loader->add_action( 'wp_ajax_memberpress_disconnect_from_discord', $plugin_public, 'ets_memberpress_disconnect_from_discord' );
-		$this->loader->add_action( 'ets_memberpress_discord_as_schedule_delete_member', $plugin_public, 'ets_memberpress_discord_as_handler_delete_member_from_guild' );
-		$this->loader->add_action( 'ets_memberpress_discord_as_send_dm', $plugin_public, 'ets_memberpress_discord_handler_send_dm' );
-		$this->loader->add_action( 'ets_memberpress_discord_as_schedule_member_put_role', $plugin_public, 'ets_memberpress_discord_as_handler_put_memberrole' );
+		$this->loader->add_action( 'ets_memberpress_discord_as_handle_add_member_to_guild', $plugin_public, 'ets_memberpress_discord_as_handler_add_member_to_guild', 10, 3 );
+		$this->loader->add_action( 'ets_memberpress_discord_as_schedule_delete_member', $plugin_public, 'ets_memberpress_discord_as_handler_delete_member_from_guild', 10, 3 );
+		$this->loader->add_action( 'ets_memberpress_discord_as_send_dm', $plugin_public, 'ets_memberpress_discord_handler_send_dm', 10, 3 );
+		$this->loader->add_action( 'ets_memberpress_discord_as_schedule_member_put_role', $plugin_public, 'ets_memberpress_discord_as_handler_put_memberrole', 10, 3 );
 	}
 
 	/**
