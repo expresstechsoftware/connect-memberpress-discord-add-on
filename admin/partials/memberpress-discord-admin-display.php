@@ -17,7 +17,7 @@
 	if( isset($_GET['save_settings_msg']) ){
 		?>
 			<div class="notice notice-success is-dismissible support-success-msg">
-				<p><?php echo __( $_GET['save_settings_msg'], 'ets_memberpress_discord' ); ?></p>
+				<p><?php echo esc_html( $_GET['save_settings_msg'] ); ?></p>
 			</div>
 		<?php
 	}

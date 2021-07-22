@@ -15,24 +15,24 @@ if ( empty( $ets_memberpress_discord_redirect_url ) ) {
 	<?php wp_nonce_field( 'save_discord_settings', 'ets_discord_save_settings' ); ?>
 	<div class="ets-input-group">
 	  <label><?php echo __( 'Client ID', 'ets_memberpress_discord' ); ?> :</label>
-		<input type="text" class="ets-input" name="ets_memberpress_discord_client_id" value="<?php if ( isset( $ets_memberpress_discord_client_id ) ) { echo $ets_memberpress_discord_client_id;} ?>" required placeholder="Discord Client ID">
+		<input type="text" class="ets-input" name="ets_memberpress_discord_client_id" value="<?php if ( isset( $ets_memberpress_discord_client_id ) ) { echo $ets_memberpress_discord_client_id;} ?>" required placeholder="<?php echo __( 'Discord Client ID', 'ets_memberpress_discord' ); ?>">
 	</div>
 	<div class="ets-input-group">
 	  <label><?php echo __( 'Client Secret', 'ets_memberpress_discord' ); ?> :</label>
-		<input type="text" class="ets-input" name="ets_memberpress_discord_client_secret" value="<?php if ( isset( $discord_client_secret ) ) { echo $discord_client_secret;} ?>" required placeholder="Discord Client Secret">
+		<input type="text" class="ets-input" name="ets_memberpress_discord_client_secret" value="<?php if ( isset( $discord_client_secret ) ) { echo $discord_client_secret;} ?>" required placeholder="<?php echo __( 'Discord Client Secret', 'ets_memberpress_discord' ); ?>">
 	</div>
 	<div class="ets-input-group">
 	  <label><?php echo __( 'Redirect URL', 'ets_memberpress_discord' ); ?> :</label>
-		<input type="text" class="ets-input" name="ets_memberpress_discord_redirect_url" placeholder="Discord Redirect Url" value="<?php if ( isset( $ets_memberpress_discord_redirect_url ) ) { echo $ets_memberpress_discord_redirect_url;} ?>" required>
+		<input type="text" class="ets-input" name="ets_memberpress_discord_redirect_url" placeholder="<?php echo __( 'Discord Redirect Url', 'ets_memberpress_discord' ); ?>" value="<?php if ( isset( $ets_memberpress_discord_redirect_url ) ) { echo $ets_memberpress_discord_redirect_url;} ?>" required>
 		<p class="description"><?php echo __( 'Registered discord app url', 'ets_memberpress_discord' ); ?></p>
 	</div>
 	<div class="ets-input-group">
 	  <label><?php echo __( 'Bot Token', 'ets_memberpress_discord' ); ?> :</label>
-		<input type="text" class="ets-input" name="ets_memberpress_discord_bot_token" value="<?php if ( isset( $discord_bot_token ) ) { echo $discord_bot_token;} ?>" required placeholder="Discord Bot Token">
+		<input type="text" class="ets-input" name="ets_memberpress_discord_bot_token" value="<?php if ( isset( $discord_bot_token ) ) { echo $discord_bot_token;} ?>" required placeholder="<?php echo __( 'Discord Bot Token', 'ets_memberpress_discord' ); ?>">
 	</div>
 	<div class="ets-input-group">
 	  <label><?php echo __( 'Server Id', 'ets_memberpress_discord' ); ?> :</label>
-		<input type="text" class="ets-input" name="ets_memberpress_discord_server_id" placeholder="Discord Server Id" value="<?php if ( isset( $ets_memberpress_discord_server_id ) ) { echo $ets_memberpress_discord_server_id;} ?>" required>
+		<input type="text" class="ets-input" name="ets_memberpress_discord_server_id" placeholder="<?php echo __( 'Discord Server Id', 'ets_memberpress_discord' ); ?>" value="<?php if ( isset( $ets_memberpress_discord_server_id ) ) { echo $ets_memberpress_discord_server_id;} ?>" required>
 	</div>
 	<?php if ( empty( $ets_memberpress_discord_client_id ) || empty( $discord_client_secret ) || empty( $discord_bot_token ) || empty( $ets_memberpress_discord_redirect_url ) || empty( $ets_memberpress_discord_server_id ) ) { ?>
 	  <p class="ets-danger-text description">

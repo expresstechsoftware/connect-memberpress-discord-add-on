@@ -20,16 +20,16 @@ if ( $currentUser ) {
 			  <div class="contact-fields pr-100">
 				<div class="ets-form-group">
 				  <label><?php echo __( 'Full Name', 'ets_memberpress_discord' ); ?></label>
-				  <input type="text" name="ets_user_name" value="<?php echo $currUserName; ?>" class="form-control contact-input" placeholder="Write Your Full Name">
+				  <input type="text" name="ets_user_name" value="<?php echo esc_html( $currUserName ); ?>" class="form-control contact-input" placeholder="<?php echo __( 'Write Your Full Name', 'ets_memberpress_discord' ); ?>">
 				  <?php wp_nonce_field( 'get_support', 'ets_discord_get_support' ); ?>
 				</div>
 				<div class="ets-form-group">
 				  <label><?php echo __( 'Contact Email', 'ets_memberpress_discord' ); ?></label>
-				  <input type="text" name="ets_user_email" class="form-control contact-input" value="<?php echo get_option( 'admin_email' ); ?>" placeholder="Write Your Email">
+				  <input type="text" name="ets_user_email" class="form-control contact-input" value="<?php echo esc_html( get_option( 'admin_email' ) ); ?>" placeholder="<?php echo __( 'Write Your Email', 'ets_memberpress_discord' ); ?>">
 				</div>
 				<div class="ets-form-group">
 				  <label><?php echo __( 'Subject', 'ets_memberpress_discord' ); ?></label>
-				  <input type="text" name="ets_support_subject" class="form-control contact-input" placeholder="Write Your Subject" required="">
+				  <input type="text" name="ets_support_subject" class="form-control contact-input" placeholder="<?php echo __( 'Write Your Subject', 'ets_memberpress_discord' ); ?>" required="">
 				</div>
 				<div class="ets-form-group">
 				  <label><?php echo __( 'Message', 'ets_memberpress_discord' ); ?></label>
@@ -49,8 +49,8 @@ if ( $currentUser ) {
 					<p><?php echo __( 'Email', 'ets_memberpress_discord' ); ?></p>
 				  </div>
 				  <div class="contact-body mt-3">
-					<p><a href="mailto:contact@expresstechsoftwares.com"><?php echo __( 'contact@expresstechsoftwares.com', 'ets_memberpress_discord' ); ?></a></p>
-					<p><a href="mailto:business@expresstechsoftwares.com"><?php echo __( 'business@expresstechsoftwares.com', 'ets_memberpress_discord' ); ?></a></p>
+					<p><a href="mailto:contact@expresstechsoftwares.com"><?php echo esc_html( 'contact@expresstechsoftwares.com' ); ?></a></p>
+					<p><a href="mailto:business@expresstechsoftwares.com"><?php echo esc_html( 'business@expresstechsoftwares.com' ); ?></a></p>
 				  </div>
 				</div>
 				<div class="contact-details d-inline-block w-100 mb-4">
@@ -68,7 +68,7 @@ if ( $currentUser ) {
 					<p><?php echo __( 'Whatsapp / Phone', 'ets_memberpress_discord' ); ?></p>
 				  </div>
 				  <div class="contact-body mt-3">
-					<p><?php echo __( '+91-9806724185', 'ets_memberpress_discord' ); ?></p>
+					<p><?php echo esc_html( '+91-9806724185' ); ?></p>
 				  </div>
 				</div>
 			  </div>

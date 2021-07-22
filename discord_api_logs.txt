@@ -1,8 +1,1 @@
-2021-07-21 17:01:54 => Clear logs Successfully
-2021-07-21 20:03:34==>File:/var/www/html/memberpress/wp-includes/class-wp-hook.php::User Id:1::Line:303::Function:ets_memberpress_load_discord_roles::50001:Missing Access
-2021-07-21 20:03:46==>File:/var/www/html/memberpress/wp-includes/class-wp-hook.php::User Id:1::Line:303::Function:ets_memberpress_load_discord_roles::50001:Missing Access
-2021-07-21 20:05:26==>File:/var/www/html/memberpress/wp-includes/class-wp-hook.php::User Id:1::Line:303::Function:ets_memberpress_load_discord_roles::50001:Missing Access
-2021-07-21 20:51:35==>File:/var/www/html/memberpress/wp-includes/class-wp-hook.php::User Id:1::Line:303::Function:ets_memberpress_load_discord_roles::50001:Missing Access
-2021-07-21 20:52:50==>File:/var/www/html/memberpress/wp-includes/class-wp-hook.php::User Id:1::Line:303::Function:ets_memberpress_load_discord_roles::50001:Missing Access
-2021-07-21 21:05:00==>File:/var/www/html/memberpress/wp-includes/class-wp-hook.php::User Id:1::Line:303::Function:ets_memberpress_load_discord_roles::50001:Missing Access
-2021-07-21 21:08:01==>File:/var/www/html/memberpress/wp-includes/class-wp-hook.php::User Id:1::Line:303::Function:ets_memberpress_load_discord_roles::50001:Missing Access
+2021-07-22 15:36:05 => Clear logs Successfully

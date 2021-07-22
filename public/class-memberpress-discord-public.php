@@ -222,8 +222,10 @@ class Memberpress_Discord_Public {
 				exit;
 			}
 			if ( isset( $_GET['code'] ) && isset( $_GET['via'] ) ) {
+				$mepr_current_user = MeprUtils::get_currentuserinfo();
+				$active_prodcuts = $this->ets_memberpress_discord_get_active_products( $mepr_current_user );
 				$code     = sanitize_text_field( trim( $_GET['code'] ) );
-				$response = $this->ets_memberpress_create_discord_auth_token( $code, $user_id );
+				$response = $this->ets_memberpress_create_discord_auth_token( $code, $user_id, $active_prodcuts );
 
 				if ( ! empty( $response ) && ! is_wp_error( $response ) ) {
 					$res_body              = json_decode( wp_remote_retrieve_body( $response ), true );
@@ -245,7 +247,7 @@ class Memberpress_Discord_Public {
 							}
 							$user_body = $this->get_discord_current_user( $access_token );
 
-							if ( array_key_exists( 'discriminator', $user_body ) ) {
+							if ( is_array( $user_body ) && array_key_exists( 'discriminator', $user_body ) ) {
 								$discord_user_number           = $user_body['discriminator'];
 								$discord_user_name             = $user_body['username'];
 								$discord_user_name_with_number = $discord_user_name . '#' . $discord_user_number;
@@ -254,8 +256,6 @@ class Memberpress_Discord_Public {
 							if ( is_array( $user_body ) && array_key_exists( 'id', $user_body ) ) {
 								$_ets_memberpress_discord_user_id = sanitize_text_field( trim( $user_body['id'] ) );
 								if ( $discord_exist_user_id == $_ets_memberpress_discord_user_id ) {
-									$mepr_current_user						 = MeprUtils::get_currentuserinfo();
-									$active_prodcuts               = $this->ets_memberpress_discord_get_active_products( $mepr_current_user );
 									foreach($active_prodcuts as $membership_id){
 										$_ets_memberpress_discord_role_id = sanitize_text_field( trim( get_user_meta( $user_id, '_ets_memberpress_discord_role_id_for_'.$membership_id, true ) ) );
 										if ( ! empty( $_ets_memberpress_discord_role_id ) && $_ets_memberpress_discord_role_id != 'none' ) {
@@ -264,7 +264,7 @@ class Memberpress_Discord_Public {
 									}
 								}
 								update_user_meta( $user_id, '_ets_memberpress_discord_user_id', $_ets_memberpress_discord_user_id );
-								$this->add_discord_member_in_guild( $_ets_memberpress_discord_user_id, $user_id, $access_token );
+								$this->add_discord_member_in_guild( $_ets_memberpress_discord_user_id, $user_id, $access_token, $active_prodcuts );
 							}
 						}
 					}
@@ -281,16 +281,14 @@ class Memberpress_Discord_Public {
 	 * @param STRING $access_token
 	 * @return NONE
 	 */
-	public function add_discord_member_in_guild( $_ets_memberpress_discord_user_id, $user_id, $access_token ) {
+	public function add_discord_member_in_guild( $_ets_memberpress_discord_user_id, $user_id, $access_token, $active_prodcuts ) {
 		if ( ! is_user_logged_in() ) {
 			wp_send_json_error( 'Unauthorized user', 401 );
 			exit();
 		}
-		$mepr_current_user = MeprUtils::get_currentuserinfo();
-		$active_prodcuts = $this->ets_memberpress_discord_get_active_products( $mepr_current_user );
 		if ( !empty($active_prodcuts) ) {
 			// It is possible that we may exhaust API rate limit while adding members to guild, so handling off the job to queue.
-			as_schedule_single_action( ets_memberpress_discord_get_random_timestamp( ets_memberpress_discord_get_highest_last_attempt_timestamp() ), 'ets_memberpress_discord_as_handle_add_member_to_guild', array( $_ets_memberpress_discord_user_id, $user_id, $access_token ), MEMBERPRESS_DISCORD_AS_GROUP_NAME );
+			as_schedule_single_action( ets_memberpress_discord_get_random_timestamp( ets_memberpress_discord_get_highest_last_attempt_timestamp() ), 'ets_memberpress_discord_as_handle_add_member_to_guild', array( $_ets_memberpress_discord_user_id, $user_id, $access_token, $active_prodcuts ), MEMBERPRESS_DISCORD_AS_GROUP_NAME );
 		}
 	}
 
@@ -302,18 +300,16 @@ class Memberpress_Discord_Public {
 	 * @param STRING $access_token
 	 * @return NONE
 	 */
-	public function ets_memberpress_discord_as_handler_add_member_to_guild( $_ets_memberpress_discord_user_id, $user_id, $access_token ) {
+	public function ets_memberpress_discord_as_handler_add_member_to_guild( $_ets_memberpress_discord_user_id, $user_id, $access_token, $active_prodcuts ) {
 		// Since we using a queue to delay the API call, there may be a condition when a member is delete from DB. so put a check.
 		if ( get_userdata( $user_id ) === false ) {
 			return;
 		}
-		$mepr_current_user 								 = MeprUtils::get_currentuserinfo();
 		$guild_id                          = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_server_id' ) ) );
 		$discord_bot_token                 = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_bot_token' ) ) );
-		$default_role                      = sanitize_text_field( trim( get_option( '_ets_memberpress_discord_default_role_id' ) ) );
+		$default_role                      = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_default_role_id' ) ) );
 		$ets_memberpress_discord_role_mapping    = json_decode( get_option( 'ets_memberpress_discord_role_mapping' ), true );
 		$discord_role                      = '';
-		$active_prodcuts                     = $this->ets_memberpress_discord_get_active_products( $mepr_current_user );
 		$ets_memberpress_discord_send_welcome_dm = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_send_welcome_dm' ) ) );
 		$discord_roles = [];
 		foreach($active_prodcuts as $membership_id) {
@@ -358,6 +354,7 @@ class Memberpress_Discord_Public {
 
 		if ( $default_role && $default_role != 'none' && isset( $user_id ) ) {
 			$this->put_discord_role_api( $user_id, $default_role );
+			update_user_meta( $user_id, '_ets_memberpress_discord_default_role_id', $default_role );
 		}
 		if ( empty( get_user_meta( $user_id, '_ets_memberpress_discord_join_date', true ) ) ) {
 			update_user_meta( $user_id, '_ets_memberpress_discord_join_date', current_time( 'Y-m-d H:i:s' ) );
@@ -461,7 +458,7 @@ class Memberpress_Discord_Public {
 	 * @param INT    $user_id
 	 * @return OBJECT API response
 	 */
-	public function ets_memberpress_create_discord_auth_token( $code, $user_id ) {
+	public function ets_memberpress_create_discord_auth_token( $code, $user_id, $active_prodcuts ) {
 		if ( ! is_user_logged_in() ) {
 			wp_send_json_error( 'Unauthorized user', 401 );
 			exit();
@@ -470,8 +467,6 @@ class Memberpress_Discord_Public {
 		// stop users who having the direct URL of discord Oauth.
 		// We must check IF NONE members is set to NO and user having no active membership.
 		$allow_none_member = sanitize_text_field( trim( get_option( 'ets_memberpress_allow_none_member' ) ) );
-		$mepr_current_user = MeprUtils::get_currentuserinfo();
-		$active_products     = $this->ets_memberpress_discord_get_active_products( $mepr_current_user );
 		if ( empty($active_products) && $allow_none_member == 'no' ) {
 			return;
 		}
