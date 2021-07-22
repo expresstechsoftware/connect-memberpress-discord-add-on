@@ -25,7 +25,7 @@ if ( $currentUser ) {
 				</div>
 				<div class="ets-form-group">
 				  <label><?php echo __( 'Contact Email', 'ets_memberpress_discord' ); ?></label>
-				  <input type="text" name="ets_user_email" class="form-control contact-input" value="<?php echo esc_html( get_option( 'admin_email' ) ); ?>" placeholder="<?php echo __( 'Write Your Email', 'ets_memberpress_discord' ); ?>">
+				  <input type="text" name="ets_user_email" class="form-control contact-input" value="<?php echo esc_attr( get_option( 'admin_email' ) ); ?>" placeholder="<?php echo __( 'Write Your Email', 'ets_memberpress_discord' ); ?>">
 				</div>
 				<div class="ets-form-group">
 				  <label><?php echo __( 'Subject', 'ets_memberpress_discord' ); ?></label>
