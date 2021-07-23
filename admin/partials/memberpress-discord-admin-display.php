@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Provide a admin area view for the plugin
  *
@@ -13,14 +12,14 @@
  */
 ?>
 <!-- This file should primarily consist of HTML with a little bit of PHP. -->
-<?php 
-	if( isset($_GET['save_settings_msg']) ){
-		?>
-			<div class="notice notice-success is-dismissible support-success-msg">
-				<p><?php echo esc_html( $_GET['save_settings_msg'] ); ?></p>
-			</div>
-		<?php
-	}
+<?php
+if ( isset( $_GET['save_settings_msg'] ) ) {
+	?>
+	<div class="notice notice-success is-dismissible support-success-msg">
+		<p><?php echo esc_html( $_GET['save_settings_msg'] ); ?></p>
+	</div>
+	<?php
+}
 ?>
 <h1><?php echo __( 'Memberpress Discord Add On Settings', 'ets_memberpress_discord' ); ?></h1>
 		<div id="outer" class="skltbs-theme-light" data-skeletabs='{ "startIndex": 1 }'>
@@ -56,7 +55,7 @@
 				</div>
 				<?php if ( ets_memberpress_discord_check_saved_settings_status() ) : ?>
 				<div class="skltbs-panel">
-				<?php require_once MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . 'admin/partials/pages/memberpress-discord-role-level-map.php'; ?>
+					<?php require_once MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . 'admin/partials/pages/memberpress-discord-role-level-map.php'; ?>
 				</div>
 				<?php endif; ?>
 				<div class="skltbs-panel">

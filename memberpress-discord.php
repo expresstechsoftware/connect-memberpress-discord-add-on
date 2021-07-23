@@ -1,5 +1,4 @@
 <?php
-
 /**
  * The plugin bootstrap file
  *
@@ -84,7 +83,6 @@ define( 'ETS_MEMBERPRESS_DISCORD_DONOT_RETRY_HTTP_CODES', array( 400, 401, 403, 
 function activate_memberpress_discord() {
 	require_once MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . 'includes/class-memberpress-discord-activator.php';
 	Memberpress_Discord_Activator::activate();
-	Memberpress_Discord_Activator::memberpress_set_default_setting_values();
 }
 
 /**
