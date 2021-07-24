@@ -49,32 +49,27 @@ function ets_memberpress_discord_log_api_response( $user_id, $api_url = '', $api
  * @param string $error_type
  * @return None
  */
-	function write_api_response_logs( $response_arr, $user_id, $backtrace_arr = array() ) {
-		if ( ! is_user_logged_in() ) {
-			wp_send_json_error( 'Unauthorized user', 401 );
-			exit();
-		}
-		
-		$error        = current_time( 'mysql' );
-		$user_details = '';
-		if ( $user_id ) {
-			$user_details = '::User Id:' . $user_id;
-		}
-		$log_api_response = get_option( 'ets_memberpress_discord_log_api_response' );
-		$log_file_name    = Memberpress_Discord_Admin::$log_file_name;
-
-		if ( is_array( $response_arr ) && array_key_exists( 'code', $response_arr ) ) {
-			$error .= '==>File:' . $backtrace_arr['file'] . $user_details . '::Line:' . $backtrace_arr['line'] . '::Function:' . $backtrace_arr['function'] . '::' . $response_arr['code'] . ':' . $response_arr['message'];
-			file_put_contents( MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . $log_file_name, $error . PHP_EOL, FILE_APPEND | LOCK_EX );
-		} elseif ( is_array( $response_arr ) && array_key_exists( 'error', $response_arr ) ) {
-			$error .= '==>File:' . $backtrace_arr['file'] . $user_details . '::Line:' . $backtrace_arr['line'] . '::Function:' . $backtrace_arr['function'] . '::' . $response_arr['error'];
-			file_put_contents( MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . $log_file_name, $error . PHP_EOL, FILE_APPEND | LOCK_EX );
-		} elseif ( $log_api_response == true ) {
-			$error .= json_encode( $response_arr ) . '::' . $user_id;
-			file_put_contents( MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . $log_file_name, $error . PHP_EOL, FILE_APPEND | LOCK_EX );
-		}
-
+function write_api_response_logs( $response_arr, $user_id, $backtrace_arr = array() ) {
+	$error        = current_time( 'mysql' );
+	$user_details = '';
+	if ( $user_id ) {
+		$user_details = '::User Id:' . $user_id;
 	}
+	$log_api_response = get_option( 'ets_memberpress_discord_log_api_response' );
+	$log_file_name    = Memberpress_Discord_Admin::$log_file_name;
+
+	if ( is_array( $response_arr ) && array_key_exists( 'code', $response_arr ) ) {
+		$error .= '==>File:' . $backtrace_arr['file'] . $user_details . '::Line:' . $backtrace_arr['line'] . '::Function:' . $backtrace_arr['function'] . '::' . $response_arr['code'] . ':' . $response_arr['message'];
+		file_put_contents( MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . $log_file_name, $error . PHP_EOL, FILE_APPEND | LOCK_EX );
+	} elseif ( is_array( $response_arr ) && array_key_exists( 'error', $response_arr ) ) {
+		$error .= '==>File:' . $backtrace_arr['file'] . $user_details . '::Line:' . $backtrace_arr['line'] . '::Function:' . $backtrace_arr['function'] . '::' . $response_arr['error'];
+		file_put_contents( MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . $log_file_name, $error . PHP_EOL, FILE_APPEND | LOCK_EX );
+	} elseif ( $log_api_response == true ) {
+		$error .= json_encode( $response_arr ) . '::' . $user_id;
+		file_put_contents( MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . $log_file_name, $error . PHP_EOL, FILE_APPEND | LOCK_EX );
+	}
+
+}
 
 /**
  * Check API call response and detect conditions which can cause of action failure and retry should be attemped.
@@ -186,7 +181,7 @@ function ets_memberpress_discord_count_of_hooks_failures( $hook ) {
  * @return INT|NULL $curr_level_id
  */
 function ets_memberpress_discord_get_current_level_id( $user ) {
-	$active_prodcuts = $user->active_product_subscriptions('ids');
+	$active_prodcuts = $user->active_product_subscriptions( 'ids' );
 	if ( $active_prodcuts ) {
 		$curr_level_id = sanitize_text_field( trim( $active_prodcuts[0] ) );
 		return $curr_level_id;
@@ -196,26 +191,26 @@ function ets_memberpress_discord_get_current_level_id( $user ) {
 }
 
 /**
-	 * To check settings values saved or not
-	 *
-	 * @param NONE
-	 * @return BOOL $status
-	 */
-	 function ets_memberpress_discord_check_saved_settings_status() {
-		$ets_memberpress_discord_client_id     = get_option( 'ets_memberpress_discord_client_id' );
-		$ets_memberpress_discord_client_secret = get_option( 'ets_memberpress_discord_client_secret' );
-		$ets_memberpress_discord_bot_token     = get_option( 'ets_memberpress_discord_bot_token' );
-		$ets_memberpress_discord_redirect_url  = get_option( 'ets_memberpress_discord_redirect_url' );
-		$ets_memberpress_discord_guild_id      = get_option( 'ets_memberpress_discord_guild_id' );
+ * To check settings values saved or not
+ *
+ * @param NONE
+ * @return BOOL $status
+ */
+function ets_memberpress_discord_check_saved_settings_status() {
+	$ets_memberpress_discord_client_id     = get_option( 'ets_memberpress_discord_client_id' );
+	$ets_memberpress_discord_client_secret = get_option( 'ets_memberpress_discord_client_secret' );
+	$ets_memberpress_discord_bot_token     = get_option( 'ets_memberpress_discord_bot_token' );
+	$ets_memberpress_discord_redirect_url  = get_option( 'ets_memberpress_discord_redirect_url' );
+	$ets_memberpress_discord_guild_id      = get_option( 'ets_memberpress_discord_guild_id' );
 
-		if ( $ets_memberpress_discord_client_id && $ets_memberpress_discord_client_secret && $ets_memberpress_discord_bot_token && $ets_memberpress_discord_redirect_url && $ets_memberpress_discord_guild_id ) {
+	if ( $ets_memberpress_discord_client_id && $ets_memberpress_discord_client_secret && $ets_memberpress_discord_bot_token && $ets_memberpress_discord_redirect_url && $ets_memberpress_discord_guild_id ) {
 			$status = true;
-		} else {
+	} else {
 			$status = false;
-		}
+	}
 
 		return $status;
-	}
+}
 
 /**
  * Get formatted message to send in DM
@@ -223,15 +218,15 @@ function ets_memberpress_discord_get_current_level_id( $user ) {
  * @param INT $user_id
  * Merge fields: [MEMBER_USERNAME], [MEMBER_EMAIL], [MEMBERSHIP_LEVEL], [SITE_URL], [BLOG_NAME], [MEMBERSHIP_ENDDATE], [MEMBERSHIP_STARTDATE]</small>
  */
-function ets_memberpress_discord_get_formatted_dm( $user_id, $level_id, $message ) {
+function ets_memberpress_discord_get_formatted_dm( $user_id, $active_membership, $message ) {
 	global $wpdb;
-	$user_obj         = get_user_by( 'id', $user_id );
-	$membership_level = get_posts( array('ID' => $level_id, 'post_type' => 'memberpressproduct', 'post_status' => 'publish') );
+	$user_obj  = get_user_by( 'id', $user_id );
+	$all_roles = json_decode( get_option( 'ets_memberpress_discord_all_roles' ), true );
 
 	$MEMBER_USERNAME = $user_obj->user_login;
 	$MEMBER_EMAIL    = $user_obj->user_email;
-	if ( $membership_level !== false ) {
-		$MEMBERSHIP_LEVEL = $membership_level->post_title;
+	if ( is_array( $all_roles ) ) {
+		$MEMBERSHIP_LEVEL = $all_roles[ $active_membership['product_id'] ];
 	} else {
 		$MEMBERSHIP_LEVEL = '';
 	}
@@ -239,19 +234,19 @@ function ets_memberpress_discord_get_formatted_dm( $user_id, $level_id, $message
 	$SITE_URL  = get_bloginfo( 'url' );
 	$BLOG_NAME = get_bloginfo( 'name' );
 
-	if ( $membership_level !== false && isset( $membership_level->post_date ) && $membership_level->post_date != '' ) {
-		$MEMBERSHIP_STARTDATE = date( 'F jS, Y', $membership_level->post_date );
+	if ( ! empty( $active_membership ) && isset( $active_membership['created_at'] ) && '' !== $active_membership['created_at'] ) {
+		$MEMBERSHIP_STARTDATE = date( 'F jS, Y', strtotime( $active_membership['created_at'] ) );
 
 	} else {
 		$MEMBERSHIP_STARTDATE = '';
 	}
-	// if ( $membership_level !== false && isset( $membership_level->enddate ) && $membership_level->enddate != '' ) {
-	// 	$MEMBERSHIP_ENDDATE = date( 'F jS, Y', $membership_level->enddate );
-	// } elseif ( $level !== null && $level->expiration_period == '' ) {
-	// 	$MEMBERSHIP_ENDDATE = 'Never';
-	// } else {
+	if ( ! empty( $active_membership ) && isset( $active_membership['expires_at'] ) && '0000-00-00 00:00:00' !== $active_membership['expires_at'] ) {
+		$MEMBERSHIP_ENDDATE = date( 'F jS, Y', strtotime( $active_membership['expires_at'] ) );
+	} elseif ( null !== $active_membership && '0000-00-00 00:00:00' === $active_membership['expires_at'] ) {
+		$MEMBERSHIP_ENDDATE = 'Never';
+	} else {
 		$MEMBERSHIP_ENDDATE = '';
-	//}
+	}
 
 	$find    = array(
 		'[MEMBER_USERNAME]',

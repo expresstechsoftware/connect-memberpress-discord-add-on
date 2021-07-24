@@ -386,7 +386,7 @@ class Memberpress_Discord_Admin {
 			exit();
 		}
 		// Check for nonce security.
-		if ( ! wp_verify_nonce( $_POST['ets_memberpress_discord_nonce'], 'ets-memberpress-discord-ajax-nonce' ) ) {
+		if ( isset( $_POST['ets_memberpress_discord_nonce'] ) && ! wp_verify_nonce( $_POST['ets_memberpress_discord_nonce'], 'ets-memberpress-discord-ajax-nonce' ) ) {
 			wp_send_json_error( 'You do not have sufficient rights', 403 );
 			exit();
 		}
@@ -417,12 +417,12 @@ class Memberpress_Discord_Admin {
 	 *
 	 * @return OBJECT REST API response
 	 */
-	static function ets_memberpress_load_discord_roles() {
+	public function ets_memberpress_load_discord_roles() {
 		if ( ! current_user_can( 'administrator' ) ) {
 			wp_send_json_error( 'You do not have sufficient rights', 403 );
 			exit();
 		}
-		// Check for nonce security
+		// Check for nonce security.
 		if ( ! wp_verify_nonce( $_POST['ets_memberpress_discord_nonce'], 'ets-memberpress-discord-ajax-nonce' ) ) {
 			wp_send_json_error( 'You do not have sufficient rights', 403 );
 			exit();
