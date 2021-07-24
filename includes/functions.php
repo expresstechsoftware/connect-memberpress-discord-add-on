@@ -175,22 +175,6 @@ function ets_memberpress_discord_count_of_hooks_failures( $hook ) {
 }
 
 /**
- * Get memberpress current level id
- *
- * @param INT $user_id
- * @return INT|NULL $curr_level_id
- */
-function ets_memberpress_discord_get_current_level_id( $user ) {
-	$active_prodcuts = $user->active_product_subscriptions( 'ids' );
-	if ( $active_prodcuts ) {
-		$curr_level_id = sanitize_text_field( trim( $active_prodcuts[0] ) );
-		return $curr_level_id;
-	} else {
-		return null;
-	}
-}
-
-/**
  * To check settings values saved or not
  *
  * @param NONE

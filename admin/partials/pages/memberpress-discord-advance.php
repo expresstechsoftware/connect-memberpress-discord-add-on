@@ -15,7 +15,7 @@ $ets_memberpress_discord_welcome_message            = sanitize_text_field( trim(
 $ets_memberpress_discord_send_membership_cancel_dm  = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_send_membership_cancel_dm' ) ) );
 $ets_memberpress_discord_cancel_message             = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_cancel_message' ) ) );
 ?>
-<form method="post" action="<?php echo get_site_url().'/wp-admin/admin-post.php' ?>">
+<form method="post" action="<?php echo esc_attr( get_site_url() ) . '/wp-admin/admin-post.php' ?>">
 <input type="hidden" name="action" value="memberpress_discord_advance_settings">
 <?php wp_nonce_field( 'save_discord_adv_settings', 'ets_discord_save_adv_settings' ); ?>
   <table class="form-table" role="presentation">
@@ -34,7 +34,7 @@ $ets_memberpress_discord_cancel_message             = sanitize_text_field( trim(
 	<tr>
 		<th scope="row"><?php echo __( 'Membership welcome message', 'ets_memberpress_discord' ); ?></th>
 		<td> <fieldset>
-		<textarea class="ets_memberpress_discord_dm_textarea" name="ets_memberpress_discord_welcome_message" id="ets_memberpress_discord_welcome_message" row="25" cols="50"><?php if ( $ets_memberpress_discord_welcome_message ) { echo wp_unslash($ets_memberpress_discord_welcome_message); } ?></textarea> 
+		<textarea class="ets_memberpress_discord_dm_textarea" name="ets_memberpress_discord_welcome_message" id="ets_memberpress_discord_welcome_message" row="25" cols="50"><?php if ( $ets_memberpress_discord_welcome_message ) { echo esc_attr( $ets_memberpress_discord_welcome_message ); } ?></textarea> 
 	<br/>
 	<small>Merge fields: [MEMBER_USERNAME], [MEMBER_EMAIL], [MEMBERSHIP_LEVEL], [SITE_URL], [BLOG_NAME], [MEMBERSHIP_ENDDATE], [MEMBERSHIP_STARTDATE]</small>
 		</fieldset></td>
@@ -54,7 +54,7 @@ $ets_memberpress_discord_cancel_message             = sanitize_text_field( trim(
 	<tr>
 		<th scope="row"><?php echo __( 'Membership expiration warning message', 'ets_memberpress_discord' ); ?></th>
 		<td> <fieldset>
-		<textarea  class="ets_memberpress_discord_dm_textarea" name="ets_memberpress_discord_expiration_warning_message" id="ets_memberpress_discord_expiration_warning_message" row="25" cols="50"><?php if ( $ets_memberpress_discord_expiration_warning_message ) { echo wp_unslash($ets_memberpress_discord_expiration_warning_message); } ?></textarea> 
+		<textarea  class="ets_memberpress_discord_dm_textarea" name="ets_memberpress_discord_expiration_warning_message" id="ets_memberpress_discord_expiration_warning_message" row="25" cols="50"><?php if ( $ets_memberpress_discord_expiration_warning_message ) { echo esc_attr( $ets_memberpress_discord_expiration_warning_message ); } ?></textarea> 
 	<br/>
 	<small>Merge fields: [MEMBER_USERNAME], [MEMBER_EMAIL], [MEMBERSHIP_LEVEL], [SITE_URL], [BLOG_NAME], [MEMBERSHIP_ENDDATE], [MEMBERSHIP_STARTDATE]</small>
 		</fieldset></td>
@@ -73,7 +73,7 @@ $ets_memberpress_discord_cancel_message             = sanitize_text_field( trim(
 	<tr>
 		<th scope="row"><?php echo __( 'Membership expired message', 'ets_memberpress_discord' ); ?></th>
 		<td> <fieldset>
-		<textarea  class="ets_memberpress_discord_dm_textarea" name="ets_memberpress_discord_expiration_expired_message" id="ets_memberpress_discord_expiration_expired_message" row="25" cols="50"><?php if ( $ets_memberpress_discord_expiration_expired_message ) { echo wp_unslash($ets_memberpress_discord_expiration_expired_message); } ?></textarea> 
+		<textarea  class="ets_memberpress_discord_dm_textarea" name="ets_memberpress_discord_expiration_expired_message" id="ets_memberpress_discord_expiration_expired_message" row="25" cols="50"><?php if ( $ets_memberpress_discord_expiration_expired_message ) { echo esc_attr( $ets_memberpress_discord_expiration_expired_message ); } ?></textarea> 
 	<br/>
 	<small>Merge fields: [MEMBER_USERNAME], [MEMBER_EMAIL], [MEMBERSHIP_LEVEL], [SITE_URL], [BLOG_NAME]</small>
 		</fieldset>
@@ -93,7 +93,7 @@ $ets_memberpress_discord_cancel_message             = sanitize_text_field( trim(
 		<tr>
 		<th scope="row"><?php echo __( 'Membership cancel message', 'ets_memberpress_discord' ); ?></th>
 		<td> <fieldset>
-		<textarea  class="ets_memberpress_discord_dm_textarea" name="ets_memberpress_discord_cancel_message" id="ets_memberpress_discord_cancel_message" row="25" cols="50"><?php if ( $ets_memberpress_discord_cancel_message ) { echo wp_unslash($ets_memberpress_discord_cancel_message); } ?></textarea> 
+		<textarea  class="ets_memberpress_discord_dm_textarea" name="ets_memberpress_discord_cancel_message" id="ets_memberpress_discord_cancel_message" row="25" cols="50"><?php if ( $ets_memberpress_discord_cancel_message ) { echo esc_html( $ets_memberpress_discord_cancel_message); } ?></textarea> 
 	<br/>
 	<small>Merge fields: [MEMBER_USERNAME], [MEMBER_EMAIL], [MEMBERSHIP_LEVEL], [SITE_URL], [BLOG_NAME]</small>
 		</fieldset>
@@ -124,19 +124,19 @@ $ets_memberpress_discord_cancel_message             = sanitize_text_field( trim(
 	<tr>
 		<th scope="row"><?php echo __( 'How many times a failed API call should get re-try', 'ets_memberpress_discord' ); ?></th>
 		<td> <fieldset>
-		<input name="ets_memberpress_retry_api_count" type="number" min="1" id="ets_memberpress_retry_api_count" value="<?php if ( isset( $retry_api_count ) ) { echo $retry_api_count; } else { echo 1; } ?>">
+		<input name="ets_memberpress_retry_api_count" type="number" min="1" id="ets_memberpress_retry_api_count" value="<?php if ( isset( $retry_api_count ) ) { echo esc_attr( $retry_api_count ); } else { echo 1; } ?>">
 		</fieldset></td>
 	  </tr> 
 	  <tr>
 		<th scope="row"><?php echo __( 'Set job queue concurrency', 'ets_memberpress_discord' ); ?></th>
 		<td> <fieldset>
-		<input name="set_job_cnrc" type="number" min="1" id="set_job_cnrc" value="<?php if ( isset( $set_job_cnrc ) ) { echo $set_job_cnrc; } else { echo 1; } ?>">
+		<input name="set_job_cnrc" type="number" min="1" id="set_job_cnrc" value="<?php if ( isset( $set_job_cnrc ) ) { echo esc_attr( $set_job_cnrc ); } else { echo 1; } ?>">
 		</fieldset></td>
 	  </tr>
 	  <tr>
 		<th scope="row"><?php echo __( 'Set job queue batch size', 'ets_memberpress_discord' ); ?></th>
 		<td> <fieldset>
-		<input name="set_job_q_batch_size" type="number" min="1" id="set_job_q_batch_size" value="<?php if ( isset( $set_job_q_batch_size ) ) { echo $set_job_q_batch_size; } else { echo 10; } ?>">
+		<input name="set_job_q_batch_size" type="number" min="1" id="set_job_q_batch_size" value="<?php if ( isset( $set_job_q_batch_size ) ) { echo esc_attr( $set_job_q_batch_size ); } else { echo 10; } ?>">
 		</fieldset></td>
 	  </tr>
 	<tr>

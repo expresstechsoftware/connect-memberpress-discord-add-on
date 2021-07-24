@@ -112,7 +112,7 @@ class Memberpress_Discord_Public {
 	 *
 	 * @since    1.0.0
 	 */
-	public function ets_memberpress_discord_add_field() {
+	public function ets_memberpress_discord_add_connect_button() {
 		if ( ! is_user_logged_in() ) {
 			wp_send_json_error( 'Unauthorized user', 401 );
 			exit();
