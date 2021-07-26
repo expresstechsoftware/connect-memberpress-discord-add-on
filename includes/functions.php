@@ -209,7 +209,7 @@ function ets_memberpress_discord_get_formatted_dm( $user_id, $active_membership,
 
 	$MEMBER_USERNAME = $user_obj->user_login;
 	$MEMBER_EMAIL    = $user_obj->user_email;
-	if ( is_array( $all_roles ) ) {
+	if ( is_array( $all_roles ) && array_key_exists( $active_membership['product_id'], $all_roles ) ) {
 		$MEMBERSHIP_LEVEL = $all_roles[ $active_membership['product_id'] ];
 	} else {
 		$MEMBERSHIP_LEVEL = '';

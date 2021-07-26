@@ -147,7 +147,7 @@ class Memberpress_Discord_Public {
 				<a href="#" class="ets-btn btn-disconnect" id="disconnect-discord" data-user-id="<?php echo esc_attr( $user_id ); ?>"><?php echo __( 'Disconnect From Discord ', 'ets_memberpress_discord' ); ?><i class='fab fa-discord'></i></a>
 				<span class="ets-spinner"></span>
 				<?php
-			} elseif ( current_user_can( 'memberpress_authorized' ) || $allow_none_member == 'yes' ) {
+			} elseif ( current_user_can( 'memberpress_authorized' ) && $mapped_role_names || $allow_none_member == 'yes' ) {
 				?>
 				<label class="ets-connection-lbl"><?php echo __( 'Discord connection', 'ets_memberpress_discord' ); ?></label>
 				<a href="?action=memberpress-discord-login" class="btn-connect ets-btn" ><?php echo __( 'Connect To Discord', 'ets_memberpress_discord' ); ?> <i class='fab fa-discord'></i></a>
@@ -295,7 +295,8 @@ class Memberpress_Discord_Public {
 			wp_send_json_error( 'Unauthorized user', 401 );
 			exit();
 		}
-		if ( ! empty( $active_memberships ) ) {
+		$allow_none_member = sanitize_text_field( trim( get_option( 'ets_memberpress_allow_none_member' ) ) );
+		if ( ! empty( $active_memberships ) || 'yes' ===  $allow_none_member ) {
 			// It is possible that we may exhaust API rate limit while adding members to guild, so handling off the job to queue.
 			as_schedule_single_action( ets_memberpress_discord_get_random_timestamp( ets_memberpress_discord_get_highest_last_attempt_timestamp() ), 'ets_memberpress_discord_as_handle_add_member_to_guild', array( $_ets_memberpress_discord_user_id, $user_id, $access_token, $active_memberships ), MEMBERPRESS_DISCORD_AS_GROUP_NAME );
 		}
@@ -322,10 +323,12 @@ class Memberpress_Discord_Public {
 		$discord_role                            = '';
 		$ets_memberpress_discord_send_welcome_dm = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_send_welcome_dm' ) ) );
 		$discord_roles                           = array();
-		foreach ( $active_memberships as $active_membership ) {
-			if ( is_array( $ets_memberpress_discord_role_mapping ) && array_key_exists( 'level_id_' . $active_membership['product_id'], $ets_memberpress_discord_role_mapping ) ) {
-					$discord_role = sanitize_text_field( trim( $ets_memberpress_discord_role_mapping[ 'level_id_' . $active_membership['product_id'] ] ) );
-					array_push( $discord_roles, $discord_role );
+		if ( is_array( $active_memberships ) ) {
+			foreach ( $active_memberships as $active_membership ) {
+				if ( is_array( $ets_memberpress_discord_role_mapping ) && array_key_exists( 'level_id_' . $active_membership['product_id'], $ets_memberpress_discord_role_mapping ) ) {
+						$discord_role = sanitize_text_field( trim( $ets_memberpress_discord_role_mapping[ 'level_id_' . $active_membership['product_id'] ] ) );
+						array_push( $discord_roles, $discord_role );
+				}
 			}
 		}
 		if ( empty( $discord_roles ) && $default_role ) {
@@ -342,7 +345,6 @@ class Memberpress_Discord_Public {
 			'body'    => wp_json_encode(
 				array(
 					'access_token' => $access_token,
-					'roles'        => $discord_roles,
 				)
 			),
 		);
