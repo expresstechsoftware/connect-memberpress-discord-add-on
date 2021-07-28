@@ -331,9 +331,6 @@ class Memberpress_Discord_Public {
 				}
 			}
 		}
-		if ( empty( $discord_roles ) && $default_role ) {
-			array_push( $discord_roles, $default_role );
-		}
 
 		$guilds_memeber_api_url = MEMBERPRESS_DISCORD_API_URL . 'guilds/' . $guild_id . '/members/' . $_ets_memberpress_discord_user_id;
 		$guild_args             = array(
@@ -736,5 +733,102 @@ class Memberpress_Discord_Public {
 			}
 		}
 		return $response_arr;
+	}
+
+	/**
+	 * Action schedule to schedule a function to run upon memberpress Expiry
+	 *
+	 * @param ARRAY $txn
+	 * @param BOOLEAN $status
+	 * @return NONE
+	 */
+	public function ets_memberpress_discord_as_schdule_job_memberpress_expiry( $txn, $status = false ) {
+		$existing_members_queue = sanitize_text_field( trim( get_option( 'ets_queue_of_memberpress_members' ) ) );
+		$access_token         = sanitize_text_field( trim( get_user_meta( $txn->user_id, '_ets_memberpress_discord_access_token', true ) ) );
+		if ( $status == true && $access_token ) {
+			as_schedule_single_action( ets_memberpress_discord_get_random_timestamp( ets_memberpress_discord_get_highest_last_attempt_timestamp() ), 'ets_memberpress_discord_as_handle_memberpress_expiry', array( $txn->user_id, $txn ), ETS_DISCORD_AS_GROUP_NAME );
+		}
+	}
+
+	/*
+	* Action scheduler method to process expired memberpress members.
+	* @param INT $user_id
+	* @param INT $expired_level_id
+	*/
+	public function ets_memberpress_discord_as_handler_memberpress_expiry( $user_id, $txn ) {
+		$this->ets_memberpress_discord_set_member_roles( $user_id, $txn, false, true );
+	}
+
+	/**
+	 * Method to adjust level mapped and default role of a member.
+	 *
+	 * @param INT  $user_id
+	 * @param INT  $expired_level_id
+	 * @param INT  $cancel_level_id
+	 * @param BOOL $is_schedule
+	 */
+	private function ets_memberpress_discord_set_member_roles( $user_id, $txn = false, $cancel_level_id = false, $is_schedule = true ) {
+		$allow_none_member                            = sanitize_text_field( trim( get_option( 'ets_memberpress_allow_none_member' ) ) );
+		$default_role                                 = sanitize_text_field( trim( get_option( '_ets_memberpress_discord_default_role_id' ) ) );
+		$_ets_memberpress_discord_role_id             = sanitize_text_field( trim( get_user_meta( $user_id, '_ets_memberpress_discord_role_id_for_'.$txn->product_id, true ) ) );
+		$ets_memberpress_discord_role_mapping         = json_decode( get_option( 'ets_memberpress_discord_role_mapping' ), true );
+		$curr_level_id                                = sanitize_text_field( trim( $txn->product_id ) );
+		$previous_default_role                        = get_user_meta( $user_id, '_ets_memberpress_discord_default_role_id', true );
+		$ets_memberpress_discord_send_membership_expired_dm = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_send_membership_expired_dm' ) ) );
+		$ets_memberpress_discord_send_membership_cancel_dm  = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_send_membership_cancel_dm' ) ) );
+		$access_token                                 = get_user_meta( $user_id, '_ets_memberpress_discord_access_token', true );
+		if ( ! empty( $access_token ) ) {
+			if ( $txn->product_id ) {
+				$curr_level_id = $txn->product_id;
+			}
+			if ( $cancel_level_id ) {
+				$curr_level_id = $cancel_level_id;
+			}
+			// delete already assigned role.
+			if ( isset( $_ets_memberpress_discord_role_id ) && $_ets_memberpress_discord_role_id != '' && $_ets_memberpress_discord_role_id != 'none' ) {
+					$this->delete_discord_role( $user_id, $_ets_memberpress_discord_role_id, $is_schedule );
+					delete_user_meta( $user_id, '_ets_memberpress_discord_role_id_for_'.$txn->product_id, true );
+			}
+			if ( $curr_level_id !== null ) {
+				// Assign role which is mapped to the mmebership level.
+				if ( is_array( $ets_memberpress_discord_role_mapping ) && array_key_exists( 'level_id_' . $curr_level_id, $ets_memberpress_discord_role_mapping ) ) {
+					$mapped_role_id = sanitize_text_field( trim( $ets_memberpress_discord_role_mapping[ 'level_id_' . $curr_level_id ] ) );
+					if ( $mapped_role_id && $expired_level_id == false && $cancel_level_id == false ) {
+						$this->put_discord_role_api( $user_id, $mapped_role_id, $is_schedule );
+						update_user_meta( $user_id, '_ets_memberpress_discord_role_id_for_'.$curr_level_id, $mapped_role_id );
+					}
+				}
+			}
+			// Assign role which is saved as default.
+			if ( $default_role != 'none' ) {
+				if ( isset( $previous_default_role ) && $previous_default_role != '' && $previous_default_role != 'none' ) {
+						$this->delete_discord_role( $user_id, $previous_default_role, $is_schedule );
+				}
+				delete_user_meta( $user_id, '_ets_memberpress_discord_default_role_id', true );
+				$this->put_discord_role_api( $user_id, $default_role, $is_schedule );
+				update_user_meta( $user_id, '_ets_memberpress_discord_default_role_id', $default_role );
+			} elseif ( $default_role == 'none' ) {
+				if ( isset( $previous_default_role ) && $previous_default_role != '' && $previous_default_role != 'none' ) {
+					$this->delete_discord_role( $user_id, $previous_default_role, $is_schedule );
+				}
+				update_user_meta( $user_id, '_ets_memberpress_discord_default_role_id', $default_role );
+			}
+
+			if ( isset( $user_id ) && $allow_none_member == 'no' && $curr_level_id == null ) {
+				$this->delete_member_from_guild( $user_id, false );
+			}
+
+			delete_user_meta( $user_id, '_ets_memberpress_discord_expitration_warning_dm_for_' . $curr_level_id );
+
+			// Send DM about expiry, but only when allow_none_member setting is yes
+			if ( $ets_memberpress_discord_send_membership_expired_dm == true && $expired_level_id !== false && $allow_none_member = 'yes' ) {
+				as_schedule_single_action( ets_memberpress_discord_get_random_timestamp( ets_memberpress_discord_get_highest_last_attempt_timestamp() ), 'ets_memberpress_discord_as_send_dm', array( $user_id, $expired_level_id, 'expired' ), 'ets-memberpress-discord' );
+			}
+
+			// Send DM about cancel, but only when allow_none_member setting is yes
+			if ( $ets_memberpress_discord_send_membership_cancel_dm == true && $cancel_level_id !== false && $allow_none_member = 'yes' ) {
+				as_schedule_single_action( ets_memberpress_discord_get_random_timestamp( ets_memberpress_discord_get_highest_last_attempt_timestamp() ), 'ets_memberpress_discord_as_send_dm', array( $user_id, $cancel_level_id, 'cancel' ), 'ets-memberpress-discord' );
+			}
+		}
 	}
 }
