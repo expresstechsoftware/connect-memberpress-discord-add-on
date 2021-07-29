@@ -372,7 +372,7 @@ class Memberpress_Discord_Public {
 		// Send welcome message.
 		if ( true == $ets_memberpress_discord_send_welcome_dm ) {
 			foreach ( $active_memberships as $active_membership ) {
-				as_schedule_single_action( ets_memberpress_discord_get_random_timestamp( ets_memberpress_discord_get_highest_last_attempt_timestamp() ), 'ets_memberpress_discord_as_send_welcome_dm', array( $user_id, $active_membership, 'welcome' ), MEMBERPRESS_DISCORD_AS_GROUP_NAME );
+				as_schedule_single_action( ets_memberpress_discord_get_random_timestamp( ets_memberpress_discord_get_highest_last_attempt_timestamp() ), 'ets_memberpress_discord_as_send_dm', array( $user_id, $active_membership, 'welcome' ), MEMBERPRESS_DISCORD_AS_GROUP_NAME );
 			}
 		}
 	}
@@ -743,9 +743,10 @@ class Memberpress_Discord_Public {
 	 * @return NONE
 	 */
 	public function ets_memberpress_discord_as_schdule_job_memberpress_expiry( $txn, $status = false ) {
+		update_option( 'object_txn_expired', $status );
 		$existing_members_queue = sanitize_text_field( trim( get_option( 'ets_queue_of_memberpress_members' ) ) );
 		$access_token         = sanitize_text_field( trim( get_user_meta( $txn->user_id, '_ets_memberpress_discord_access_token', true ) ) );
-		if ( $status == true && $access_token ) {
+		if ( $status == 'none' && $access_token ) {
 			as_schedule_single_action( ets_memberpress_discord_get_random_timestamp( ets_memberpress_discord_get_highest_last_attempt_timestamp() ), 'ets_memberpress_discord_as_handle_memberpress_expiry', array( $txn->user_id, $txn ), ETS_DISCORD_AS_GROUP_NAME );
 		}
 	}
@@ -768,6 +769,7 @@ class Memberpress_Discord_Public {
 	 * @param BOOL $is_schedule
 	 */
 	private function ets_memberpress_discord_set_member_roles( $user_id, $txn = false, $cancel_level_id = false, $is_schedule = true ) {
+		$expired_level_id = $txn->product_id;
 		$allow_none_member                            = sanitize_text_field( trim( get_option( 'ets_memberpress_allow_none_member' ) ) );
 		$default_role                                 = sanitize_text_field( trim( get_option( '_ets_memberpress_discord_default_role_id' ) ) );
 		$_ets_memberpress_discord_role_id             = sanitize_text_field( trim( get_user_meta( $user_id, '_ets_memberpress_discord_role_id_for_'.$txn->product_id, true ) ) );
@@ -815,19 +817,18 @@ class Memberpress_Discord_Public {
 			}
 
 			if ( isset( $user_id ) && $allow_none_member == 'no' && $curr_level_id == null ) {
-				$this->delete_member_from_guild( $user_id, false );
+				$this->memberpress_delete_member_from_guild( $user_id, false );
 			}
-
 			delete_user_meta( $user_id, '_ets_memberpress_discord_expitration_warning_dm_for_' . $curr_level_id );
 
 			// Send DM about expiry, but only when allow_none_member setting is yes
 			if ( $ets_memberpress_discord_send_membership_expired_dm == true && $expired_level_id !== false && $allow_none_member = 'yes' ) {
-				as_schedule_single_action( ets_memberpress_discord_get_random_timestamp( ets_memberpress_discord_get_highest_last_attempt_timestamp() ), 'ets_memberpress_discord_as_send_dm', array( $user_id, $expired_level_id, 'expired' ), 'ets-memberpress-discord' );
+				as_schedule_single_action( ets_memberpress_discord_get_random_timestamp( ets_memberpress_discord_get_highest_last_attempt_timestamp() ), 'ets_memberpress_discord_as_send_dm', array( $user_id, $txn, 'expired' ), 'ets-memberpress-discord' );
 			}
 
 			// Send DM about cancel, but only when allow_none_member setting is yes
 			if ( $ets_memberpress_discord_send_membership_cancel_dm == true && $cancel_level_id !== false && $allow_none_member = 'yes' ) {
-				as_schedule_single_action( ets_memberpress_discord_get_random_timestamp( ets_memberpress_discord_get_highest_last_attempt_timestamp() ), 'ets_memberpress_discord_as_send_dm', array( $user_id, $cancel_level_id, 'cancel' ), 'ets-memberpress-discord' );
+				as_schedule_single_action( ets_memberpress_discord_get_random_timestamp( ets_memberpress_discord_get_highest_last_attempt_timestamp() ), 'ets_memberpress_discord_as_send_dm', array( $user_id, $txn, 'cancel' ), 'ets-memberpress-discord' );
 			}
 		}
 	}
