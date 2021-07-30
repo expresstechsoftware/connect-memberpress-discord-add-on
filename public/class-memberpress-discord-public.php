@@ -205,7 +205,7 @@ class Memberpress_Discord_Public {
 				wp_redirect( $discord_authorise_api_url, 302, get_site_url() );
 				exit;
 			}
-			
+
 			if ( isset( $_GET['action'] ) && 'discord-connectToBot' === $_GET['action'] ) {
 				$params                    = array(
 					'client_id'   => sanitize_text_field( trim( get_option( 'ets_memberpress_discord_client_id' ) ) ),
@@ -267,7 +267,7 @@ class Memberpress_Discord_Public {
 									foreach ( $active_memberships as $active_membership ) {
 										$_ets_memberpress_discord_role_id = sanitize_text_field( trim( get_user_meta( $user_id, '_ets_memberpress_discord_role_id_for_' . $active_membership->product_id, true ) ) );
 										if ( ! empty( $_ets_memberpress_discord_role_id ) && $_ets_memberpress_discord_role_id != 'none' ) {
-											$this->delete_discord_role( $user_id, $_ets_memberpress_discord_role_id );
+											$this->memberpress_delete_discord_role( $user_id, $_ets_memberpress_discord_role_id );
 										}
 									}
 								}
@@ -296,7 +296,7 @@ class Memberpress_Discord_Public {
 			exit();
 		}
 		$allow_none_member = sanitize_text_field( trim( get_option( 'ets_memberpress_allow_none_member' ) ) );
-		if ( ! empty( $active_memberships ) || 'yes' ===  $allow_none_member ) {
+		if ( ! empty( $active_memberships ) || 'yes' === $allow_none_member ) {
 			// It is possible that we may exhaust API rate limit while adding members to guild, so handling off the job to queue.
 			as_schedule_single_action( ets_memberpress_discord_get_random_timestamp( ets_memberpress_discord_get_highest_last_attempt_timestamp() ), 'ets_memberpress_discord_as_handle_add_member_to_guild', array( $_ets_memberpress_discord_user_id, $user_id, $access_token, $active_memberships ), MEMBERPRESS_DISCORD_AS_GROUP_NAME );
 		}
@@ -620,8 +620,10 @@ class Memberpress_Discord_Public {
 		delete_user_meta( $user_id, '_ets_memberpress_discord_user_id' );
 		delete_user_meta( $user_id, '_ets_memberpress_discord_access_token' );
 		delete_user_meta( $user_id, '_ets_memberpress_discord_refresh_token' );
-		foreach ( $active_memberships as $active_membership ) {
-			delete_user_meta( $user_id, '_ets_memberpress_discord_role_id_for_' . $active_membership->product_id );
+		if ( is_array( $active_memberships ) ) {
+			foreach ( $active_memberships as $active_membership ) {
+				delete_user_meta( $user_id, '_ets_memberpress_discord_role_id_for_' . $active_membership->product_id );
+			}
 		}
 		delete_user_meta( $user_id, '_ets_memberpress_discord_default_role_id' );
 		delete_user_meta( $user_id, '_ets_memberpress_discord_username' );
@@ -738,16 +740,25 @@ class Memberpress_Discord_Public {
 	/**
 	 * Action schedule to schedule a function to run upon memberpress Expiry
 	 *
-	 * @param ARRAY $txn
+	 * @param ARRAY   $txn
 	 * @param BOOLEAN $status
 	 * @return NONE
 	 */
 	public function ets_memberpress_discord_as_schdule_job_memberpress_expiry( $txn, $status = false ) {
-		update_option( 'object_txn_expired', $status );
 		$existing_members_queue = sanitize_text_field( trim( get_option( 'ets_queue_of_memberpress_members' ) ) );
-		$access_token         = sanitize_text_field( trim( get_user_meta( $txn->user_id, '_ets_memberpress_discord_access_token', true ) ) );
+		$access_token           = sanitize_text_field( trim( get_user_meta( $txn->user_id, '_ets_memberpress_discord_access_token', true ) ) );
+		$expired_membership    = array();
+		if ( ! empty( $txn ) ) {
+				$expired_membership = array(
+					'product_id' => $txn->product_id,
+					'created_at' => $txn->created_at,
+					'expires_at' => $txn->expires_at,
+				);
+		}
+
 		if ( $status == 'none' && $access_token ) {
-			as_schedule_single_action( ets_memberpress_discord_get_random_timestamp( ets_memberpress_discord_get_highest_last_attempt_timestamp() ), 'ets_memberpress_discord_as_handle_memberpress_expiry', array( $txn->user_id, $txn ), ETS_DISCORD_AS_GROUP_NAME );
+			update_option( 'object_txn_expired', $subs );
+			as_schedule_single_action( ets_memberpress_discord_get_random_timestamp( ets_memberpress_discord_get_highest_last_attempt_timestamp() ), 'ets_memberpress_discord_as_handle_memberpress_expiry', array( $txn->user_id, $expired_membership ), MEMBERPRESS_DISCORD_AS_GROUP_NAME );
 		}
 	}
 
@@ -756,8 +767,8 @@ class Memberpress_Discord_Public {
 	* @param INT $user_id
 	* @param INT $expired_level_id
 	*/
-	public function ets_memberpress_discord_as_handler_memberpress_expiry( $user_id, $txn ) {
-		$this->ets_memberpress_discord_set_member_roles( $user_id, $txn, false, true );
+	public function ets_memberpress_discord_as_handler_memberpress_expiry( $user_id, $expired_membership ) {
+		$this->ets_memberpress_discord_set_member_roles( $user_id, $expired_membership, false, true );
 	}
 
 	/**
@@ -768,68 +779,124 @@ class Memberpress_Discord_Public {
 	 * @param INT  $cancel_level_id
 	 * @param BOOL $is_schedule
 	 */
-	private function ets_memberpress_discord_set_member_roles( $user_id, $txn = false, $cancel_level_id = false, $is_schedule = true ) {
-		$expired_level_id = $txn->product_id;
-		$allow_none_member                            = sanitize_text_field( trim( get_option( 'ets_memberpress_allow_none_member' ) ) );
-		$default_role                                 = sanitize_text_field( trim( get_option( '_ets_memberpress_discord_default_role_id' ) ) );
-		$_ets_memberpress_discord_role_id             = sanitize_text_field( trim( get_user_meta( $user_id, '_ets_memberpress_discord_role_id_for_'.$txn->product_id, true ) ) );
-		$ets_memberpress_discord_role_mapping         = json_decode( get_option( 'ets_memberpress_discord_role_mapping' ), true );
-		$curr_level_id                                = sanitize_text_field( trim( $txn->product_id ) );
-		$previous_default_role                        = get_user_meta( $user_id, '_ets_memberpress_discord_default_role_id', true );
+	private function ets_memberpress_discord_set_member_roles( $user_id, $expired_membership = false, $cancel_level_id = false, $is_schedule = true ) {
+		$expired_level_id                                   = $expired_membership['product_id'];
+		$allow_none_member                                  = sanitize_text_field( trim( get_option( 'ets_memberpress_allow_none_member' ) ) );
+		$default_role                                       = sanitize_text_field( trim( get_option( '_ets_memberpress_discord_default_role_id' ) ) );
+		$_ets_memberpress_discord_role_id                   = sanitize_text_field( trim( get_user_meta( $user_id, '_ets_memberpress_discord_role_id_for_' . $expired_membership['product_id'], true ) ) );
+		$ets_memberpress_discord_role_mapping               = json_decode( get_option( 'ets_memberpress_discord_role_mapping' ), true );
+		$curr_level_id                                      = sanitize_text_field( trim( $expired_membership['product_id'] ) );
+		$previous_default_role                              = get_user_meta( $user_id, '_ets_memberpress_discord_default_role_id', true );
 		$ets_memberpress_discord_send_membership_expired_dm = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_send_membership_expired_dm' ) ) );
 		$ets_memberpress_discord_send_membership_cancel_dm  = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_send_membership_cancel_dm' ) ) );
-		$access_token                                 = get_user_meta( $user_id, '_ets_memberpress_discord_access_token', true );
+		$access_token                                       = get_user_meta( $user_id, '_ets_memberpress_discord_access_token', true );
+		$memberpress_user                                   = new MeprUser( $user_id );
+		$active_subscriptions                               = $memberpress_user->active_product_subscriptions();
 		if ( ! empty( $access_token ) ) {
-			if ( $txn->product_id ) {
-				$curr_level_id = $txn->product_id;
+			if ( count( $active_subscriptions ) ) {
+				$curr_level_id = $expired_membership['product_id'];
 			}
 			if ( $cancel_level_id ) {
 				$curr_level_id = $cancel_level_id;
 			}
 			// delete already assigned role.
 			if ( isset( $_ets_memberpress_discord_role_id ) && $_ets_memberpress_discord_role_id != '' && $_ets_memberpress_discord_role_id != 'none' ) {
-					$this->delete_discord_role( $user_id, $_ets_memberpress_discord_role_id, $is_schedule );
-					delete_user_meta( $user_id, '_ets_memberpress_discord_role_id_for_'.$txn->product_id, true );
+					$this->memberpress_delete_discord_role( $user_id, $_ets_memberpress_discord_role_id, $is_schedule );
+					delete_user_meta( $user_id, '_ets_memberpress_discord_role_id_for_' . $expired_membership['product_id'], true );
 			}
-			if ( $curr_level_id !== null ) {
+			if ( count( $active_subscriptions ) != 0 ) {
 				// Assign role which is mapped to the mmebership level.
 				if ( is_array( $ets_memberpress_discord_role_mapping ) && array_key_exists( 'level_id_' . $curr_level_id, $ets_memberpress_discord_role_mapping ) ) {
 					$mapped_role_id = sanitize_text_field( trim( $ets_memberpress_discord_role_mapping[ 'level_id_' . $curr_level_id ] ) );
 					if ( $mapped_role_id && $expired_level_id == false && $cancel_level_id == false ) {
 						$this->put_discord_role_api( $user_id, $mapped_role_id, $is_schedule );
-						update_user_meta( $user_id, '_ets_memberpress_discord_role_id_for_'.$curr_level_id, $mapped_role_id );
+						update_user_meta( $user_id, '_ets_memberpress_discord_role_id_for_' . $curr_level_id, $mapped_role_id );
 					}
 				}
 			}
 			// Assign role which is saved as default.
 			if ( $default_role != 'none' ) {
 				if ( isset( $previous_default_role ) && $previous_default_role != '' && $previous_default_role != 'none' ) {
-						$this->delete_discord_role( $user_id, $previous_default_role, $is_schedule );
+						$this->memberpress_delete_discord_role( $user_id, $previous_default_role, $is_schedule );
 				}
 				delete_user_meta( $user_id, '_ets_memberpress_discord_default_role_id', true );
 				$this->put_discord_role_api( $user_id, $default_role, $is_schedule );
 				update_user_meta( $user_id, '_ets_memberpress_discord_default_role_id', $default_role );
 			} elseif ( $default_role == 'none' ) {
 				if ( isset( $previous_default_role ) && $previous_default_role != '' && $previous_default_role != 'none' ) {
-					$this->delete_discord_role( $user_id, $previous_default_role, $is_schedule );
+					$this->memberpress_delete_discord_role( $user_id, $previous_default_role, $is_schedule );
 				}
 				update_user_meta( $user_id, '_ets_memberpress_discord_default_role_id', $default_role );
 			}
 
-			if ( isset( $user_id ) && $allow_none_member == 'no' && $curr_level_id == null ) {
+			if ( isset( $user_id ) && $allow_none_member == 'no' && count( $active_subscriptions ) == 0 ) {
 				$this->memberpress_delete_member_from_guild( $user_id, false );
 			}
 			delete_user_meta( $user_id, '_ets_memberpress_discord_expitration_warning_dm_for_' . $curr_level_id );
 
 			// Send DM about expiry, but only when allow_none_member setting is yes
 			if ( $ets_memberpress_discord_send_membership_expired_dm == true && $expired_level_id !== false && $allow_none_member = 'yes' ) {
-				as_schedule_single_action( ets_memberpress_discord_get_random_timestamp( ets_memberpress_discord_get_highest_last_attempt_timestamp() ), 'ets_memberpress_discord_as_send_dm', array( $user_id, $txn, 'expired' ), 'ets-memberpress-discord' );
+				as_schedule_single_action( ets_memberpress_discord_get_random_timestamp( ets_memberpress_discord_get_highest_last_attempt_timestamp() ), 'ets_memberpress_discord_as_send_dm', array( $user_id, $expired_membership, 'expired' ), 'ets-memberpress-discord' );
 			}
 
 			// Send DM about cancel, but only when allow_none_member setting is yes
 			if ( $ets_memberpress_discord_send_membership_cancel_dm == true && $cancel_level_id !== false && $allow_none_member = 'yes' ) {
 				as_schedule_single_action( ets_memberpress_discord_get_random_timestamp( ets_memberpress_discord_get_highest_last_attempt_timestamp() ), 'ets_memberpress_discord_as_send_dm', array( $user_id, $txn, 'cancel' ), 'ets-memberpress-discord' );
 			}
+		}
+	}
+
+	/**
+	 * Schedule delete discord role for a member
+	 *
+	 * @param INT  $user_id
+	 * @param INT  $ets_role_id
+	 * @param BOOL $is_schedule
+	 * @return OBJECT API response
+	 */
+	public function memberpress_delete_discord_role( $user_id, $ets_role_id, $is_schedule = true ) {
+		if ( $is_schedule ) {
+			as_schedule_single_action( ets_memberpress_discord_get_random_timestamp( ets_memberpress_discord_get_highest_last_attempt_timestamp() ), 'ets_memberpress_discord_as_schedule_delete_role', array( $user_id, $ets_role_id, $is_schedule ), MEMBERPRESS_DISCORD_AS_GROUP_NAME );
+		} else {
+			$this->ets_memberpress_discord_as_handler_delete_memberrole( $user_id, $ets_role_id, $is_schedule );
+		}
+	}
+
+	/**
+	 * Action Schedule handler to process delete role of a member.
+	 *
+	 * @param INT  $user_id
+	 * @param INT  $ets_role_id
+	 * @param BOOL $is_schedule
+	 * @return OBJECT API response
+	 */
+	public function ets_memberpress_discord_as_handler_delete_memberrole( $user_id, $ets_role_id, $is_schedule = true ) {
+
+		$guild_id                    = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_guild_id' ) ) );
+		$_ets_memberpress_discord_user_id  = sanitize_text_field( trim( get_user_meta( $user_id, '_ets_memberpress_discord_user_id', true ) ) );
+		$discord_bot_token           = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_bot_token' ) ) );
+		$discord_delete_role_api_url = MEMBERPRESS_DISCORD_API_URL . 'guilds/' . $guild_id . '/members/' . $_ets_memberpress_discord_user_id . '/roles/' . $ets_role_id;
+		if ( $_ets_memberpress_discord_user_id ) {
+			$param = array(
+				'method'  => 'DELETE',
+				'headers' => array(
+					'Content-Type'   => 'application/json',
+					'Authorization'  => 'Bot ' . $discord_bot_token,
+					'Content-Length' => 0,
+				),
+			);
+
+			$response = wp_remote_request( $discord_delete_role_api_url, $param );
+			ets_memberpress_discord_log_api_response( $user_id, $discord_delete_role_api_url, $param, $response );
+			if ( ets_memberpress_discord_check_api_errors( $response ) ) {
+				$response_arr = json_decode( wp_remote_retrieve_body( $response ), true );
+				write_api_response_logs( $response_arr, $user_id, debug_backtrace()[0] );
+				if ( $is_schedule ) {
+					// this exception should be catch by action scheduler.
+					throw new Exception( 'Failed in function ets_memberpress_discord_as_handler_delete_memberrole' );
+				}
+			}
+			return $response;
 		}
 	}
 }
