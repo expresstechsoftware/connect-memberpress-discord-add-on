@@ -757,6 +757,46 @@ class Memberpress_Discord_Public {
 			as_schedule_single_action( ets_memberpress_discord_get_random_timestamp( ets_memberpress_discord_get_highest_last_attempt_timestamp() ), 'ets_memberpress_discord_as_handle_memberpress_expiry', array( $txn->user_id, $expired_membership ), MEMBERPRESS_DISCORD_AS_GROUP_NAME );
 		}
 	}
+	
+	/**
+	 * Action schedule to schedule a function to run upon memberpress cancel
+	 *
+	 * @param ARRAY   $event
+	 * @return NONE
+	 */
+	public function ets_memberpress_discord_as_schdule_job_memberpress_complete_transactions( $event ) {
+		$subscription       = $event->get_data();
+		$user               = $subscription->user();
+		$access_token       = sanitize_text_field( trim( get_user_meta( $user->ID, '_ets_memberpress_discord_access_token', true ) ) );
+		$complete_txn = array();
+		if ( ! empty( $subscription ) ) {
+				$complete_txn = array(
+					'product_id' => $subscription->product_id,
+					'created_at' => $subscription->created_at,
+					'expires_at' => $subscription->expires_at,
+				);
+		}
+		if ( $complete_txn && $access_token ) {
+			as_schedule_single_action( ets_memberpress_discord_get_random_timestamp( ets_memberpress_discord_get_highest_last_attempt_timestamp() ), 'ets_memberpress_discord_as_handle_memberpress_complete_transaction', array( $user->ID, $complete_txn ), MEMBERPRESS_DISCORD_AS_GROUP_NAME );
+		}
+	}
+
+	/**
+	 * Action scheduler method to process complete transaction event.
+	 *
+	 * @param INT $user_id
+	 * @param INT $complete_txn
+	 */
+	public function ets_memberpress_discord_as_handler_memberpress_complete_transaction( $user_id, $complete_txn ) {
+		$ets_memberpress_discord_role_mapping               = json_decode( get_option( 'ets_memberpress_discord_role_mapping' ), true );
+		if ( is_array( $ets_memberpress_discord_role_mapping ) && array_key_exists( 'level_id_' . $complete_txn['product_id'], $ets_memberpress_discord_role_mapping ) ) {
+			$mapped_role_id = sanitize_text_field( trim( $ets_memberpress_discord_role_mapping[ 'level_id_' . $complete_txn['product_id'] ] ) );
+			if ( $mapped_role_id && $expired_level_id == false && $cancel_level_id == false ) {
+				$this->put_discord_role_api( $user_id, $mapped_role_id, $is_schedule );
+				update_user_meta( $user_id, '_ets_memberpress_discord_role_id_for_' . $complete_txn['product_id'], $mapped_role_id );
+			}
+		}
+	}
 
 	/**
 	 * Action schedule to schedule a function to run upon memberpress cancel
@@ -776,7 +816,6 @@ class Memberpress_Discord_Public {
 					'expires_at' => $subscription->expires_at,
 				);
 		}
-		update_option( 'object_txn_cancelled', $subscription );
 		if ( $cancelled_membership && $access_token ) {
 			as_schedule_single_action( ets_memberpress_discord_get_random_timestamp( ets_memberpress_discord_get_highest_last_attempt_timestamp() ), 'ets_memberpress_discord_as_handle_memberpress_cancelled', array( $user->ID, $cancelled_membership ), MEMBERPRESS_DISCORD_AS_GROUP_NAME );
 		}
@@ -813,7 +852,6 @@ class Memberpress_Discord_Public {
 		$expired_level_id                                   = $expired_membership['product_id'];
 		$allow_none_member                                  = sanitize_text_field( trim( get_option( 'ets_memberpress_allow_none_member' ) ) );
 		$default_role                                       = sanitize_text_field( trim( get_option( '_ets_memberpress_discord_default_role_id' ) ) );
-		$_ets_memberpress_discord_role_id                   = sanitize_text_field( trim( get_user_meta( $user_id, '_ets_memberpress_discord_role_id_for_' . $expired_membership['product_id'], true ) ) );
 		$ets_memberpress_discord_role_mapping               = json_decode( get_option( 'ets_memberpress_discord_role_mapping' ), true );
 		$active_memberships                                 = $this->ets_memberpress_discord_get_active_memberships( $user_id );
 		$previous_default_role                              = get_user_meta( $user_id, '_ets_memberpress_discord_default_role_id', true );
@@ -827,10 +865,11 @@ class Memberpress_Discord_Public {
 			if ( $cancelled_membership ) {
 				$curr_level_id = $cancelled_membership['product_id'];
 			}
+			$_ets_memberpress_discord_role_id = sanitize_text_field( trim( get_user_meta( $user_id, '_ets_memberpress_discord_role_id_for_' . $curr_level_id, true ) ) );
 			// delete already assigned role.
 			if ( isset( $_ets_memberpress_discord_role_id ) && $_ets_memberpress_discord_role_id != '' && $_ets_memberpress_discord_role_id != 'none' ) {
 					$this->memberpress_delete_discord_role( $user_id, $_ets_memberpress_discord_role_id, $is_schedule );
-					delete_user_meta( $user_id, '_ets_memberpress_discord_role_id_for_' . $expired_membership['product_id'], true );
+					delete_user_meta( $user_id, '_ets_memberpress_discord_role_id_for_' . $curr_level_id, true );
 			}
 			if ( is_array( $active_memberships ) && count( $active_memberships ) != 0 ) {
 				// Assign role which is mapped to the mmebership level.
@@ -871,7 +910,7 @@ class Memberpress_Discord_Public {
 
 			// Send DM about cancel, but only when allow_none_member setting is yes
 			if ( $ets_memberpress_discord_send_membership_cancel_dm == true && $cancel_level_id !== false && $allow_none_member = 'yes' ) {
-				as_schedule_single_action( ets_memberpress_discord_get_random_timestamp( ets_memberpress_discord_get_highest_last_attempt_timestamp() ), 'ets_memberpress_discord_as_send_dm', array( $user_id, $txn, 'cancel' ), 'ets-memberpress-discord' );
+				as_schedule_single_action( ets_memberpress_discord_get_random_timestamp( ets_memberpress_discord_get_highest_last_attempt_timestamp() ), 'ets_memberpress_discord_as_send_dm', array( $user_id, $cancelled_membership, 'cancel' ), 'ets-memberpress-discord' );
 			}
 		}
 	}
