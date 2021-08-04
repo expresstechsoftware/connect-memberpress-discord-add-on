@@ -202,6 +202,7 @@ class Memberpress_Discord {
 		$this->loader->add_action( 'mepr-transaction-expired', $plugin_public, 'ets_memberpress_discord_as_schdule_job_memberpress_expiry', 10, 2 );
 		$this->loader->add_action( 'mepr-event-subscription-stopped', $plugin_public, 'ets_memberpress_discord_as_schdule_job_memberpress_cancelled' );
 		$this->loader->add_action( 'mepr-event-transaction-completed', $plugin_public, 'ets_memberpress_discord_as_schdule_job_memberpress_complete_transactions' );
+		$this->loader->add_action( 'mepr_pre_delete_transaction', $plugin_public, 'ets_memberpress_discord_as_schdule_job_memberpress_delete_transaction' );
 	}
 
 	/**

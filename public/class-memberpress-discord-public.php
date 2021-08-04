@@ -820,6 +820,27 @@ class Memberpress_Discord_Public {
 			as_schedule_single_action( ets_memberpress_discord_get_random_timestamp( ets_memberpress_discord_get_highest_last_attempt_timestamp() ), 'ets_memberpress_discord_as_handle_memberpress_cancelled', array( $user->ID, $cancelled_membership ), MEMBERPRESS_DISCORD_AS_GROUP_NAME );
 		}
 	}
+
+	/**
+	 * Action schedule to schedule a function to run upon memberpress cancel
+	 *
+	 * @param ARRAY   $event
+	 * @return NONE
+	 */
+	public function ets_memberpress_discord_as_schdule_job_memberpress_delete_transaction( $txn ) {
+		$access_token       = sanitize_text_field( trim( get_user_meta( $txn->user_id, '_ets_memberpress_discord_access_token', true ) ) );
+		$deleted_membership = array();
+		if ( ! empty( $txn ) ) {
+				$deleted_membership = array(
+					'product_id' => $txn->product_id,
+					'created_at' => $txn->created_at,
+					'expires_at' => $txn->expires_at,
+				);
+		}
+		if ( $deleted_membership && $access_token ) {
+			as_schedule_single_action( ets_memberpress_discord_get_random_timestamp( ets_memberpress_discord_get_highest_last_attempt_timestamp() ), 'ets_memberpress_discord_as_handle_memberpress_expiry', array( $txn->user_id, $deleted_membership ), MEMBERPRESS_DISCORD_AS_GROUP_NAME );
+		}
+	}
 	
 
 	/*
