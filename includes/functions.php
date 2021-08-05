@@ -200,17 +200,18 @@ function ets_memberpress_discord_check_saved_settings_status() {
  * Get formatted message to send in DM
  *
  * @param INT $user_id
+ * * @param ARRAY $membership
  * Merge fields: [MEMBER_USERNAME], [MEMBER_EMAIL], [MEMBERSHIP_LEVEL], [SITE_URL], [BLOG_NAME], [MEMBERSHIP_ENDDATE], [MEMBERSHIP_STARTDATE]</small>
  */
-function ets_memberpress_discord_get_formatted_dm( $user_id, $active_membership, $message ) {
+function ets_memberpress_discord_get_formatted_dm( $user_id, $membership, $message ) {
 	global $wpdb;
 	$user_obj  = get_user_by( 'id', $user_id );
 	$all_roles = json_decode( get_option( 'ets_memberpress_discord_all_roles' ), true );
 
 	$MEMBER_USERNAME = $user_obj->user_login;
 	$MEMBER_EMAIL    = $user_obj->user_email;
-	if ( is_array( $all_roles ) && array_key_exists( $active_membership['product_id'], $all_roles ) ) {
-		$MEMBERSHIP_LEVEL = $all_roles[ $active_membership['product_id'] ];
+	if ( is_array( $all_roles ) && array_key_exists( $membership['product_id'], $all_roles ) ) {
+		$MEMBERSHIP_LEVEL = $all_roles[ $membership['product_id'] ];
 	} else {
 		$MEMBERSHIP_LEVEL = '';
 	}
@@ -218,15 +219,15 @@ function ets_memberpress_discord_get_formatted_dm( $user_id, $active_membership,
 	$SITE_URL  = get_bloginfo( 'url' );
 	$BLOG_NAME = get_bloginfo( 'name' );
 
-	if ( ! empty( $active_membership ) && isset( $active_membership['created_at'] ) && '' !== $active_membership['created_at'] ) {
-		$MEMBERSHIP_STARTDATE = date( 'F jS, Y', strtotime( $active_membership['created_at'] ) );
+	if ( ! empty( $membership ) && isset( $membership['created_at'] ) && '' !== $membership['created_at'] ) {
+		$MEMBERSHIP_STARTDATE = date( 'F jS, Y', strtotime( $membership['created_at'] ) );
 
 	} else {
 		$MEMBERSHIP_STARTDATE = '';
 	}
-	if ( ! empty( $active_membership ) && isset( $active_membership['expires_at'] ) && '0000-00-00 00:00:00' !== $active_membership['expires_at'] ) {
-		$MEMBERSHIP_ENDDATE = date( 'F jS, Y', strtotime( $active_membership['expires_at'] ) );
-	} elseif ( null !== $active_membership && '0000-00-00 00:00:00' === $active_membership['expires_at'] ) {
+	if ( ! empty( $membership ) && isset( $membership['expires_at'] ) && '0000-00-00 00:00:00' !== $membership['expires_at'] ) {
+		$MEMBERSHIP_ENDDATE = date( 'F jS, Y', strtotime( $membership['expires_at'] ) );
+	} elseif ( null !== $membership && '0000-00-00 00:00:00' === $membership['expires_at'] ) {
 		$MEMBERSHIP_ENDDATE = 'Never';
 	} else {
 		$MEMBERSHIP_ENDDATE = '';
