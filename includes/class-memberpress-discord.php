@@ -173,6 +173,12 @@ class Memberpress_Discord {
 		$this->loader->add_action( 'admin_post_memberpress_discord_advance_settings', $plugin_admin, 'ets_memberpress_discord_advance_settings' );
 		$this->loader->add_action( 'wp_ajax_memberpress_load_discord_roles', $plugin_admin, 'ets_memberpress_load_discord_roles' );
 		$this->loader->add_action( 'wp_ajax_memberpress_discord_clear_logs', $plugin_admin, 'ets_memberpress_discord_clear_logs' );
+		$this->loader->add_action( 'mepr-transaction-expired', $plugin_admin, 'ets_memberpress_discord_as_schdule_job_memberpress_expiry', 10, 2 );
+		$this->loader->add_action( 'mepr_pre_delete_transaction', $plugin_admin, 'ets_memberpress_discord_as_schdule_job_memberpress_delete_transaction' );
+		$this->loader->add_action( 'mepr-event-subscription-stopped', $plugin_admin, 'ets_memberpress_discord_as_schdule_job_memberpress_cancelled' );
+		$this->loader->add_action( 'ets_memberpress_discord_as_handle_memberpress_expiry', $plugin_admin, 'ets_memberpress_discord_as_handler_memberpress_expiry', 10, 2 );
+		$this->loader->add_action( 'ets_memberpress_discord_as_handle_memberpress_cancelled', $plugin_admin, 'ets_memberpress_discord_as_handler_memberpress_cancelled', 10, 2 );
+		$this->loader->add_action( 'ets_memberpress_discord_as_send_dm', $this, 'ets_memberpress_discord_handler_send_dm', 10, 3 );
 	}
 
 	/**
@@ -193,18 +199,119 @@ class Memberpress_Discord {
 		$this->loader->add_action( 'wp_ajax_memberpress_disconnect_from_discord', $plugin_public, 'ets_memberpress_disconnect_from_discord' );
 		$this->loader->add_action( 'ets_memberpress_discord_as_handle_add_member_to_guild', $plugin_public, 'ets_memberpress_discord_as_handler_add_member_to_guild', 10, 4 );
 		$this->loader->add_action( 'ets_memberpress_discord_as_schedule_delete_member', $plugin_public, 'ets_memberpress_discord_as_handler_delete_member_from_guild', 10, 3 );
-		$this->loader->add_action( 'ets_memberpress_discord_as_send_dm', $plugin_public, 'ets_memberpress_discord_handler_send_dm', 10, 3 );
+		$this->loader->add_action( 'ets_memberpress_discord_as_send_welcome_dm', $this, 'ets_memberpress_discord_handler_send_dm', 10, 3 );
 		$this->loader->add_action( 'ets_memberpress_discord_as_schedule_member_put_role', $plugin_public, 'ets_memberpress_discord_as_handler_put_memberrole', 10, 3 );
-		$this->loader->add_action( 'ets_memberpress_discord_as_handle_memberpress_expiry', $plugin_public, 'ets_memberpress_discord_as_handler_memberpress_expiry', 10, 2 );
-		$this->loader->add_action( 'ets_memberpress_discord_as_handle_memberpress_cancelled', $plugin_public, 'ets_memberpress_discord_as_handler_memberpress_cancelled', 10, 2 );
 		$this->loader->add_action( 'ets_memberpress_discord_as_handle_memberpress_complete_transaction', $plugin_public, 'ets_memberpress_discord_as_handler_memberpress_complete_transaction', 10, 2 );
 		$this->loader->add_action( 'ets_memberpress_discord_as_schedule_delete_role', $plugin_public, 'ets_memberpress_discord_as_handler_delete_memberrole', 10, 3 );
-		$this->loader->add_action( 'mepr-transaction-expired', $plugin_public, 'ets_memberpress_discord_as_schdule_job_memberpress_expiry', 10, 2 );
-		$this->loader->add_action( 'mepr-event-subscription-stopped', $plugin_public, 'ets_memberpress_discord_as_schdule_job_memberpress_cancelled' );
 		$this->loader->add_action( 'mepr-event-transaction-completed', $plugin_public, 'ets_memberpress_discord_as_schdule_job_memberpress_complete_transactions' );
-		$this->loader->add_action( 'mepr_pre_delete_transaction', $plugin_public, 'ets_memberpress_discord_as_schdule_job_memberpress_delete_transaction' );
 	}
 
+	/**
+	 * Discord DM a member using bot.
+	 *
+	 * @param INT    $user_id
+	 * @param ARRAY  $active_membership
+	 * @param STRING $type (warning|expired)
+	 */
+	public function ets_memberpress_discord_handler_send_dm( $user_id, $active_membership, $type = 'warning' ) {
+		$discord_user_id                                    = sanitize_text_field( trim( get_user_meta( $user_id, '_ets_memberpress_discord_user_id', true ) ) );
+		$discord_bot_token                                  = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_bot_token' ) ) );
+		$ets_memberpress_discord_expiration_warning_message = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_expiration_warning_message' ) ) );
+		$ets_memberpress_discord_expiration_expired_message = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_expiration_expired_message' ) ) );
+		$ets_memberpress_discord_welcome_message            = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_welcome_message' ) ) );
+		$ets_memberpress_discord_cancel_message             = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_cancel_message' ) ) );
+		// Check if DM channel is already created for the user.
+		$user_dm = get_user_meta( $user_id, '_ets_memberpress_discord_dm_channel', true );
+
+		if ( ! isset( $user_dm['id'] ) || false === $user_dm || empty( $user_dm ) ) {
+			$this->ets_memberpress_discord_create_member_dm_channel( $user_id );
+			$user_dm       = get_user_meta( $user_id, '_ets_memberpress_discord_dm_channel', true );
+			$dm_channel_id = $user_dm['id'];
+		} else {
+			$dm_channel_id = $user_dm['id'];
+		}
+
+		if ( 'warning' === $type ) {
+			update_user_meta( $user_id, '_ets_memberpress_discord_expitration_warning_dm_for_' . $active_membership['product_id'], true );
+			$message = ets_memberpress_discord_get_formatted_dm( $user_id, $active_membership, $ets_memberpress_discord_expiration_warning_message );
+		}
+		if ( 'expired' === $type ) {
+			update_user_meta( $user_id, '_ets_memberpress_discord_expired_dm_for_' . $active_membership['product_id'], true );
+			$message = ets_memberpress_discord_get_formatted_dm( $user_id, $active_membership, $ets_memberpress_discord_expiration_expired_message );
+		}
+		if ( 'welcome' === $type ) {
+			update_user_meta( $user_id, '_ets_memberpress_discord_welcome_dm_for_' . $active_membership['product_id'], true );
+			$message = ets_memberpress_discord_get_formatted_dm( $user_id, $active_membership, $ets_memberpress_discord_welcome_message );
+		}
+		if ( 'cancel' === $type ) {
+			update_user_meta( $user_id, '_ets_memberpress_discord_cancel_dm_for_' . $active_membership['product_id'], true );
+			$message = ets_memberpress_discord_get_formatted_dm( $user_id, $active_membership, $ets_memberpress_discord_cancel_message );
+		}
+
+		$creat_dm_url = MEMBERPRESS_DISCORD_API_URL . '/channels/' . $dm_channel_id . '/messages';
+		$dm_args      = array(
+			'method'  => 'POST',
+			'headers' => array(
+				'Content-Type'  => 'application/json',
+				'Authorization' => 'Bot ' . $discord_bot_token,
+			),
+			'body'    => wp_json_encode(
+				array(
+					'content' => sanitize_text_field( trim( wp_unslash( $message ) ) ),
+				)
+			),
+		);
+		$dm_response  = wp_remote_post( $creat_dm_url, $dm_args );
+		ets_memberpress_discord_log_api_response( $user_id, $creat_dm_url, $dm_args, $dm_response );
+		$dm_response_body = json_decode( wp_remote_retrieve_body( $dm_response ), true );
+		if ( ets_memberpress_discord_check_api_errors( $dm_response ) ) {
+			write_api_response_logs( $dm_response_body, $user_id, debug_backtrace()[0] );
+			// this should be catch by Action schedule failed action.
+			throw new Exception( 'Failed in function ets_memberpress_discord_send_dm' );
+		}
+	}
+
+	/**
+	 * Create DM channel for a give user_id
+	 *
+	 * @param INT $user_id
+	 * @return MIXED
+	 */
+	public function ets_memberpress_discord_create_member_dm_channel( $user_id ) {
+		$discord_user_id       = sanitize_text_field( trim( get_user_meta( $user_id, '_ets_memberpress_discord_user_id', true ) ) );
+		$discord_bot_token     = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_bot_token' ) ) );
+		$create_channel_dm_url = MEMBERPRESS_DISCORD_API_URL . '/users/@me/channels';
+		$dm_channel_args       = array(
+			'method'  => 'POST',
+			'headers' => array(
+				'Content-Type'  => 'application/json',
+				'Authorization' => 'Bot ' . $discord_bot_token,
+			),
+			'body'    => wp_json_encode(
+				array(
+					'recipient_id' => $discord_user_id,
+				)
+			),
+		);
+
+		$created_dm_response = wp_remote_post( $create_channel_dm_url, $dm_channel_args );
+		ets_memberpress_discord_log_api_response( $user_id, $create_channel_dm_url, $dm_channel_args, $created_dm_response );
+		$response_arr = json_decode( wp_remote_retrieve_body( $created_dm_response ), true );
+
+		if ( is_array( $response_arr ) && ! empty( $response_arr ) ) {
+			// check if there is error in create dm response.
+			if ( array_key_exists( 'code', $response_arr ) || array_key_exists( 'error', $response_arr ) ) {
+				write_api_response_logs( $response_arr, $user_id, debug_backtrace()[0] );
+				if ( ets_memberpress_discord_check_api_errors( $created_dm_response ) ) {
+					// this should be catch by Action schedule failed action.
+					throw new Exception( 'Failed in function ets_memberpress_discord_create_member_dm_channel' );
+				}
+			} else {
+				update_user_meta( $user_id, '_ets_memberpress_discord_dm_channel', $response_arr );
+			}
+		}
+		return $response_arr;
+	}
 	/**
 	 * Run the loader to execute all of the hooks with WordPress.
 	 *
