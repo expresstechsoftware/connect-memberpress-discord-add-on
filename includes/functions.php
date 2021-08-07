@@ -255,3 +255,19 @@ function ets_memberpress_discord_get_formatted_dm( $user_id, $membership, $messa
 	return str_replace( $find, $replace, $message );
 }
 
+/**
+ * Get memberpress current level id
+ *
+ * @param INT $user_id
+ * @return INT|NULL $active_memberships
+ */
+function ets_memberpress_discord_get_active_memberships( $user_id ) {
+	$memberpress_user   = new MeprUser( $user_id );
+	$active_memberships = $memberpress_user->active_product_subscriptions( 'transactions' );
+	if ( $active_memberships ) {
+		return $active_memberships;
+	} else {
+		return null;
+	}
+}
+

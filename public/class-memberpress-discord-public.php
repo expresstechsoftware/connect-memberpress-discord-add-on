@@ -123,7 +123,7 @@ class Memberpress_Discord_Public {
 		$default_role                         = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_default_role_id' ) ) );
 		$ets_memberpress_discord_role_mapping = json_decode( get_option( 'ets_memberpress_discord_role_mapping' ), true );
 		$all_roles                            = json_decode( get_option( 'ets_memberpress_discord_all_roles' ), true );
-		$active_memberships                   = $this->ets_memberpress_discord_get_active_memberships( $user_id );
+		$active_memberships                   = ets_memberpress_discord_get_active_memberships( $user_id );
 		$mapped_role_names                    = array();
 		if ( $active_memberships && is_array( $all_roles ) ) {
 			foreach ( $active_memberships as $active_membership ) {
@@ -169,22 +169,6 @@ class Memberpress_Discord_Public {
 	}
 
 	/**
-	 * Get memberpress current level id
-	 *
-	 * @param INT $user_id
-	 * @return INT|NULL $active_memberships
-	 */
-	public function ets_memberpress_discord_get_active_memberships( $user_id ) {
-		$memberpress_user   = new MeprUser( $user_id );
-		$active_memberships = $memberpress_user->active_product_subscriptions( 'transactions' );
-		if ( $active_memberships ) {
-			return $active_memberships;
-		} else {
-			return null;
-		}
-	}
-
-	/**
 	 * For authorization process call discord API
 	 *
 	 * @param NONE
@@ -219,7 +203,7 @@ class Memberpress_Discord_Public {
 				exit;
 			}
 			if ( isset( $_GET['code'] ) && isset( $_GET['via'] ) ) {
-				$membership_private_obj = $this->ets_memberpress_discord_get_active_memberships( $user_id );
+				$membership_private_obj = ets_memberpress_discord_get_active_memberships( $user_id );
 				$active_memberships     = array();
 				if ( ! empty( $membership_private_obj ) ) {
 					foreach ( $membership_private_obj as $memberships ) {
@@ -594,7 +578,7 @@ class Memberpress_Discord_Public {
 		$guild_id                         = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_server_id' ) ) );
 		$discord_bot_token                = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_bot_token' ) ) );
 		$_ets_memberpress_discord_user_id = sanitize_text_field( trim( get_user_meta( $user_id, '_ets_memberpress_discord_user_id', true ) ) );
-		$active_memberships               = $this->ets_memberpress_discord_get_active_memberships( $user_id );
+		$active_memberships               = ets_memberpress_discord_get_active_memberships( $user_id );
 		$guilds_delete_memeber_api_url    = MEMBERPRESS_DISCORD_API_URL . 'guilds/' . $guild_id . '/members/' . $_ets_memberpress_discord_user_id;
 		$guild_args                       = array(
 			'method'  => 'DELETE',
@@ -626,45 +610,5 @@ class Memberpress_Discord_Public {
 		delete_user_meta( $user_id, '_ets_memberpress_discord_default_role_id' );
 		delete_user_meta( $user_id, '_ets_memberpress_discord_username' );
 		delete_user_meta( $user_id, '_ets_memberpress_discord_expires_in' );
-	}
-
-	/**
-	 * Action schedule to schedule a function to run upon memberpress complete transaction
-	 *
-	 * @param ARRAY $event
-	 * @return NONE
-	 */
-	public function ets_memberpress_discord_as_schdule_job_memberpress_complete_transactions( $event ) {
-		$subscription = $event->get_data();
-		$user         = $subscription->user();
-		$access_token = sanitize_text_field( trim( get_user_meta( $user->ID, '_ets_memberpress_discord_access_token', true ) ) );
-		$complete_txn = array();
-		if ( ! empty( $subscription ) ) {
-				$complete_txn = array(
-					'product_id' => $subscription->product_id,
-					'created_at' => $subscription->created_at,
-					'expires_at' => $subscription->expires_at,
-				);
-		}
-		if ( $complete_txn && $access_token ) {
-			as_schedule_single_action( ets_memberpress_discord_get_random_timestamp( ets_memberpress_discord_get_highest_last_attempt_timestamp() ), 'ets_memberpress_discord_as_handle_memberpress_complete_transaction', array( $user->ID, $complete_txn ), MEMBERPRESS_DISCORD_AS_GROUP_NAME );
-		}
-	}
-
-	/**
-	 * Action scheduler method to process complete transaction event.
-	 *
-	 * @param INT $user_id
-	 * @param INT $complete_txn
-	 */
-	public function ets_memberpress_discord_as_handler_memberpress_complete_transaction( $user_id, $complete_txn ) {
-		$ets_memberpress_discord_role_mapping = json_decode( get_option( 'ets_memberpress_discord_role_mapping' ), true );
-		if ( is_array( $ets_memberpress_discord_role_mapping ) && array_key_exists( 'level_id_' . $complete_txn['product_id'], $ets_memberpress_discord_role_mapping ) ) {
-			$mapped_role_id = sanitize_text_field( trim( $ets_memberpress_discord_role_mapping[ 'level_id_' . $complete_txn['product_id'] ] ) );
-			if ( $mapped_role_id ) {
-				$this->put_discord_role_api( $user_id, $mapped_role_id, $is_schedule );
-				update_user_meta( $user_id, '_ets_memberpress_discord_role_id_for_' . $complete_txn['product_id'], $mapped_role_id );
-			}
-		}
 	}
 }
