@@ -48,7 +48,7 @@ $allow_none_member = sanitize_text_field( trim( get_option( 'ets_memberpress_all
 			</td>
 		</tr>
 		<tr>
-		<th scope="row"><label><?php echo __( 'Allow none members', 'ets_memberpress_discord' ); ?></label></th>
+		<th scope="row"><label><?php echo __( 'Allow non-members', 'ets_memberpress_discord' ); ?></label></th>
 		<td>
 			<fieldset>
 				<label><input type="radio" name="allow_none_member" value="yes"  

@@ -610,8 +610,8 @@ class Memberpress_Discord_Admin {
 			if ( $default_role != 'none' ) {
 				if ( isset( $previous_default_role ) && $previous_default_role != '' && $previous_default_role != 'none' ) {
 						$this->memberpress_delete_discord_role( $user_id, $previous_default_role, $is_schedule );
+            delete_user_meta( $user_id, '_ets_memberpress_discord_default_role_id', true );
 				}
-				delete_user_meta( $user_id, '_ets_memberpress_discord_default_role_id', true );
 				$plugin_public->put_discord_role_api( $user_id, $default_role, $is_schedule );
 				update_user_meta( $user_id, '_ets_memberpress_discord_default_role_id', $default_role );
 			} elseif ( $default_role == 'none' ) {
@@ -728,7 +728,7 @@ class Memberpress_Discord_Admin {
 		if ( is_array( $ets_memberpress_discord_role_mapping ) && array_key_exists( 'level_id_' . $complete_txn['product_id'], $ets_memberpress_discord_role_mapping ) ) {
 			$mapped_role_id = sanitize_text_field( trim( $ets_memberpress_discord_role_mapping[ 'level_id_' . $complete_txn['product_id'] ] ) );
 			if ( $mapped_role_id ) {
-				$plugin_public->put_discord_role_api( $user_id, $mapped_role_id, $is_schedule );
+				$plugin_public->put_discord_role_api( $user_id, $mapped_role_id, true );
 				update_user_meta( $user_id, '_ets_memberpress_discord_role_id_for_' . $complete_txn['product_id'], $mapped_role_id );
 			}
 		}

@@ -78,7 +78,7 @@ class Memberpress_Discord {
 		$this->set_locale();
 		$this->define_admin_hooks();
 		$this->define_public_hooks();
-
+    $this->define_common_hooks();
 	}
 
 	/**
@@ -104,6 +104,11 @@ class Memberpress_Discord {
 		 */
 		require_once MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . 'includes/libraries/action-scheduler/action-scheduler.php';
 
+    /**
+		 * Define common functions.
+		 */
+		require_once MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . 'includes/functions.php';
+
 		/**
 		 * The class responsible for orchestrating the actions and filters of the
 		 * core plugin.
@@ -126,12 +131,6 @@ class Memberpress_Discord {
 		 * side of the site.
 		 */
 		require_once MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . 'public/class-memberpress-discord-public.php';
-
-		/**
-		 * The class responsible for defining all methods that occur in the public-facing and admin
-		 * side of the site.
-		 */
-		require_once MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . 'includes/functions.php';
 
 		$this->loader = new Memberpress_Discord_Loader();
 
@@ -204,6 +203,43 @@ class Memberpress_Discord {
 		$this->loader->add_action( 'ets_memberpress_discord_as_schedule_delete_member', $plugin_public, 'ets_memberpress_discord_as_handler_delete_member_from_guild', 10, 3 );
 		$this->loader->add_action( 'ets_memberpress_discord_as_send_welcome_dm', $this, 'ets_memberpress_discord_handler_send_dm', 10, 3 );
 		$this->loader->add_action( 'ets_memberpress_discord_as_schedule_member_put_role', $plugin_public, 'ets_memberpress_discord_as_handler_put_memberrole', 10, 3 );
+	}
+
+  /*
+  * Define actions which are not in admin or not public
+  * @since    1.0.0
+	* @access   private
+  */
+  private function define_common_hooks() {
+    $this->loader->add_filter('action_scheduler_queue_runner_batch_size', $this, 'ets_memberpress_discord_queue_batch_size' );
+    $this->loader->add_filter('action_scheduler_queue_runner_concurrent_batches', $this, 'ets_memberpress_discord_concurrent_batches' );
+  }
+  /**
+	 * set action scheuduler batch size.
+	 *
+	 * @param INT $concurrent_batches
+	 * @return INT $concurrent_batches
+	 */
+  public function ets_memberpress_discord_queue_batch_size( $batch_size ){
+    if ( ets_memberpress_discord_get_all_pending_actions() !== false ) {
+			return absint( get_option( 'ets_memberpress_discord_job_queue_batch_size' ) );
+		} else {
+			return $batch_size;
+		}
+  }
+
+  /**
+	 * set action scheuduler batch size.
+	 *
+	 * @param INT $concurrent_batches
+	 * @return INT $concurrent_batches
+	 */
+	public function ets_memberpress_discord_concurrent_batches( $concurrent_batches ) {
+		if ( ets_memberpress_discord_get_all_pending_actions() !== false ) {
+			return absint( get_option( 'ets_memberpress_discord_job_queue_concurrency' ) );
+		} else {
+			return $concurrent_batches;
+		}
 	}
 
 	/**
