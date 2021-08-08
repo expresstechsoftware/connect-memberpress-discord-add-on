@@ -559,7 +559,7 @@ class Memberpress_Discord_Admin {
 	* @param INT $cancelled_membership
 	*/
 	public function ets_memberpress_discord_as_handler_memberpress_cancelled( $user_id, $cancelled_membership ) {
-		$this->ets_memberpress_discord_set_member_roles( $user_id, false, $cancelled_membership, true );
+		$this->ets_memberpress_discord_set_member_roles( $user_id, false, $cancelled_membership ,true );
 	}
 
 	/**
@@ -588,6 +588,7 @@ class Memberpress_Discord_Admin {
 			if ( $cancelled_membership ) {
 				$curr_level_id = $cancelled_membership['product_id'];
 			}
+      
 			$_ets_memberpress_discord_role_id = sanitize_text_field( trim( get_user_meta( $user_id, '_ets_memberpress_discord_role_id_for_' . $curr_level_id, true ) ) );
 			// delete already assigned role.
 			if ( isset( $_ets_memberpress_discord_role_id ) && $_ets_memberpress_discord_role_id != '' && $_ets_memberpress_discord_role_id != 'none' ) {
@@ -725,6 +726,9 @@ class Memberpress_Discord_Admin {
 		$memberpress_discord = new Memberpress_Discord();
 		$plugin_public = new Memberpress_Discord_Public( $memberpress_discord->get_plugin_name(), $memberpress_discord->get_version() );
 		$ets_memberpress_discord_role_mapping = json_decode( get_option( 'ets_memberpress_discord_role_mapping' ), true );
+		$default_role                                       = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_default_role_id' ) ) );
+		$previous_default_role                              = get_user_meta( $user_id, '_ets_memberpress_discord_default_role_id', true );
+
 		if ( is_array( $ets_memberpress_discord_role_mapping ) && array_key_exists( 'level_id_' . $complete_txn['product_id'], $ets_memberpress_discord_role_mapping ) ) {
 			$mapped_role_id = sanitize_text_field( trim( $ets_memberpress_discord_role_mapping[ 'level_id_' . $complete_txn['product_id'] ] ) );
 			if ( $mapped_role_id ) {
@@ -732,5 +736,20 @@ class Memberpress_Discord_Admin {
 				update_user_meta( $user_id, '_ets_memberpress_discord_role_id_for_' . $complete_txn['product_id'], $mapped_role_id );
 			}
 		}
+
+    // Assign role which is saved as default.
+    if ( $default_role != 'none' ) {
+      if ( isset( $previous_default_role ) && $previous_default_role != '' && $previous_default_role != 'none' ) {
+          $this->memberpress_delete_discord_role( $user_id, $previous_default_role, true );
+          delete_user_meta( $user_id, '_ets_memberpress_discord_default_role_id', true );
+      }
+      $plugin_public->put_discord_role_api( $user_id, $default_role, true );
+      update_user_meta( $user_id, '_ets_memberpress_discord_default_role_id', $default_role );
+    } elseif ( $default_role == 'none' ) {
+      if ( isset( $previous_default_role ) && $previous_default_role != '' && $previous_default_role != 'none' ) {
+        $this->memberpress_delete_discord_role( $user_id, $previous_default_role, true );
+      }
+      update_user_meta( $user_id, '_ets_memberpress_discord_default_role_id', $default_role );
+    }
 	}
 }
