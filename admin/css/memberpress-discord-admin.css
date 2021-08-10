@@ -471,3 +471,9 @@ select#defaultRole{
   color: #2ca450;
 }
 .ets_memberpress_discord_dm_textarea{height:130px;}
+#col_memberpress_discord{
+  width: 8%;
+}
+#col_memberpress_joined_date{
+  width: 12%;
+}

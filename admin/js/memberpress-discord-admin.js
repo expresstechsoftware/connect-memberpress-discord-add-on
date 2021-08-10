@@ -130,6 +130,32 @@
 					});
 				});
 
+				/*Call-back to manage member connection with discord from memberpress members-list*/
+				$('.ets-memberpress-run-api').on('click', function (e) {
+					e.preventDefault();
+					var userId = $(this).data('uid');
+					$.ajax({
+						type: "POST",
+						dataType: "JSON",
+						url: etsMemberpressParams.admin_ajax,
+						data: { 'action': 'memberpress_discord_member_table_run_api', 'user_id': userId, 'ets_memberpress_discord_nonce': etsMemberpressParams.ets_memberpress_discord_nonce, },
+						beforeSend: function () {
+							$("." + userId + ".spinner").addClass("is-active").show();
+						},
+						success: function (response) {
+							if (response.status == 1) {
+								$("." + userId + ".ets-save-success").show();;
+							}
+						},
+						error: function (response) {
+							console.error(response);
+						},
+						complete: function () {
+							$("." + userId + ".spinner").removeClass("is-active").hide();
+						}
+					});
+				});
+
 				/*Flush settings from local storage*/
 				$("#MemberPressRevertMapping").click( function () {
 					localStorage.removeItem('MemberPressMapArray');

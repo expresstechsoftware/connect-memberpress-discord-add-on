@@ -559,7 +559,7 @@ class Memberpress_Discord_Admin {
 	* @param INT $cancelled_membership
 	*/
 	public function ets_memberpress_discord_as_handler_memberpress_cancelled( $user_id, $cancelled_membership ) {
-		$this->ets_memberpress_discord_set_member_roles( $user_id, false, $cancelled_membership ,true );
+		$this->ets_memberpress_discord_set_member_roles( $user_id, false, $cancelled_membership, true );
 	}
 
 	/**
@@ -571,8 +571,8 @@ class Memberpress_Discord_Admin {
 	 * @param BOOL  $is_schedule
 	 */
 	private function ets_memberpress_discord_set_member_roles( $user_id, $expired_membership = false, $cancelled_membership = false, $is_schedule = true ) {
-		$memberpress_discord = new Memberpress_Discord();
-		$plugin_public = new Memberpress_Discord_Public( $memberpress_discord->get_plugin_name(), $memberpress_discord->get_version() );
+		$memberpress_discord                                = new Memberpress_Discord();
+		$plugin_public                                      = new Memberpress_Discord_Public( $memberpress_discord->get_plugin_name(), $memberpress_discord->get_version() );
 		$allow_none_member                                  = sanitize_text_field( trim( get_option( 'ets_memberpress_allow_none_member' ) ) );
 		$default_role                                       = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_default_role_id' ) ) );
 		$ets_memberpress_discord_role_mapping               = json_decode( get_option( 'ets_memberpress_discord_role_mapping' ), true );
@@ -588,7 +588,7 @@ class Memberpress_Discord_Admin {
 			if ( $cancelled_membership ) {
 				$curr_level_id = $cancelled_membership['product_id'];
 			}
-      
+
 			$_ets_memberpress_discord_role_id = sanitize_text_field( trim( get_user_meta( $user_id, '_ets_memberpress_discord_role_id_for_' . $curr_level_id, true ) ) );
 			// delete already assigned role.
 			if ( isset( $_ets_memberpress_discord_role_id ) && $_ets_memberpress_discord_role_id != '' && $_ets_memberpress_discord_role_id != 'none' ) {
@@ -611,7 +611,7 @@ class Memberpress_Discord_Admin {
 			if ( $default_role != 'none' ) {
 				if ( isset( $previous_default_role ) && $previous_default_role != '' && $previous_default_role != 'none' ) {
 						$this->memberpress_delete_discord_role( $user_id, $previous_default_role, $is_schedule );
-            delete_user_meta( $user_id, '_ets_memberpress_discord_default_role_id', true );
+					delete_user_meta( $user_id, '_ets_memberpress_discord_default_role_id', true );
 				}
 				$plugin_public->put_discord_role_api( $user_id, $default_role, $is_schedule );
 				update_user_meta( $user_id, '_ets_memberpress_discord_default_role_id', $default_role );
@@ -665,7 +665,7 @@ class Memberpress_Discord_Admin {
 	 */
 	public function ets_memberpress_discord_as_handler_delete_memberrole( $user_id, $ets_role_id, $is_schedule = true ) {
 
-		$server_id                         = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_server_id' ) ) );
+		$server_id                        = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_server_id' ) ) );
 		$_ets_memberpress_discord_user_id = sanitize_text_field( trim( get_user_meta( $user_id, '_ets_memberpress_discord_user_id', true ) ) );
 		$discord_bot_token                = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_bot_token' ) ) );
 		$discord_delete_role_api_url      = MEMBERPRESS_DISCORD_API_URL . 'guilds/' . $server_id . '/members/' . $_ets_memberpress_discord_user_id . '/roles/' . $ets_role_id;
@@ -723,11 +723,11 @@ class Memberpress_Discord_Admin {
 	 * @param INT $complete_txn
 	 */
 	public function ets_memberpress_discord_as_handler_memberpress_complete_transaction( $user_id, $complete_txn ) {
-		$memberpress_discord = new Memberpress_Discord();
-		$plugin_public = new Memberpress_Discord_Public( $memberpress_discord->get_plugin_name(), $memberpress_discord->get_version() );
+		$memberpress_discord                  = new Memberpress_Discord();
+		$plugin_public                        = new Memberpress_Discord_Public( $memberpress_discord->get_plugin_name(), $memberpress_discord->get_version() );
 		$ets_memberpress_discord_role_mapping = json_decode( get_option( 'ets_memberpress_discord_role_mapping' ), true );
-		$default_role                                       = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_default_role_id' ) ) );
-		$previous_default_role                              = get_user_meta( $user_id, '_ets_memberpress_discord_default_role_id', true );
+		$default_role                         = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_default_role_id' ) ) );
+		$previous_default_role                = get_user_meta( $user_id, '_ets_memberpress_discord_default_role_id', true );
 
 		if ( is_array( $ets_memberpress_discord_role_mapping ) && array_key_exists( 'level_id_' . $complete_txn['product_id'], $ets_memberpress_discord_role_mapping ) ) {
 			$mapped_role_id = sanitize_text_field( trim( $ets_memberpress_discord_role_mapping[ 'level_id_' . $complete_txn['product_id'] ] ) );
@@ -737,19 +737,97 @@ class Memberpress_Discord_Admin {
 			}
 		}
 
-    // Assign role which is saved as default.
-    if ( $default_role != 'none' ) {
-      if ( isset( $previous_default_role ) && $previous_default_role != '' && $previous_default_role != 'none' ) {
-          $this->memberpress_delete_discord_role( $user_id, $previous_default_role, true );
-          delete_user_meta( $user_id, '_ets_memberpress_discord_default_role_id', true );
-      }
-      $plugin_public->put_discord_role_api( $user_id, $default_role, true );
-      update_user_meta( $user_id, '_ets_memberpress_discord_default_role_id', $default_role );
-    } elseif ( $default_role == 'none' ) {
-      if ( isset( $previous_default_role ) && $previous_default_role != '' && $previous_default_role != 'none' ) {
-        $this->memberpress_delete_discord_role( $user_id, $previous_default_role, true );
-      }
-      update_user_meta( $user_id, '_ets_memberpress_discord_default_role_id', $default_role );
-    }
+		// Assign role which is saved as default.
+		if ( $default_role != 'none' ) {
+			if ( isset( $previous_default_role ) && $previous_default_role != '' && $previous_default_role != 'none' ) {
+				$this->memberpress_delete_discord_role( $user_id, $previous_default_role, true );
+				delete_user_meta( $user_id, '_ets_memberpress_discord_default_role_id', true );
+			}
+			$plugin_public->put_discord_role_api( $user_id, $default_role, true );
+			update_user_meta( $user_id, '_ets_memberpress_discord_default_role_id', $default_role );
+		} elseif ( $default_role == 'none' ) {
+			if ( isset( $previous_default_role ) && $previous_default_role != '' && $previous_default_role != 'none' ) {
+				$this->memberpress_delete_discord_role( $user_id, $previous_default_role, true );
+			}
+			update_user_meta( $user_id, '_ets_memberpress_discord_default_role_id', $default_role );
+		}
+	}
+
+	/**
+	 * Action scheduler method to process complete transaction event.
+	 *
+	 * @param ARRAY $columns
+	 * @return ARRAY  $return
+	 */
+	public function ets_memberpress_discord_members_list_add_column( $columns ) {
+		$columns['col_memberpress_discord']     = __( 'Discord', 'ets_memberpress_discord' );
+		$columns['col_memberpress_joined_date'] = __( 'Joined Date', 'ets_memberpress_discord' );
+		return $columns;
+	}
+
+	/**
+	 * Action scheduler method to process complete transaction event.
+	 *
+	 * @param String $attributes
+	 * @param Object $rec
+	 * @param String $column_name
+	 * @param String $column_display_name
+	 */
+	public function ets_memberpress_discord_members_list_add_custom_column_value( $attributes, $rec, $column_name, $column_display_name ) {
+		$access_token = sanitize_text_field( trim( get_user_meta( $rec->ID, '_ets_memberpress_discord_access_token', true ) ) );
+
+		switch ( $column_name ) {
+			case 'col_memberpress_discord':
+				?>
+				<td <?php echo esc_attr( $attributes ); ?>>
+				<?php
+				if ( $access_token ) {
+					$discord_username = sanitize_text_field( trim( get_user_meta( $rec->ID, '_ets_memberpress_discord_username', true ) ) );
+					echo '<p class="' . esc_attr( $rec->ID ) . ' ets-save-success">Success</p><a class="button button-primary ets-memberpress-run-api" data-uid="' . esc_attr( $rec->ID ) . '" href="#">';
+					echo __( 'Run API', 'ets_memberpress_discord' );
+					echo '</a><span class="' . esc_attr( $rec->ID ) . ' spinner"></span>';
+					echo esc_html( $discord_username );
+				} else {
+					echo __( 'Not Connected', 'ets_memberpress_discord' );
+				}
+				?>
+			  </td>
+				<?php
+				break;
+			case 'col_memberpress_joined_date':
+				?>
+					<td <?php echo esc_attr( $attributes ); ?>><?php echo esc_html( get_user_meta( $rec->ID, '_ets_memberpress_discord_join_date', true ) ); ?></td>
+					<?php
+				break;
+			default:
+				MeprHooks::do_action( 'mepr_members_list_table_row', $attributes, $rec, $column_name, $column_display_name );
+		}
+	}
+
+	/**
+	 * Manage user roles api calls
+	 *
+	 * @param NONE
+	 * @return OBJECT JSON response
+	 */
+	public function ets_memberpress_discord_member_table_run_api() {
+		if ( ! is_user_logged_in() && current_user_can( 'edit_user' ) ) {
+			wp_send_json_error( 'Unauthorized user', 401 );
+			exit();
+		}
+
+		// Check for nonce security
+		if ( ! wp_verify_nonce( $_POST['ets_memberpress_discord_nonce'], 'ets-memberpress-discord-ajax-nonce' ) ) {
+				wp_send_json_error( 'You do not have sufficient rights', 403 );
+				exit();
+		}
+		$user_id = sanitize_text_field( $_POST['user_id'] );
+		$this->ets_memberpress_discord_set_member_roles( $user_id, false, false, false );
+
+		$event_res = array(
+			'status'  => 1,
+			'message' => __( 'success', 'ets_memberpress_discord' ),
+		);
+		return wp_send_json( $event_res );
 	}
 }

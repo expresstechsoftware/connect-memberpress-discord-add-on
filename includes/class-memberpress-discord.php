@@ -78,7 +78,7 @@ class Memberpress_Discord {
 		$this->set_locale();
 		$this->define_admin_hooks();
 		$this->define_public_hooks();
-    $this->define_common_hooks();
+		$this->define_common_hooks();
 	}
 
 	/**
@@ -104,16 +104,16 @@ class Memberpress_Discord {
 		 */
 		require_once MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . 'includes/libraries/action-scheduler/action-scheduler.php';
 
-    /**
-		 * Define common functions.
-		 */
+		/**
+			 * Define common functions.
+			 */
 		require_once MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . 'includes/functions.php';
 
 		/**
 		 * The class responsible for orchestrating the actions and filters of the
 		 * core plugin.
 		 */
-		require_once MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH. 'includes/class-memberpress-discord-loader.php';
+		require_once MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . 'includes/class-memberpress-discord-loader.php';
 
 		/**
 		 * The class responsible for defining internationalization functionality
@@ -172,15 +172,19 @@ class Memberpress_Discord {
 		$this->loader->add_action( 'admin_post_memberpress_discord_advance_settings', $plugin_admin, 'ets_memberpress_discord_advance_settings' );
 		$this->loader->add_action( 'wp_ajax_memberpress_load_discord_roles', $plugin_admin, 'ets_memberpress_load_discord_roles' );
 		$this->loader->add_action( 'wp_ajax_memberpress_discord_clear_logs', $plugin_admin, 'ets_memberpress_discord_clear_logs' );
+		$this->loader->add_action( 'wp_ajax_memberpress_discord_member_table_run_api', $plugin_admin, 'ets_memberpress_discord_member_table_run_api' );
 		$this->loader->add_action( 'mepr-transaction-expired', $plugin_admin, 'ets_memberpress_discord_as_schdule_job_memberpress_expiry', 10, 2 );
 		$this->loader->add_action( 'mepr_pre_delete_transaction', $plugin_admin, 'ets_memberpress_discord_as_schdule_job_memberpress_delete_transaction' );
 		$this->loader->add_action( 'mepr-event-subscription-stopped', $plugin_admin, 'ets_memberpress_discord_as_schdule_job_memberpress_cancelled' );
 		$this->loader->add_action( 'mepr-event-transaction-completed', $plugin_admin, 'ets_memberpress_discord_as_schdule_job_memberpress_complete_transactions' );
+		$this->loader->add_filter( 'mepr-admin-members-cols', $plugin_admin, 'ets_memberpress_discord_members_list_add_column' );
+		$this->loader->add_action( 'mepr_members_list_table_row', $plugin_admin, 'ets_memberpress_discord_members_list_add_custom_column_value', 10, 4 );
 		$this->loader->add_action( 'ets_memberpress_discord_as_handle_memberpress_expiry', $plugin_admin, 'ets_memberpress_discord_as_handler_memberpress_expiry', 10, 2 );
 		$this->loader->add_action( 'ets_memberpress_discord_as_handle_memberpress_cancelled', $plugin_admin, 'ets_memberpress_discord_as_handler_memberpress_cancelled', 10, 2 );
 		$this->loader->add_action( 'ets_memberpress_discord_as_send_dm', $this, 'ets_memberpress_discord_handler_send_dm', 10, 3 );
 		$this->loader->add_action( 'ets_memberpress_discord_as_schedule_delete_role', $plugin_admin, 'ets_memberpress_discord_as_handler_delete_memberrole', 10, 3 );
 		$this->loader->add_action( 'ets_memberpress_discord_as_handle_memberpress_complete_transaction', $plugin_admin, 'ets_memberpress_discord_as_handler_memberpress_complete_transaction', 10, 2 );
+
 	}
 
 	/**
@@ -205,30 +209,30 @@ class Memberpress_Discord {
 		$this->loader->add_action( 'ets_memberpress_discord_as_schedule_member_put_role', $plugin_public, 'ets_memberpress_discord_as_handler_put_memberrole', 10, 3 );
 	}
 
-  /*
-  * Define actions which are not in admin or not public
-  * @since    1.0.0
-	* @access   private
-  */
-  private function define_common_hooks() {
-    $this->loader->add_filter('action_scheduler_queue_runner_batch_size', $this, 'ets_memberpress_discord_queue_batch_size' );
-    $this->loader->add_filter('action_scheduler_queue_runner_concurrent_batches', $this, 'ets_memberpress_discord_concurrent_batches' );
-  }
-  /**
+	/**
+	 * Define actions which are not in admin or not public
+	 * @since    1.0.0
+	 * @access   private
+	 */
+	private function define_common_hooks() {
+		$this->loader->add_filter( 'action_scheduler_queue_runner_batch_size', $this, 'ets_memberpress_discord_queue_batch_size' );
+		$this->loader->add_filter( 'action_scheduler_queue_runner_concurrent_batches', $this, 'ets_memberpress_discord_concurrent_batches' );
+	}
+	/**
 	 * set action scheuduler batch size.
 	 *
-	 * @param INT $concurrent_batches
+	 * @param INT $batch_size
 	 * @return INT $concurrent_batches
 	 */
-  public function ets_memberpress_discord_queue_batch_size( $batch_size ){
-    if ( ets_memberpress_discord_get_all_pending_actions() !== false ) {
+	public function ets_memberpress_discord_queue_batch_size( $batch_size ) {
+		if ( ets_memberpress_discord_get_all_pending_actions() !== false ) {
 			return absint( get_option( 'ets_memberpress_discord_job_queue_batch_size' ) );
 		} else {
 			return $batch_size;
 		}
-  }
+	}
 
-  /**
+	/**
 	 * set action scheuduler batch size.
 	 *
 	 * @param INT $concurrent_batches
