@@ -81,7 +81,7 @@ class Memberpress_Discord_Admin {
 		 */
 
 		wp_enqueue_style( $this->plugin_name . 'tabs_css', plugin_dir_url( __FILE__ ) . 'css/skeletabs.css', array(), $this->version, 'all' );
-		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/memberpress-discord-admin.css', array(), $this->version, 'all' );
+		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/memberpress-discord-admin.min.css', array(), $this->version, 'all' );
 		wp_enqueue_style( $this->plugin_name . 'font_awesome_css', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css', array(), $this->version, 'all' );
 	}
 
@@ -104,7 +104,7 @@ class Memberpress_Discord_Admin {
 		 * class.
 		 */
 		wp_enqueue_script( $this->plugin_name . 'tabs_js', plugin_dir_url( __FILE__ ) . 'js/skeletabs.js', array( 'jquery' ), $this->version, false );
-		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/memberpress-discord-admin.js', array( 'jquery' ), $this->version, false );
+		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/memberpress-discord-admin.min.js', array( 'jquery' ), $this->version, false );
 		wp_enqueue_script( $this->plugin_name . 'font_awesome_js', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/js/all.min.js', array( 'jquery' ), $this->version, false );
 		wp_enqueue_script( 'jquery-ui-draggable' );
 		wp_enqueue_script( 'jquery-ui-droppable' );
@@ -185,6 +185,7 @@ class Memberpress_Discord_Admin {
 
 				$message = 'Your settings are saved successfully.';
 				if ( isset( $_SERVER['HTTP_REFERER'] ) ) {
+					delete_metadata( 'user', 0, '_ets_memberpress_discord_dm_channel', '', true );
 					$pre_location = $_SERVER['HTTP_REFERER'] . '&save_settings_msg=' . $message . '#skeletabsPanel1';
 					wp_safe_redirect( $pre_location );
 				}
