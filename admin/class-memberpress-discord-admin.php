@@ -581,7 +581,7 @@ class Memberpress_Discord_Admin {
 		$ets_memberpress_discord_send_membership_expired_dm = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_send_membership_expired_dm' ) ) );
 		$ets_memberpress_discord_send_membership_cancel_dm  = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_send_membership_cancel_dm' ) ) );
 		$access_token                                       = get_user_meta( $user_id, '_ets_memberpress_discord_access_token', true );
-    $curr_level_id = NULL;
+		$curr_level_id                                      = null;
 		if ( ! empty( $access_token ) ) {
 			if ( $expired_membership ) {
 				$curr_level_id = $expired_membership['product_id'];
@@ -590,7 +590,7 @@ class Memberpress_Discord_Admin {
 				$curr_level_id = $cancelled_membership['product_id'];
 			}
 
-			if( $curr_level_id!==NULL ) {
+			if ( $curr_level_id !== null ) {
 				$_ets_memberpress_discord_role_id = sanitize_text_field( trim( get_user_meta( $user_id, '_ets_memberpress_discord_role_id_for_' . $curr_level_id, true ) ) );
 				// delete already assigned role.
 				if ( isset( $_ets_memberpress_discord_role_id ) && $_ets_memberpress_discord_role_id != '' && $_ets_memberpress_discord_role_id != 'none' ) {
@@ -608,7 +608,7 @@ class Memberpress_Discord_Admin {
 						if ( $mapped_role_id && $expired_membership == false && $cancelled_membership == false ) {
 							$plugin_public->put_discord_role_api( $user_id, $mapped_role_id, $is_schedule );
 							update_user_meta( $user_id, '_ets_memberpress_discord_role_id_for_' . $active_membership->product_id, $mapped_role_id );
-              delete_user_meta( $user_id, '_ets_memberpress_discord_expitration_warning_dm_for_' . $active_membership->product_id );
+							delete_user_meta( $user_id, '_ets_memberpress_discord_expitration_warning_dm_for_' . $active_membership->product_id );
 						}
 					}
 				}
