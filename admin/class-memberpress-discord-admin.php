@@ -185,6 +185,7 @@ class Memberpress_Discord_Admin {
 
 				$message = 'Your settings are saved successfully.';
 				if ( isset( $_SERVER['HTTP_REFERER'] ) ) {
+					// This will delete Stale DM channels.
 					delete_metadata( 'user', 0, '_ets_memberpress_discord_dm_channel', '', true );
 					$pre_location = $_SERVER['HTTP_REFERER'] . '&save_settings_msg=' . $message . '#skeletabsPanel1';
 					wp_safe_redirect( $pre_location );
