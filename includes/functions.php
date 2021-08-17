@@ -185,9 +185,9 @@ function ets_memberpress_discord_check_saved_settings_status() {
 	$ets_memberpress_discord_client_secret = get_option( 'ets_memberpress_discord_client_secret' );
 	$ets_memberpress_discord_bot_token     = get_option( 'ets_memberpress_discord_bot_token' );
 	$ets_memberpress_discord_redirect_url  = get_option( 'ets_memberpress_discord_redirect_url' );
-	$ets_memberpress_discord_guild_id      = get_option( 'ets_memberpress_discord_guild_id' );
+	$ets_memberpress_discord_server_id     = get_option( 'ets_memberpress_discord_server_id' );
 
-	if ( $ets_memberpress_discord_client_id && $ets_memberpress_discord_client_secret && $ets_memberpress_discord_bot_token && $ets_memberpress_discord_redirect_url && $ets_memberpress_discord_guild_id ) {
+	if ( $ets_memberpress_discord_client_id && $ets_memberpress_discord_client_secret && $ets_memberpress_discord_bot_token && $ets_memberpress_discord_redirect_url && $ets_memberpress_discord_server_id ) {
 			$status = true;
 	} else {
 			$status = false;
