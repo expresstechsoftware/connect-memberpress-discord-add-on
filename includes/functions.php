@@ -206,12 +206,13 @@ function ets_memberpress_discord_check_saved_settings_status() {
 function ets_memberpress_discord_get_formatted_dm( $user_id, $membership, $message ) {
 	global $wpdb;
 	$user_obj  = get_user_by( 'id', $user_id );
+	$ets_memberpress_discord_role_mapping = json_decode( get_option( 'ets_memberpress_discord_role_mapping' ), true );
 	$all_roles = json_decode( get_option( 'ets_memberpress_discord_all_roles' ), true );
-
+	$mapped_role_id = $ets_memberpress_discord_role_mapping[ 'level_id_' . $membership['product_id'] ];
 	$MEMBER_USERNAME = $user_obj->user_login;
 	$MEMBER_EMAIL    = $user_obj->user_email;
-	if ( is_array( $all_roles ) && array_key_exists( $membership['product_id'], $all_roles ) ) {
-		$MEMBERSHIP_LEVEL = $all_roles[ $membership['product_id'] ];
+	if ( is_array( $all_roles ) && array_key_exists( $mapped_role_id, $all_roles ) ) {
+		$MEMBERSHIP_LEVEL = $all_roles[ $mapped_role_id ];
 	} else {
 		$MEMBERSHIP_LEVEL = '';
 	}

@@ -837,4 +837,32 @@ class Memberpress_Discord_Admin {
 		);
 		return wp_send_json( $event_res );
 	}
+
+	/**
+	 * Send expiration warning DM to discord members.
+	 *
+	 * @param INT $reminder_id
+	 */
+
+	public function ets_memberpress_discord_send_expiration_warning_dm( $reminder_id ) {
+		$reminder_ctrl = new MeprRemindersCtrl();
+		$reminder      = $reminder_ctrl->get_valid_reminder( $reminder_id );
+		if ( $reminder->trigger_event == 'sub-expires' ) {
+			if ( ( $txn = $reminder->get_next_expiring_txn() ) ) {
+				$transaction = new MeprTransaction( $txn->id ); // we need the actual model
+			}
+			if ( isset( $transaction ) ) {
+				$already_sent          = get_user_meta( $transaction->user_id, '_ets_memberpress_discord_expitration_warning_dm_for_' . $transaction->product_id, true );
+				$access_token          = get_user_meta( $transaction->user_id, '_ets_memberpress_discord_access_token', true );
+				$sub_expire_membership = array(
+					'product_id' => $transaction->product_id,
+					'created_at' => $transaction->created_at,
+					'expires_at' => $transaction->expires_at,
+				);
+				if ( ! empty( $access_token ) && $sub_expire_membership && $already_sent != 1 ) {
+					as_schedule_single_action( ets_memberpress_discord_get_random_timestamp( ets_memberpress_discord_get_highest_last_attempt_timestamp() ), 'ets_memberpress_discord_as_send_dm', array( $user_obj->user_id, $sub_expire_membership, 'warning' ), 'ets-memberpress-discord' );
+				}
+			}
+		}
+	}
 }

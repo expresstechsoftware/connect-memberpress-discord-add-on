@@ -9,7 +9,7 @@ if ( $currentUser ) {
   <form accept="#" method="post">
 	  <div class="ets-container">
 		<div class="top-logo-title">
-		  <img src="<?php echo MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH  . 'admin/images/ets-logo.png'; ?>" class="img-fluid company-logo" alt="">
+		  <img src="<?php echo MEMBERPRESS_DISCORD_PLUGIN_DIR_URL  . 'admin/images/ets-logo.png'; ?>" class="img-fluid company-logo" alt="">
 		  <h1><?php echo __( 'ExpressTech Softwares Solutions Pvt. Ltd.', 'ets_memberpress_discord' ); ?></h1>
 		  <p><?php echo __( 'ExpressTech Software Solution Pvt. Ltd. is the leading Enterprise WordPress development company.', 'ets_memberpress_discord' ); ?><br>
 		  <?php echo __( 'Contact us for any WordPress Related development projects.', 'ets_memberpress_discord' ); ?></p>
