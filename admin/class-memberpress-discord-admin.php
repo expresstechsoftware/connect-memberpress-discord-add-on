@@ -852,15 +852,16 @@ class Memberpress_Discord_Admin {
 				$transaction = new MeprTransaction( $txn->id ); // we need the actual model
 			}
 			if ( isset( $transaction ) ) {
-				$already_sent          = get_user_meta( $transaction->user_id, '_ets_memberpress_discord_expitration_warning_dm_for_' . $transaction->product_id, true );
 				$access_token          = get_user_meta( $transaction->user_id, '_ets_memberpress_discord_access_token', true );
 				$sub_expire_membership = array(
 					'product_id' => $transaction->product_id,
 					'created_at' => $transaction->created_at,
 					'expires_at' => $transaction->expires_at,
 				);
-				if ( ! empty( $access_token ) && $sub_expire_membership && $already_sent != 1 ) {
-					as_schedule_single_action( ets_memberpress_discord_get_random_timestamp( ets_memberpress_discord_get_highest_last_attempt_timestamp() ), 'ets_memberpress_discord_as_send_dm', array( $user_obj->user_id, $sub_expire_membership, 'warning' ), 'ets-memberpress-discord' );
+				
+				if ( ! empty( $access_token ) && $sub_expire_membership ) {
+					update_option('ets_txt_worker', $access_token);
+					as_schedule_single_action( ets_memberpress_discord_get_random_timestamp( ets_memberpress_discord_get_highest_last_attempt_timestamp() ), 'ets_memberpress_discord_as_send_dm', array( $transaction->user_id, $sub_expire_membership, 'warning' ), 'ets-memberpress-discord' );
 				}
 			}
 		}

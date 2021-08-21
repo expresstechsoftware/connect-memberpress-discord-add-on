@@ -275,7 +275,6 @@ class Memberpress_Discord {
 		}
 
 		if ( 'warning' === $type ) {
-			update_user_meta( $user_id, '_ets_memberpress_discord_expitration_warning_dm_for_' . $active_membership['product_id'], true );
 			$message = ets_memberpress_discord_get_formatted_dm( $user_id, $active_membership, $ets_memberpress_discord_expiration_warning_message );
 		}
 		if ( 'expired' === $type ) {
