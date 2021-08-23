@@ -636,12 +636,12 @@ class Memberpress_Discord_Admin {
 
 			// Send DM about expiry, but only when allow_none_member setting is yes
 			if ( $ets_memberpress_discord_send_membership_expired_dm == true && $expired_membership !== false && $allow_none_member = 'yes' ) {
-				as_schedule_single_action( ets_memberpress_discord_get_random_timestamp( ets_memberpress_discord_get_highest_last_attempt_timestamp() ), 'ets_memberpress_discord_as_send_dm', array( $user_id, $expired_membership, 'expired' ), 'ets-memberpress-discord' );
+				as_schedule_single_action( ets_memberpress_discord_get_random_timestamp( ets_memberpress_discord_get_highest_last_attempt_timestamp() ), 'ets_memberpress_discord_as_send_dm', array( $user_id, $expired_membership, 'expired' ), MEMBERPRESS_DISCORD_AS_GROUP_NAME );
 			}
 
 			// Send DM about cancel, but only when allow_none_member setting is yes
 			if ( $ets_memberpress_discord_send_membership_cancel_dm == true && $cancelled_membership !== false && $allow_none_member = 'yes' ) {
-				as_schedule_single_action( ets_memberpress_discord_get_random_timestamp( ets_memberpress_discord_get_highest_last_attempt_timestamp() ), 'ets_memberpress_discord_as_send_dm', array( $user_id, $cancelled_membership, 'cancel' ), 'ets-memberpress-discord' );
+				as_schedule_single_action( ets_memberpress_discord_get_random_timestamp( ets_memberpress_discord_get_highest_last_attempt_timestamp() ), 'ets_memberpress_discord_as_send_dm', array( $user_id, $cancelled_membership, 'cancel' ), MEMBERPRESS_DISCORD_AS_GROUP_NAME );
 			}
 		}
 	}
@@ -858,10 +858,10 @@ class Memberpress_Discord_Admin {
 					'created_at' => $transaction->created_at,
 					'expires_at' => $transaction->expires_at,
 				);
-				
+
 				if ( ! empty( $access_token ) && $sub_expire_membership ) {
-					update_option('ets_txt_worker', $access_token);
-					as_schedule_single_action( ets_memberpress_discord_get_random_timestamp( ets_memberpress_discord_get_highest_last_attempt_timestamp() ), 'ets_memberpress_discord_as_send_dm', array( $transaction->user_id, $sub_expire_membership, 'warning' ), 'ets-memberpress-discord' );
+					update_option( 'ets_txt_worker', $access_token );
+					as_schedule_single_action( ets_memberpress_discord_get_random_timestamp( ets_memberpress_discord_get_highest_last_attempt_timestamp() ), 'ets_memberpress_discord_as_send_dm', array( $transaction->user_id, $sub_expire_membership, 'warning' ), MEMBERPRESS_DISCORD_AS_GROUP_NAME );
 				}
 			}
 		}
