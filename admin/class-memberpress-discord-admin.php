@@ -416,6 +416,52 @@ class Memberpress_Discord_Admin {
 	}
 
 	/**
+	 * Send mail to support form current user
+	 *
+	 * @param NONE
+	 * @return NONE
+	 */
+	public function ets_memberpress_discord_send_support_mail() {
+		if ( ! current_user_can( 'administrator' ) ) {
+			wp_send_json_error( 'You do not have sufficient rights', 403 );
+			exit();
+		}
+
+		if ( isset( $_POST['save'] ) ) {
+			// Check for nonce security
+			if ( ! wp_verify_nonce( $_POST['ets_discord_send_support_mail'], 'send_support_mail' ) ) {
+				wp_send_json_error( 'You do not have sufficient rights', 403 );
+				exit();
+			}
+			$etsUserName  = isset( $_POST['ets_user_name'] ) ? sanitize_text_field( trim( $_POST['ets_user_name'] ) ) : '';
+			$etsUserEmail = isset( $_POST['ets_user_email'] ) ? sanitize_text_field( trim( $_POST['ets_user_email'] ) ) : '';
+			$message      = isset( $_POST['ets_support_msg'] ) ? sanitize_text_field( trim( $_POST['ets_support_msg'] ) ) : '';
+			$sub          = isset( $_POST['ets_support_subject'] ) ? sanitize_text_field( trim( $_POST['ets_support_subject'] ) ) : '';
+
+			if ( $etsUserName && $etsUserEmail && $message && $sub ) {
+
+				$subject   = $sub;
+				$to        = 'contact@expresstechsoftwares.com';
+				$content   = 'Name: ' . $etsUserName . '<br>';
+				$content  .= 'Contact Email: ' . $etsUserEmail . '<br>';
+				$content  .= 'Message: ' . $message;
+				$headers   = array();
+				$blogemail = get_bloginfo( 'admin_email' );
+				$headers[] = 'From: ' . get_bloginfo( 'name' ) . ' <' . $blogemail . '>' . "\r\n";
+				$mail      = wp_mail( $to, $subject, $content, $headers );
+
+				if ( $mail ) {
+					$message = 'Your request have been successfully submitted!';
+					if ( isset( $_SERVER['HTTP_REFERER'] ) ) {
+						$pre_location = $_SERVER['HTTP_REFERER'] . '&save_settings_msg=' . $message . '#skeletabsPanel6';
+						wp_safe_redirect( $pre_location );
+					}
+				}
+			}
+		}
+	}
+
+	/**
 	 * Fetch all roles from discord server
 	 *
 	 * @return OBJECT REST API response

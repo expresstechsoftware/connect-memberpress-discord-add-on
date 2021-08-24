@@ -6,7 +6,8 @@ if ( $currentUser ) {
 }
 ?>
 <div class="contact-form ">
-  <form accept="#" method="post">
+	<form method="post" action="<?php echo esc_attr( get_site_url() ) . '/wp-admin/admin-post.php' ?>">
+		<input type="hidden" name="action" value="memberpress_discord_send_support_mail">
 	  <div class="ets-container">
 		<div class="top-logo-title">
 		  <img src="<?php echo MEMBERPRESS_DISCORD_PLUGIN_DIR_URL  . 'admin/images/ets-logo.png'; ?>" class="img-fluid company-logo" alt="">
@@ -21,7 +22,7 @@ if ( $currentUser ) {
 				<div class="ets-form-group">
 				  <label><?php echo __( 'Full Name', 'ets_memberpress_discord' ); ?></label>
 				  <input type="text" name="ets_user_name" value="<?php echo esc_html( $currUserName ); ?>" class="form-control contact-input" placeholder="<?php echo __( 'Write Your Full Name', 'ets_memberpress_discord' ); ?>">
-				  <?php wp_nonce_field( 'get_support', 'ets_discord_get_support' ); ?>
+				  <?php wp_nonce_field( 'send_support_mail', 'ets_discord_send_support_mail' ); ?>
 				</div>
 				<div class="ets-form-group">
 				  <label><?php echo __( 'Contact Email', 'ets_memberpress_discord' ); ?></label>
