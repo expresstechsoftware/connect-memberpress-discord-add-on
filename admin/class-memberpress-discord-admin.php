@@ -462,6 +462,20 @@ class Memberpress_Discord_Admin {
 	}
 
 	/**
+	 * Manage user roles on subscription  payment failed
+	 *
+	 * @param ARRAY $old_order
+	 */
+	public function ets_memberpress_discord_subscription_payment_failed( $txn ) {
+		$user_id         = $txn->user_id;
+		$ets_payment_fld = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_payment_failed' ) ) );
+
+		if ( $ets_payment_fld == true && isset( $user_id ) ) {
+			$this->ets_memberpress_discord_set_member_roles( $user_id, false, false, true );
+		}
+	}
+
+	/**
 	 * Fetch all roles from discord server
 	 *
 	 * @return OBJECT REST API response
