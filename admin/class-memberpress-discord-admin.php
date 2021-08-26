@@ -920,7 +920,6 @@ class Memberpress_Discord_Admin {
 				);
 
 				if ( ! empty( $access_token ) && $sub_expire_membership ) {
-					update_option( 'ets_txt_worker', $access_token );
 					as_schedule_single_action( ets_memberpress_discord_get_random_timestamp( ets_memberpress_discord_get_highest_last_attempt_timestamp() ), 'ets_memberpress_discord_as_send_dm', array( $transaction->user_id, $sub_expire_membership, 'warning' ), MEMBERPRESS_DISCORD_AS_GROUP_NAME );
 				}
 			}
