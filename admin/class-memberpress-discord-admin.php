@@ -761,46 +761,28 @@ class Memberpress_Discord_Admin {
 	}
 
 	/**
-	 * Action schedule to schedule a function to run upon memberpress complete transaction
-	 *
-	 * @param ARRAY $event
-	 * @return NONE
-	 */
-	public function ets_memberpress_discord_as_schdule_job_memberpress_complete_transactions( $event ) {
-		$subscription = $event->get_data();
-		$user         = $subscription->user();
-		$access_token = sanitize_text_field( trim( get_user_meta( $user->ID, '_ets_memberpress_discord_access_token', true ) ) );
-		$complete_txn = array();
-		if ( ! empty( $subscription ) ) {
-				$complete_txn = array(
-					'product_id' => $subscription->product_id,
-					'created_at' => $subscription->created_at,
-					'expires_at' => $subscription->expires_at,
-				);
-		}
-		if ( $complete_txn && $access_token ) {
-			as_schedule_single_action( ets_memberpress_discord_get_random_timestamp( ets_memberpress_discord_get_highest_last_attempt_timestamp() ), 'ets_memberpress_discord_as_handle_memberpress_complete_transaction', array( $user->ID, $complete_txn ), MEMBERPRESS_DISCORD_AS_GROUP_NAME );
-		}
-	}
-
-	/**
 	 * Action scheduler method to process complete transaction event.
 	 *
 	 * @param INT $user_id
 	 * @param INT $complete_txn
 	 */
 	public function ets_memberpress_discord_as_handler_memberpress_complete_transaction( $user_id, $complete_txn ) {
-		$memberpress_discord                  = new Memberpress_Discord();
-		$plugin_public                        = new Memberpress_Discord_Public( $memberpress_discord->get_plugin_name(), $memberpress_discord->get_version() );
-		$ets_memberpress_discord_role_mapping = json_decode( get_option( 'ets_memberpress_discord_role_mapping' ), true );
-		$default_role                         = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_default_role_id' ) ) );
-		$previous_default_role                = get_user_meta( $user_id, '_ets_memberpress_discord_default_role_id', true );
+		$memberpress_discord                     = new Memberpress_Discord();
+		$plugin_public                           = new Memberpress_Discord_Public( $memberpress_discord->get_plugin_name(), $memberpress_discord->get_version() );
+		$ets_memberpress_discord_role_mapping    = json_decode( get_option( 'ets_memberpress_discord_role_mapping' ), true );
+		$default_role                            = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_default_role_id' ) ) );
+		$previous_default_role                   = get_user_meta( $user_id, '_ets_memberpress_discord_default_role_id', true );
+		$ets_memberpress_discord_send_welcome_dm = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_send_welcome_dm' ) ) );
 
 		if ( is_array( $ets_memberpress_discord_role_mapping ) && array_key_exists( 'level_id_' . $complete_txn['product_id'], $ets_memberpress_discord_role_mapping ) ) {
 			$mapped_role_id = sanitize_text_field( trim( $ets_memberpress_discord_role_mapping[ 'level_id_' . $complete_txn['product_id'] ] ) );
 			if ( $mapped_role_id ) {
 				$plugin_public->put_discord_role_api( $user_id, $mapped_role_id, true );
 				update_user_meta( $user_id, '_ets_memberpress_discord_role_id_for_' . $complete_txn['product_id'], $mapped_role_id );
+				// Send welcome message.
+				if ( true == $ets_memberpress_discord_send_welcome_dm && $complete_txn ) {
+					as_schedule_single_action( ets_memberpress_discord_get_random_timestamp( ets_memberpress_discord_get_highest_last_attempt_timestamp() ), 'ets_memberpress_discord_as_send_dm', array( $user_id, $complete_txn, 'welcome' ), MEMBERPRESS_DISCORD_AS_GROUP_NAME );
+				}
 			}
 		}
 
@@ -817,6 +799,32 @@ class Memberpress_Discord_Admin {
 				$this->memberpress_delete_discord_role( $user_id, $previous_default_role, true );
 			}
 			update_user_meta( $user_id, '_ets_memberpress_discord_default_role_id', $default_role );
+		}
+	}
+
+	/**
+	 * Action schedule to schedule a function to run upon memberpress complete transaction
+	 *
+	 * @param ARRAY $event
+	 * @return NONE
+	 */
+	public function ets_memberpress_discord_as_schdule_job_memberpress_transactions_status_changed( $old_status, $new_status, $txn ) {
+		$access_token = sanitize_text_field( trim( get_user_meta( $txn->user_id, '_ets_memberpress_discord_access_token', true ) ) );
+		$complete_txn = array();
+		if ( ! empty( $txn ) ) {
+				$complete_txn = array(
+					'product_id' => $txn->product_id,
+					'created_at' => $txn->created_at,
+					'expires_at' => $txn->expires_at,
+				);
+		}
+
+		if ( $complete_txn && $access_token && $old_status == 'complete' && $new_status == 'complete' ) {
+			$this->ets_memberpress_discord_set_member_roles( $txn->user_id, false, false, true );
+		} elseif ( $complete_txn && $access_token && $old_status == 'complete' && $new_status != 'complete' ) {
+			as_schedule_single_action( ets_memberpress_discord_get_random_timestamp( ets_memberpress_discord_get_highest_last_attempt_timestamp() ), 'ets_memberpress_discord_as_handle_memberpress_cancelled', array( $txn->user_id, $complete_txn ), MEMBERPRESS_DISCORD_AS_GROUP_NAME );
+		} elseif ( $complete_txn && $access_token && $new_status == 'complete' ) {
+			as_schedule_single_action( ets_memberpress_discord_get_random_timestamp( ets_memberpress_discord_get_highest_last_attempt_timestamp() ), 'ets_memberpress_discord_as_handle_memberpress_complete_transaction', array( $txn->user_id, $complete_txn ), MEMBERPRESS_DISCORD_AS_GROUP_NAME );
 		}
 	}
 
