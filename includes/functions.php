@@ -138,9 +138,9 @@ function ets_memberpress_discord_get_highest_last_attempt_timestamp() {
  */
 function ets_memberpress_discord_get_random_timestamp( $add_upon = '' ) {
 	if ( $add_upon != '' && $add_upon !== false ) {
-		return $add_upon + random_int( 5, 15 );
+		return $add_upon + random_int( 5, 15 ) + time();
 	} else {
-		return strtotime( 'now' ) + random_int( 5, 15 );
+		return strtotime( 'now' ) + random_int( 5, 15 ) + time();
 	}
 }
 
