@@ -576,6 +576,7 @@ class Memberpress_Discord_Admin {
 				$cancelled_membership = array(
 					'product_id' => $subscription->product_id,
 					'created_at' => $subscription->created_at,
+					'txn_number' => $subscription->trans_num,
 					'expires_at' => $subscription->expires_at,
 				);
 		}
@@ -596,6 +597,7 @@ class Memberpress_Discord_Admin {
 		if ( ! empty( $deleted_txn ) ) {
 				$deleted_membership = array(
 					'product_id' => $deleted_txn->product_id,
+					'txn_number' => $deleted_txn->trans_num,
 					'created_at' => $deleted_txn->created_at,
 					'expires_at' => $deleted_txn->expires_at,
 				);
@@ -643,23 +645,23 @@ class Memberpress_Discord_Admin {
 		$ets_memberpress_discord_send_membership_expired_dm = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_send_membership_expired_dm' ) ) );
 		$ets_memberpress_discord_send_membership_cancel_dm  = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_send_membership_cancel_dm' ) ) );
 		$access_token                                       = get_user_meta( $user_id, '_ets_memberpress_discord_access_token', true );
-		$curr_level_id                                      = null;
+		$user_txn = null;
 		if ( ! empty( $access_token ) ) {
 			if ( $expired_membership ) {
-				$curr_level_id = $expired_membership['product_id'];
+				$user_txn = $expired_membership['txn_number'];
 			}
 			if ( $cancelled_membership ) {
-				$curr_level_id = $cancelled_membership['product_id'];
+				$user_txn = $cancelled_membership['txn_number'];
 			}
 
-			if ( $curr_level_id !== null ) {
-				$_ets_memberpress_discord_role_id = sanitize_text_field( trim( get_user_meta( $user_id, '_ets_memberpress_discord_role_id_for_' . $curr_level_id, true ) ) );
+			if ( $user_txn !== null ) {
+				$_ets_memberpress_discord_role_id = sanitize_text_field( trim( get_user_meta( $user_id, '_ets_memberpress_discord_role_id_for_' . $user_txn, true ) ) );
 				// delete already assigned role.
 				if ( isset( $_ets_memberpress_discord_role_id ) && $_ets_memberpress_discord_role_id != '' && $_ets_memberpress_discord_role_id != 'none' ) {
-						$this->memberpress_delete_discord_role( $user_id, $_ets_memberpress_discord_role_id, $is_schedule );
-						delete_user_meta( $user_id, '_ets_memberpress_discord_role_id_for_' . $curr_level_id, true );
+						$this->memberpress_delete_discord_role( $user_id, $_ets_memberpress_discord_role_id['role_id'], $is_schedule );
+						delete_user_meta( $user_id, '_ets_memberpress_discord_role_id_for_' . $user_txn, true );
 				}
-				delete_user_meta( $user_id, '_ets_memberpress_discord_expitration_warning_dm_for_' . $curr_level_id );
+				delete_user_meta( $user_id, '_ets_memberpress_discord_expitration_warning_dm_for_' . $user_txn );
 			}
 
 			if ( is_array( $active_memberships ) && count( $active_memberships ) != 0 ) {
@@ -669,8 +671,12 @@ class Memberpress_Discord_Admin {
 						$mapped_role_id = sanitize_text_field( trim( $ets_memberpress_discord_role_mapping[ 'level_id_' . $active_membership->product_id ] ) );
 						if ( $mapped_role_id && $expired_membership == false && $cancelled_membership == false ) {
 							$plugin_public->put_discord_role_api( $user_id, $mapped_role_id, $is_schedule );
-							update_user_meta( $user_id, '_ets_memberpress_discord_role_id_for_' . $active_membership->product_id, $mapped_role_id );
-							delete_user_meta( $user_id, '_ets_memberpress_discord_expitration_warning_dm_for_' . $active_membership->product_id );
+							$assigned_role = array(
+								'role_id'    => $mapped_role_id,
+								'product_id' => $active_membership->product_id,
+							);
+							update_user_meta( $user_id, '_ets_memberpress_discord_role_id_for_' . $active_membership->trans_num, $assigned_role );
+							delete_user_meta( $user_id, '_ets_memberpress_discord_expitration_warning_dm_for_' . $active_membership->trans_num );
 						}
 					}
 				}
@@ -778,7 +784,11 @@ class Memberpress_Discord_Admin {
 			$mapped_role_id = sanitize_text_field( trim( $ets_memberpress_discord_role_mapping[ 'level_id_' . $complete_txn['product_id'] ] ) );
 			if ( $mapped_role_id ) {
 				$plugin_public->put_discord_role_api( $user_id, $mapped_role_id, true );
-				update_user_meta( $user_id, '_ets_memberpress_discord_role_id_for_' . $complete_txn['product_id'], $mapped_role_id );
+				$assigned_role = array(
+					'role_id'    => $mapped_role_id,
+					'product_id' => $complete_txn['product_id'],
+				);
+				update_user_meta( $user_id, '_ets_memberpress_discord_role_id_for_' . $complete_txn['txn_number'], $assigned_role );
 				// Send welcome message.
 				if ( true == $ets_memberpress_discord_send_welcome_dm && $complete_txn ) {
 					as_schedule_single_action( ets_memberpress_discord_get_random_timestamp( ets_memberpress_discord_get_highest_last_attempt_timestamp() ), 'ets_memberpress_discord_as_send_dm', array( $user_id, $complete_txn, 'welcome' ), MEMBERPRESS_DISCORD_AS_GROUP_NAME );
@@ -789,7 +799,7 @@ class Memberpress_Discord_Admin {
 		// Assign role which is saved as default.
 		if ( $default_role != 'none' ) {
 			if ( isset( $previous_default_role ) && $previous_default_role != '' && $previous_default_role != 'none' ) {
-				$this->memberpress_delete_discord_role( $user_id, $previous_default_role, true );
+				$this->memberpress_delete_discord_role( $user_id, $previous_default_role, false );
 				delete_user_meta( $user_id, '_ets_memberpress_discord_default_role_id', true );
 			}
 			$plugin_public->put_discord_role_api( $user_id, $default_role, true );
@@ -809,20 +819,26 @@ class Memberpress_Discord_Admin {
 	 * @return NONE
 	 */
 	public function ets_memberpress_discord_as_schdule_job_memberpress_transactions_status_changed( $old_status, $new_status, $txn ) {
-		$access_token = sanitize_text_field( trim( get_user_meta( $txn->user_id, '_ets_memberpress_discord_access_token', true ) ) );
-		$complete_txn = array();
+		$access_token          = sanitize_text_field( trim( get_user_meta( $txn->user_id, '_ets_memberpress_discord_access_token', true ) ) );
+		$pre_membership_on_txn = get_user_meta( $txn->user_id, '_ets_memberpress_discord_role_id_for_' . $txn->trans_num, true );
+		$complete_txn          = array();
 		if ( ! empty( $txn ) ) {
 				$complete_txn = array(
 					'product_id' => $txn->product_id,
+					'txn_number' => $txn->trans_num,
 					'created_at' => $txn->created_at,
 					'expires_at' => $txn->expires_at,
 				);
 		}
 
-		if ( $complete_txn && $access_token && $old_status == 'complete' && $new_status == 'complete' ) {
-			$this->ets_memberpress_discord_set_member_roles( $txn->user_id, false, false, true );
-		} elseif ( $complete_txn && $access_token && $old_status == 'complete' && $new_status != 'complete' ) {
-			as_schedule_single_action( ets_memberpress_discord_get_random_timestamp( ets_memberpress_discord_get_highest_last_attempt_timestamp() ), 'ets_memberpress_discord_as_handle_memberpress_cancelled', array( $txn->user_id, $complete_txn ), MEMBERPRESS_DISCORD_AS_GROUP_NAME );
+		if ( isset( $pre_membership_on_txn['product_id'] ) ) {
+			if ( $complete_txn && $access_token && $new_status == 'complete' && $pre_membership_on_txn['product_id'] != $complete_txn['product_id'] ) {
+				$this->memberpress_delete_discord_role( $txn->user_id, $pre_membership_on_txn['role_id'], true );
+				delete_user_meta( $txn->user_id, '_ets_memberpress_discord_role_id_for_' . $txn->trans_num, true );
+				as_schedule_single_action( ets_memberpress_discord_get_random_timestamp( ets_memberpress_discord_get_highest_last_attempt_timestamp() ), 'ets_memberpress_discord_as_handle_memberpress_complete_transaction', array( $txn->user_id, $complete_txn ), MEMBERPRESS_DISCORD_AS_GROUP_NAME );
+			}else{
+				$this->ets_memberpress_discord_set_member_roles( $txn->user_id, false, false, false );
+			}
 		} elseif ( $complete_txn && $access_token && $new_status == 'complete' ) {
 			as_schedule_single_action( ets_memberpress_discord_get_random_timestamp( ets_memberpress_discord_get_highest_last_attempt_timestamp() ), 'ets_memberpress_discord_as_handle_memberpress_complete_transaction', array( $txn->user_id, $complete_txn ), MEMBERPRESS_DISCORD_AS_GROUP_NAME );
 		}

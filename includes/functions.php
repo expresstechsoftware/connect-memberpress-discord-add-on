@@ -205,12 +205,12 @@ function ets_memberpress_discord_check_saved_settings_status() {
  */
 function ets_memberpress_discord_get_formatted_dm( $user_id, $membership, $message ) {
 	global $wpdb;
-	$user_obj  = get_user_by( 'id', $user_id );
+	$user_obj                             = get_user_by( 'id', $user_id );
 	$ets_memberpress_discord_role_mapping = json_decode( get_option( 'ets_memberpress_discord_role_mapping' ), true );
-	$all_roles = json_decode( get_option( 'ets_memberpress_discord_all_roles' ), true );
-	$mapped_role_id = $ets_memberpress_discord_role_mapping[ 'level_id_' . $membership['product_id'] ];
-	$MEMBER_USERNAME = $user_obj->user_login;
-	$MEMBER_EMAIL    = $user_obj->user_email;
+	$all_roles                            = json_decode( get_option( 'ets_memberpress_discord_all_roles' ), true );
+	$mapped_role_id                       = $ets_memberpress_discord_role_mapping[ 'level_id_' . $membership['product_id'] ];
+	$MEMBER_USERNAME                      = $user_obj->user_login;
+	$MEMBER_EMAIL                         = $user_obj->user_email;
 	if ( is_array( $all_roles ) && array_key_exists( $mapped_role_id, $all_roles ) ) {
 		$MEMBERSHIP_LEVEL = $all_roles[ $mapped_role_id ];
 	} else {
@@ -270,6 +270,30 @@ function ets_memberpress_discord_get_active_memberships( $user_id ) {
 	} else {
 		return null;
 	}
+}
+
+/**
+ * Search on array by key and value
+ *
+ * @param ARRAY $array
+ * @param STRING $key
+ * @param VARCHAR $value
+ * @return INT|NULL $active_memberships
+ */
+function array_search_by_key_and_value( $array, $key, $value ) {
+	$results = array();
+
+	if ( is_array( $array ) ) {
+		if ( isset( $array[ $key ] ) && $array[ $key ] == $value ) {
+			$results[] = $array;
+		}
+
+		foreach ( $array as $subarray ) {
+			$results = array_merge( $results, array_search_by_key_and_value( $subarray, $key, $value ) );
+		}
+	}
+
+	return array_key_exists( $key, $results );
 }
 
 

@@ -209,6 +209,7 @@ class Memberpress_Discord_Public {
 					foreach ( $membership_private_obj as $memberships ) {
 						$membership_arr = array(
 							'product_id' => $memberships->product_id,
+							'txn_number' => $memberships->trans_num,
 							'created_at' => $memberships->created_at,
 							'expires_at' => $memberships->expires_at,
 						);
@@ -248,9 +249,9 @@ class Memberpress_Discord_Public {
 								$_ets_memberpress_discord_user_id = sanitize_text_field( trim( $user_body['id'] ) );
 								if ( $discord_exist_user_id === $_ets_memberpress_discord_user_id ) {
 									foreach ( $active_memberships as $active_membership ) {
-										$_ets_memberpress_discord_role_id = sanitize_text_field( trim( get_user_meta( $user_id, '_ets_memberpress_discord_role_id_for_' . $active_membership->product_id, true ) ) );
-										if ( ! empty( $_ets_memberpress_discord_role_id ) && $_ets_memberpress_discord_role_id != 'none' ) {
-											$this->memberpress_delete_discord_role( $user_id, $_ets_memberpress_discord_role_id );
+										$_ets_memberpress_discord_role_id = get_user_meta( $user_id, '_ets_memberpress_discord_role_id_for_' . $active_membership->trans_num, true );
+										if ( ! empty( $_ets_memberpress_discord_role_id ) && $_ets_memberpress_discord_role_id['role_id'] != 'none' ) {
+											$this->memberpress_delete_discord_role( $user_id, $_ets_memberpress_discord_role_id['role_id'] );
 										}
 									}
 								}
@@ -338,7 +339,11 @@ class Memberpress_Discord_Public {
 			throw new Exception( 'Failed in function ets_as_handler_add_member_to_guild' );
 		}
 		foreach ( $discord_roles as $key => $discord_role ) {
-			update_user_meta( $user_id, '_ets_memberpress_discord_role_id_for_' . $active_memberships[ $key ]['product_id'], $discord_role );
+			$assigned_role = array(
+				'role_id' => $discord_role,
+				'product_id'  => $active_memberships[ $key ]['product_id'],
+			);
+			update_user_meta( $user_id, '_ets_memberpress_discord_role_id_for_' . $active_memberships[ $key ]['txn_number'], $assigned_role );
 			if ( $discord_role && $discord_role != 'none' && isset( $user_id ) ) {
 				$this->put_discord_role_api( $user_id, $discord_role );
 			}
@@ -604,7 +609,7 @@ class Memberpress_Discord_Public {
 		delete_user_meta( $user_id, '_ets_memberpress_discord_refresh_token' );
 		if ( is_array( $active_memberships ) ) {
 			foreach ( $active_memberships as $active_membership ) {
-				delete_user_meta( $user_id, '_ets_memberpress_discord_role_id_for_' . $active_membership->product_id );
+				delete_user_meta( $user_id, '_ets_memberpress_discord_role_id_for_' . $active_membership->trans_num );
 			}
 		}
 		delete_user_meta( $user_id, '_ets_memberpress_discord_default_role_id' );
