@@ -821,7 +821,12 @@ class Memberpress_Discord_Admin {
 	public function ets_memberpress_discord_as_schdule_job_memberpress_transactions_status_changed( $old_status, $new_status, $txn ) {
 		$access_token          = sanitize_text_field( trim( get_user_meta( $txn->user_id, '_ets_memberpress_discord_access_token', true ) ) );
 		$pre_membership_on_txn = get_user_meta( $txn->user_id, '_ets_memberpress_discord_role_id_for_' . $txn->trans_num, true );
+		$active_memberships    = ets_memberpress_discord_get_active_memberships( $txn->user_id );
 		$complete_txn          = array();
+		$active_product_ids    = array();
+		foreach ( $active_memberships as $active_membership ) {
+			array_push( $active_product_ids, $active_membership->product_id );
+		}
 		if ( ! empty( $txn ) ) {
 				$complete_txn = array(
 					'product_id' => $txn->product_id,
@@ -833,10 +838,12 @@ class Memberpress_Discord_Admin {
 
 		if ( isset( $pre_membership_on_txn['product_id'] ) ) {
 			if ( $complete_txn && $access_token && $new_status == 'complete' && $pre_membership_on_txn['product_id'] != $complete_txn['product_id'] ) {
-				$this->memberpress_delete_discord_role( $txn->user_id, $pre_membership_on_txn['role_id'], true );
-				delete_user_meta( $txn->user_id, '_ets_memberpress_discord_role_id_for_' . $txn->trans_num, true );
+				if ( ! in_array( $pre_membership_on_txn['product_id'], $active_product_ids ) ) {
+					$this->memberpress_delete_discord_role( $txn->user_id, $pre_membership_on_txn['role_id'], true );
+					delete_user_meta( $txn->user_id, '_ets_memberpress_discord_role_id_for_' . $txn->trans_num, true );
+				}
 				as_schedule_single_action( ets_memberpress_discord_get_random_timestamp( ets_memberpress_discord_get_highest_last_attempt_timestamp() ), 'ets_memberpress_discord_as_handle_memberpress_complete_transaction', array( $txn->user_id, $complete_txn ), MEMBERPRESS_DISCORD_AS_GROUP_NAME );
-			}else{
+			} else {
 				$this->ets_memberpress_discord_set_member_roles( $txn->user_id, false, false, false );
 			}
 		} elseif ( $complete_txn && $access_token && $new_status == 'complete' ) {
