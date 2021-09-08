@@ -553,6 +553,7 @@ class Memberpress_Discord_Admin {
 					'product_id' => $expired_txn->product_id,
 					'created_at' => $expired_txn->created_at,
 					'expires_at' => $expired_txn->expires_at,
+					'txn_number' => $expired_txn->trans_num,
 				);
 		}
 
@@ -655,7 +656,7 @@ class Memberpress_Discord_Admin {
 			}
 
 			if ( $user_txn !== null ) {
-				$_ets_memberpress_discord_role_id = sanitize_text_field( trim( get_user_meta( $user_id, '_ets_memberpress_discord_role_id_for_' . $user_txn, true ) ) );
+				$_ets_memberpress_discord_role_id = get_user_meta( $user_id, '_ets_memberpress_discord_role_id_for_' . $user_txn, true );
 				// delete already assigned role.
 				if ( isset( $_ets_memberpress_discord_role_id ) && $_ets_memberpress_discord_role_id != '' && $_ets_memberpress_discord_role_id != 'none' ) {
 						$this->memberpress_delete_discord_role( $user_id, $_ets_memberpress_discord_role_id['role_id'], $is_schedule );
