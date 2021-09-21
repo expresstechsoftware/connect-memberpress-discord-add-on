@@ -702,7 +702,6 @@ class Memberpress_Discord_Admin {
 	 * @return OBJECT API response
 	 */
 	public function ets_memberpress_discord_as_handler_delete_memberrole( $user_id, $ets_role_id, $is_schedule = true ) {
-
 		$server_id                        = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_server_id' ) ) );
 		$_ets_memberpress_discord_user_id = sanitize_text_field( trim( get_user_meta( $user_id, '_ets_memberpress_discord_user_id', true ) ) );
 		$discord_bot_token                = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_bot_token' ) ) );
@@ -719,7 +718,7 @@ class Memberpress_Discord_Admin {
 
 			$response = wp_remote_request( $discord_delete_role_api_url, $param );
 			ets_memberpress_discord_log_api_response( $user_id, $discord_delete_role_api_url, $param, $response );
-			if ( ets_memberpress_discord_check_api_errors( $response ) ) {
+			if( ets_memberpress_discord_check_api_errors( $response ) ) {
 				$response_arr = json_decode( wp_remote_retrieve_body( $response ), true );
 				write_api_response_logs( $response_arr, $user_id, debug_backtrace()[0] );
 				if ( $is_schedule ) {

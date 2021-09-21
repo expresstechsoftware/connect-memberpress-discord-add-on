@@ -295,5 +295,3 @@ function array_search_by_key_and_value( $array, $key, $value ) {
 
 	return array_key_exists( $key, $results );
 }
-
-
