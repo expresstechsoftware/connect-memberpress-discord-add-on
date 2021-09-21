@@ -12,17 +12,6 @@
  * @subpackage Memberpress_Discord/includes
  */
 
-/**
- * Define the internationalization functionality.
- *
- * Loads and defines the internationalization files for this plugin
- * so that it is ready for translation.
- *
- * @since      1.0.0
- * @package    Memberpress_Discord
- * @subpackage Memberpress_Discord/includes
- * @author     ExpressTech Softwares Solutions Pvt Ltd <contact@expresstechsoftwares.com>
- */
 class Memberpress_Discord_i18n {
 
 

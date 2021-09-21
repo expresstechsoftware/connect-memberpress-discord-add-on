@@ -3,9 +3,6 @@
 /**
  * The file that defines the core plugin class
  *
- * A class definition that includes attributes and functions used across both the
- * public-facing side of the site and the admin area.
- *
  * @link       https://www.expresstechsoftwares.com
  * @since      1.0.0
  *
@@ -13,20 +10,6 @@
  * @subpackage Memberpress_Discord/includes
  */
 
-/**
- * The core plugin class.
- *
- * This is used to define internationalization, admin-specific hooks, and
- * public-facing site hooks.
- *
- * Also maintains the unique identifier of this plugin as well as the current
- * version of the plugin.
- *
- * @since      1.0.0
- * @package    Memberpress_Discord
- * @subpackage Memberpress_Discord/includes
- * @author     ExpressTech Softwares Solutions Pvt Ltd <contact@expresstechsoftwares.com>
- */
 class Memberpress_Discord {
 
 	/**
@@ -59,11 +42,6 @@ class Memberpress_Discord {
 
 	/**
 	 * Define the core functionality of the plugin.
-	 *
-	 * Set the plugin name and the plugin version that can be used throughout the plugin.
-	 * Load the dependencies, define the locale, and set the hooks for the admin area and
-	 * the public-facing side of the site.
-	 *
 	 * @since    1.0.0
 	 */
 	public function __construct() {
@@ -83,8 +61,6 @@ class Memberpress_Discord {
 
 	/**
 	 * Load the required dependencies for this plugin.
-	 *
-	 * Include the following files that make up the plugin:
 	 *
 	 * - Memberpress_Discord_Loader. Orchestrates the hooks of the plugin.
 	 * - Memberpress_Discord_i18n. Defines internationalization functionality.
@@ -237,7 +213,7 @@ class Memberpress_Discord {
 	}
 
 	/**
-	 * Set action scheuduler batch size.
+	 * Set action scheuduler concurrent batches.
 	 *
 	 * @param INT $concurrent_batches
 	 * @return INT $concurrent_batches

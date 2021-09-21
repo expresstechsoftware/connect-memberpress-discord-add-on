@@ -11,7 +11,6 @@
  * @subpackage Memberpress_Discord/admin/partials
  */
 ?>
-<!-- This file should primarily consist of HTML with a little bit of PHP. -->
 <?php
 if ( isset( $_GET['save_settings_msg'] ) ) {
 	?>

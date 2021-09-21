@@ -2,19 +2,6 @@
 /**
  * The admin-specific functionality of the plugin.
  *
- * @link       https://www.expresstechsoftwares.com
- * @since      1.0.0
- *
- * @package    Memberpress_Discord
- * @subpackage Memberpress_Discord/admin
- */
-
-/**
- * The admin-specific functionality of the plugin.
- *
- * Defines the plugin name, version, and two examples hooks for how to
- * enqueue the admin-specific stylesheet and JavaScript.
- *
  * @package    Memberpress_Discord
  * @subpackage Memberpress_Discord/admin
  * @author     ExpressTech Softwares Solutions Pvt Ltd <contact@expresstechsoftwares.com>
@@ -68,18 +55,6 @@ class Memberpress_Discord_Admin {
 	 */
 	public function enqueue_styles() {
 
-		/**
-		 * This function is provided for demonstration purposes only.
-		 *
-		 * An instance of this class should be passed to the run() function
-		 * defined in Memberpress_Discord_Loader as all of the hooks are defined
-		 * in that particular class.
-		 *
-		 * The Memberpress_Discord_Loader will then create the relationship
-		 * between the defined hooks and the functions defined in this
-		 * class.
-		 */
-
 		wp_enqueue_style( $this->plugin_name . 'tabs_css', plugin_dir_url( __FILE__ ) . 'css/skeletabs.css', array(), $this->version, 'all' );
 		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/memberpress-discord-admin.min.css', array(), $this->version, 'all' );
 		wp_enqueue_style( $this->plugin_name . 'font_awesome_css', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css', array(), $this->version, 'all' );
@@ -92,17 +67,6 @@ class Memberpress_Discord_Admin {
 	 */
 	public function enqueue_scripts() {
 
-		/**
-		 * This function is provided for demonstration purposes only.
-		 *
-		 * An instance of this class should be passed to the run() function
-		 * defined in Memberpress_Discord_Loader as all of the hooks are defined
-		 * in that particular class.
-		 *
-		 * The Memberpress_Discord_Loader will then create the relationship
-		 * between the defined hooks and the functions defined in this
-		 * class.
-		 */
 		wp_enqueue_script( $this->plugin_name . 'tabs_js', plugin_dir_url( __FILE__ ) . 'js/skeletabs.js', array( 'jquery' ), $this->version, false );
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/memberpress-discord-admin.min.js', array( 'jquery' ), $this->version, false );
 		wp_enqueue_script( $this->plugin_name . 'font_awesome_js', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/js/all.min.js', array( 'jquery' ), $this->version, false );

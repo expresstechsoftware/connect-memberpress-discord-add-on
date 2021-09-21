@@ -10,17 +10,6 @@
  * @subpackage Memberpress_Discord/includes
  */
 
-/**
- * Register all actions and filters for the plugin.
- *
- * Maintain a list of all hooks that are registered throughout
- * the plugin, and register them with the WordPress API. Call the
- * run function to execute the list of actions and filters.
- *
- * @package    Memberpress_Discord
- * @subpackage Memberpress_Discord/includes
- * @author     ExpressTech Softwares Solutions Pvt Ltd <contact@expresstechsoftwares.com>
- */
 class Memberpress_Discord_Loader {
 
 	/**

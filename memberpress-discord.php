@@ -1,11 +1,8 @@
 <?php
 /**
- * The plugin bootstrap file
- *
- * This file is read by WordPress to generate the plugin information in the plugin
- * admin area. This file also includes all of the dependencies used by the plugin,
- * registers the activation and deactivation functions, and defines a function
- * that starts the plugin.
+ * Memberpress discord add-on: Allow memberpress users to connect their site to discord and allow them to
+ * be part of your discord community, site admin can allow discord roles based on the membership a member have and
+ * can sell private content in role specific discord channels.
  *
  * @link              https://www.expresstechsoftwares.com
  * @since             1.0.0
@@ -31,23 +28,21 @@ if ( ! defined( 'WPINC' ) ) {
 
 /**
  * Currently plugin version.
- * Start at version 1.0.0 and use SemVer - https://semver.org
- * Rename this for your plugin and update it as you release new versions.
  */
 define( 'MEMBERPRESS_DISCORD_VERSION', '1.0.0' );
 
 /**
- * Discord Api url
+ * Discord API URL
  */
 define( 'MEMBERPRESS_DISCORD_API_URL', 'https://discord.com/api/v6/' );
 
 /**
- * Discord Bot Permissions
+ * Discord BOT Permissions
  */
 define( 'MEMBERPRESS_DISCORD_BOT_PERMISSIONS', 8 );
 
 /**
- * Discord api call scopes
+ * Discord API call scopes
  */
 define( 'MEMBERPRESS_DISCORD_OAUTH_SCOPES', 'identify email connections guilds guilds.join gdm.join rpc rpc.notifications.read rpc.voice.read rpc.voice.write rpc.activities.write bot webhook.incoming messages.read applications.builds.upload applications.builds.read applications.commands applications.store.update applications.entitlements activities.read activities.write relationships.read' );
 
@@ -62,7 +57,7 @@ define( 'MEMBERPRESS_DISCORD_AS_GROUP_NAME', 'ets-memberpress-discord' );
 define( 'MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH', plugin_dir_path( __FILE__ ) );
 
 /**
- * Define plugin directory url
+ * Define plugin directory URL
  */
 define( 'MEMBERPRESS_DISCORD_PLUGIN_DIR_URL', plugin_dir_url( __FILE__ ) );
 
@@ -78,7 +73,6 @@ define( 'ETS_MEMBERPRESS_DISCORD_DONOT_RETRY_HTTP_CODES', array( 400, 401, 403, 
 
 /**
  * The code that runs during plugin activation.
- * This action is documented in includes/class-memberpress-discord-activator.php
  */
 function activate_memberpress_discord() {
 	require_once MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . 'includes/class-memberpress-discord-activator.php';
@@ -87,7 +81,6 @@ function activate_memberpress_discord() {
 
 /**
  * The code that runs during plugin deactivation.
- * This action is documented in includes/class-memberpress-discord-deactivator.php
  */
 function deactivate_memberpress_discord() {
 	require_once MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . 'includes/class-memberpress-discord-deactivator.php';
@@ -105,10 +98,6 @@ require MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . 'includes/class-memberpress-discor
 
 /**
  * Begins execution of the plugin.
- *
- * Since everything within the plugin is registered via hooks,
- * then kicking off the plugin from this point in the file does
- * not affect the page life cycle.
  *
  * @since    1.0.0
  */
