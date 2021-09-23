@@ -11,6 +11,7 @@
  * @subpackage Memberpress_Discord/admin/partials
  */
 ?>
+<!-- This file should primarily consist of HTML with a little bit of PHP. -->
 <?php
 if ( isset( $_GET['save_settings_msg'] ) ) {
 	?>
@@ -30,7 +31,7 @@ if ( isset( $_GET['save_settings_msg'] ) ) {
 				<li class="skltbs-tab-item">
 				<button class="skltbs-tab" data-identity="level-mapping" ><?php echo __( 'Role Mappings', 'ets_memberpress_discord' ); ?></button>
 				</li>
-				<?php endif; ?>
+				<?php endif; ?>	
 				<li class="skltbs-tab-item">
 				<button class="skltbs-tab" data-identity="advanced" data-toggle="tab" data-event="ets_advanced"><?php echo __( 'Advanced', 'ets_memberpress_discord' ); ?>	
 				</button>
@@ -49,24 +50,24 @@ if ( isset( $_GET['save_settings_msg'] ) ) {
 				</li>
 			</ul>
 			<div class="skltbs-panel-group">
-				<div class="skltbs-panel">
+				<div id='mepr_general_settings' class="skltbs-panel">
 				<?php require_once MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . 'admin/partials/pages/memberpress-discord-settings.php'; ?>
 				</div>
 				<?php if ( ets_memberpress_discord_check_saved_settings_status() ) : ?>
-				<div class="skltbs-panel">
+				<div id='mepr_role_mapping' class="skltbs-panel">
 					<?php require_once MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . 'admin/partials/pages/memberpress-discord-role-level-map.php'; ?>
 				</div>
 				<?php endif; ?>
-				<div class="skltbs-panel">
+				<div id='mepr_advance' class="skltbs-panel">
 				<?php require_once MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . 'admin/partials/pages/memberpress-discord-advance.php'; ?>
 				</div>
-				<div class="skltbs-panel">
+				<div id='mepr_logs' class="skltbs-panel">
 				<?php require_once MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . 'admin/partials/pages/memberpress-discord-error-log.php'; ?>
 				</div>
-				<div class="skltbs-panel">
+				<div id='mepr_docs' class="skltbs-panel">
 				<?php require_once MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . 'admin/partials/pages/memberpress-discord-documentation.php'; ?>
 				</div>
-				<div class="skltbs-panel">
+				<div id='mepr_support' class="skltbs-panel">
 				<?php require_once MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . 'admin/partials/pages/memberpress-discord-get-support.php'; ?>
 				</div>
 			</div>
