@@ -42,6 +42,7 @@ class Memberpress_Discord {
 
 	/**
 	 * Define the core functionality of the plugin.
+	 *
 	 * @since    1.0.0
 	 */
 	public function __construct() {
@@ -163,6 +164,7 @@ class Memberpress_Discord {
 		$this->loader->add_action( 'ets_memberpress_discord_as_send_dm', $this, 'ets_memberpress_discord_handler_send_dm', 10, 3 );
 		$this->loader->add_action( 'ets_memberpress_discord_as_schedule_delete_role', $plugin_admin, 'ets_memberpress_discord_as_handler_delete_memberrole', 10, 3 );
 		$this->loader->add_action( 'ets_memberpress_discord_as_handle_memberpress_complete_transaction', $plugin_admin, 'ets_memberpress_discord_as_handler_memberpress_complete_transaction', 10, 2 );
+		$this->loader->add_action( 'wp_trash_post', $plugin_admin, 'ets_memberpress_discord_as_schedule_job_membership_level_deleted' );
 	}
 
 	/**
@@ -189,17 +191,17 @@ class Memberpress_Discord {
 
 	/**
 	 * Define actions which are not in admin or not public
-	 * 
+	 *
 	 * @since    1.0.0
 	 * @access   private
 	 */
 	private function define_common_hooks() {
 		$this->loader->add_filter( 'action_scheduler_queue_runner_batch_size', $this, 'ets_memberpress_discord_queue_batch_size' );
 		$this->loader->add_filter( 'action_scheduler_queue_runner_concurrent_batches', $this, 'ets_memberpress_discord_concurrent_batches' );
-    $this->loader->add_action( 'action_scheduler_failed_execution', $this, 'ets_memberpress_discord_reschedule_failed_action', 10, 3 );
+		$this->loader->add_action( 'action_scheduler_failed_execution', $this, 'ets_memberpress_discord_reschedule_failed_action', 10, 3 );
 	}
 
-  /**
+	/**
 	 * This method catch the failed action from action scheduler and re-queue that.
 	 *
 	 * @param INT            $action_id
@@ -207,8 +209,8 @@ class Memberpress_Discord {
 	 * @param OBJECT context
 	 * @return NONE
 	 */
-  public function ets_memberpress_discord_reschedule_failed_action( $action_id, $e, $context ){
-    // First check if the action is for PMPRO discord.
+	public function ets_memberpress_discord_reschedule_failed_action( $action_id, $e, $context ) {
+		// First check if the action is for PMPRO discord.
 		$action_data = ets_memberpress_discord_as_get_action_data( $action_id );
 		if ( $action_data !== false ) {
 			$hook              = $action_data['hook'];
@@ -220,7 +222,7 @@ class Memberpress_Discord {
 				as_schedule_single_action( ets_memberpress_discord_get_random_timestamp( ets_memberpress_discord_get_highest_last_attempt_timestamp() ), $hook, array_values( $args ), 'ets-memberpress-discord' );
 			}
 		}
-  }
+	}
 
 	/**
 	 * Set action scheuduler batch size.

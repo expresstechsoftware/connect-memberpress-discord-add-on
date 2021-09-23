@@ -718,7 +718,7 @@ class Memberpress_Discord_Admin {
 
 			$response = wp_remote_request( $discord_delete_role_api_url, $param );
 			ets_memberpress_discord_log_api_response( $user_id, $discord_delete_role_api_url, $param, $response );
-			if( ets_memberpress_discord_check_api_errors( $response ) ) {
+			if ( ets_memberpress_discord_check_api_errors( $response ) ) {
 				$response_arr = json_decode( wp_remote_retrieve_body( $response ), true );
 				write_api_response_logs( $response_arr, $user_id, debug_backtrace()[0] );
 				if ( $is_schedule ) {
@@ -916,6 +916,38 @@ class Memberpress_Discord_Admin {
 
 				if ( ! empty( $access_token ) && $sub_expire_membership ) {
 					as_schedule_single_action( ets_memberpress_discord_get_random_timestamp( ets_memberpress_discord_get_highest_last_attempt_timestamp() ), 'ets_memberpress_discord_as_send_dm', array( $transaction->user_id, $sub_expire_membership, 'warning' ), MEMBERPRESS_DISCORD_AS_GROUP_NAME );
+				}
+			}
+		}
+	}
+
+	/**
+	 * Method to queue all members into cancel job when memberpress level is deleted.
+	 *
+	 * @param INT $level_id
+	 * @return NONE
+	 */
+	public function ets_memberpress_discord_as_schedule_job_membership_level_deleted( $level_id ) {
+		if ( get_post_type( $level_id ) == 'memberpressproduct' ) {
+			global $wpdb;
+			$result                         = $wpdb->get_results( $wpdb->prepare( 'SELECT `user_id`, `trans_num`, `created_at`, `expires_at` FROM ' . $wpdb->prefix . 'mepr_transactions' . ' WHERE `product_id` = %d GROUP BY `user_id`', array( $level_id ) ) );
+			
+			$ets_pmpor_discord_role_mapping = json_decode( get_option( 'ets_memberpress_discord_role_mapping' ), true );
+			update_option( 'ets_admin_level_deleted', true );
+			foreach ( $result as $key => $transaction ) {
+				$user_id              = $transaction->user_id;
+				$access_token         = sanitize_text_field( trim( get_user_meta( $user_id, '_ets_memberpress_discord_access_token', true ) ) );
+				$cancelled_membership = array();
+				if ( ! empty( $transaction ) ) {
+						$cancelled_membership = array(
+							'product_id' => $level_id,
+							'txn_number' => $transaction->trans_num,
+							'created_at' => $transaction->created_at,
+							'expires_at' => $transaction->expires_at,
+						);
+				}
+				if ( $cancelled_membership && $access_token ) {
+					as_schedule_single_action( ets_memberpress_discord_get_random_timestamp( ets_memberpress_discord_get_highest_last_attempt_timestamp() ), 'ets_memberpress_discord_as_handle_memberpress_cancelled', array( $user_id, $cancelled_membership ), MEMBERPRESS_DISCORD_AS_GROUP_NAME );
 				}
 			}
 		}
