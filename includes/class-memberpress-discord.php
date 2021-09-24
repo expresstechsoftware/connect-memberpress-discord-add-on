@@ -164,7 +164,7 @@ class Memberpress_Discord {
 		$this->loader->add_action( 'ets_memberpress_discord_as_send_dm', $this, 'ets_memberpress_discord_handler_send_dm', 10, 3 );
 		$this->loader->add_action( 'ets_memberpress_discord_as_schedule_delete_role', $plugin_admin, 'ets_memberpress_discord_as_handler_delete_memberrole', 10, 3 );
 		$this->loader->add_action( 'ets_memberpress_discord_as_handle_memberpress_complete_transaction', $plugin_admin, 'ets_memberpress_discord_as_handler_memberpress_complete_transaction', 10, 2 );
-		$this->loader->add_action( 'wp_trash_post', $plugin_admin, 'ets_memberpress_discord_as_schedule_job_membership_level_deleted' );
+		$this->loader->add_action( 'before_delete_post', $plugin_admin, 'ets_memberpress_discord_as_schedule_job_membership_level_deleted' );
 	}
 
 	/**

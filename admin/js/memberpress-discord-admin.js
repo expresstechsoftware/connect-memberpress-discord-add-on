@@ -2,6 +2,9 @@
 	'use strict';
 	 $( document ).ready(function() {
 			if (etsMemberpressParams.is_admin) {
+				if(window.location.href.indexOf("mepr_") == -1) {
+					jQuery("#skeletabsTab1").trigger("click");
+				}
 				/*Load all roles from discord server*/
 				$.ajax({
 					type: "POST",
