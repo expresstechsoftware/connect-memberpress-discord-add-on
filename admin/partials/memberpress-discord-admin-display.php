@@ -25,7 +25,7 @@ if ( isset( $_GET['save_settings_msg'] ) ) {
 		<div id="outer" class="skltbs-theme-light" data-skeletabs='{ "startIndex": 1 }'>
 			<ul class="skltbs-tab-group">
 				<li class="skltbs-tab-item">
-				<button class="skltbs-tab" data-identity="settings" ><?php echo __( 'Application details', 'ets_memberpress_discord' ); ?><span class="initialtab spinner"></span></button>
+				<button class="skltbs-tab" data-identity="mepr_settings" ><?php echo __( 'Application details', 'ets_memberpress_discord' ); ?><span class="initialtab spinner"></span></button>
 				</li>
 				<?php if ( ets_memberpress_discord_check_saved_settings_status() ) : ?>
 				<li class="skltbs-tab-item">
