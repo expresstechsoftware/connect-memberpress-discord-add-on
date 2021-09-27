@@ -403,13 +403,13 @@ border:2px dashed #275EE8;
   background-color: #275EE8;
   padding: 10px;
   color: #fff;
-  margin-bottom: 10px;
+  margin-bottom: 10px !important;
   width:100%;
   cursor: all-scroll;
 }
 .makeMeDroppable{
   background-color: #77A02E;
-  margin-bottom: 10px;
+  margin-bottom: 10px !important;
   color: #fff;
   width:100%;
   display: flex;
