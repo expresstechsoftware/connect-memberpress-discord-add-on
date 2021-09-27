@@ -403,13 +403,16 @@ border:2px dashed #275EE8;
   background-color: #275EE8;
   padding: 10px;
   color: #fff;
-  margin-bottom: 10px !important;
+  margin-bottom: 10px;
   width:100%;
   cursor: all-scroll;
 }
+.discord-roles-col .makeMeDraggable{
+  margin-bottom: 10px !important;
+}
 .makeMeDroppable{
   background-color: #77A02E;
-  margin-bottom: 10px !important;
+  margin-bottom: 10px;
   color: #fff;
   width:100%;
   display: flex;
