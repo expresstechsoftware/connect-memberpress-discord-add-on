@@ -645,7 +645,7 @@ class Memberpress_Discord_Admin {
 				}
 			}
 			// Assign role which is saved as default.
-			if ( $default_role != 'none' ) {
+			if ( $default_role != 'none' && $previous_default_role != $default_role ) {
 				if ( isset( $previous_default_role ) && $previous_default_role != '' && $previous_default_role != 'none' ) {
 						$this->memberpress_delete_discord_role( $user_id, $previous_default_role, $is_schedule );
 					delete_user_meta( $user_id, '_ets_memberpress_discord_default_role_id', true );
