@@ -929,9 +929,7 @@ class Memberpress_Discord_Admin {
 		if ( get_post_type( $level_id ) == 'memberpressproduct' ) {
 			global $wpdb;
 			$result                         = $wpdb->get_results( $wpdb->prepare( 'SELECT `user_id`, `trans_num`, `created_at`, `expires_at` FROM ' . $wpdb->prefix . 'mepr_transactions' . ' WHERE `product_id` = %d GROUP BY `user_id`', array( $level_id ) ) );
-			
 			$ets_pmpor_discord_role_mapping = json_decode( get_option( 'ets_memberpress_discord_role_mapping' ), true );
-			update_option( 'ets_admin_level_deleted', true );
 			foreach ( $result as $key => $transaction ) {
 				$user_id              = $transaction->user_id;
 				$access_token         = sanitize_text_field( trim( get_user_meta( $user_id, '_ets_memberpress_discord_access_token', true ) ) );
