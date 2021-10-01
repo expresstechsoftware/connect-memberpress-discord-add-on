@@ -256,7 +256,9 @@
 		}
 	});
 	/*Tab options*/
-	$.skeletabs.setDefaults({
-		keyboard: false,
-	});
+	if(typeof $.skeletabs === "undefined"){
+		$.skeletabs.setDefaults({
+			keyboard: false,
+		});
+	}
 })(jQuery);
