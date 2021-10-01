@@ -21,7 +21,7 @@ $ets_memberpress_discord_cancel_message             = sanitize_text_field( trim(
   <table class="form-table" role="presentation">
 	<tbody>
   <tr>
-		<th scope="row"><?php echo __( 'Send welcome message', 'ets_memberpress_discord' ); ?></th>
+		<th scope="row"><?php echo __( 'Send welcome message', 'memberpress-discord-add-on' ); ?></th>
 		<td> <fieldset>
 		<input name="ets_memberpress_discord_send_welcome_dm" type="checkbox" id="ets_memberpress_discord_send_welcome_dm" 
 		<?php
@@ -32,7 +32,7 @@ $ets_memberpress_discord_cancel_message             = sanitize_text_field( trim(
 		</fieldset></td>
 	  </tr>
 	<tr>
-		<th scope="row"><?php echo __( 'Membership welcome message', 'ets_memberpress_discord' ); ?></th>
+		<th scope="row"><?php echo __( 'Membership welcome message', 'memberpress-discord-add-on' ); ?></th>
 		<td> <fieldset>
 		<textarea class="ets_memberpress_discord_dm_textarea" name="ets_memberpress_discord_welcome_message" id="ets_memberpress_discord_welcome_message" row="25" cols="50"><?php if ( $ets_memberpress_discord_welcome_message ) { echo esc_textarea( wp_unslash( stripslashes_deep ( $ets_memberpress_discord_welcome_message ) ) ); } ?></textarea> 
 	<br/>
@@ -41,7 +41,7 @@ $ets_memberpress_discord_cancel_message             = sanitize_text_field( trim(
 	  </tr>
 
 	<tr>
-		<th scope="row"><?php echo __( 'Send membership expiration warning message', 'ets_memberpress_discord' ); ?></th>
+		<th scope="row"><?php echo __( 'Send membership expiration warning message', 'memberpress-discord-add-on' ); ?></th>
 		<td> <fieldset>
 		<input name="ets_memberpress_discord_send_expiration_warning_dm" type="checkbox" id="ets_memberpress_discord_send_expiration_warning_dm" 
 		<?php
@@ -52,7 +52,7 @@ $ets_memberpress_discord_cancel_message             = sanitize_text_field( trim(
 		</fieldset></td>
 	  </tr>
 	<tr>
-		<th scope="row"><?php echo __( 'Membership expiration warning message', 'ets_memberpress_discord' ); ?></th>
+		<th scope="row"><?php echo __( 'Membership expiration warning message', 'memberpress-discord-add-on' ); ?></th>
 		<td> <fieldset>
 		<textarea  class="ets_memberpress_discord_dm_textarea" name="ets_memberpress_discord_expiration_warning_message" id="ets_memberpress_discord_expiration_warning_message" row="25" cols="50"><?php if ( $ets_memberpress_discord_expiration_warning_message ) { echo esc_textarea( wp_unslash( stripslashes_deep ( $ets_memberpress_discord_expiration_warning_message ) ) ); } ?></textarea> 
 	<br/>
@@ -60,7 +60,7 @@ $ets_memberpress_discord_cancel_message             = sanitize_text_field( trim(
 		</fieldset></td>
 	  </tr>
 	<tr>
-		<th scope="row"><?php echo __( 'Send membership expired message', 'ets_memberpress_discord' ); ?></th>
+		<th scope="row"><?php echo __( 'Send membership expired message', 'memberpress-discord-add-on' ); ?></th>
 		<td> <fieldset>
 		<input name="ets_memberpress_discord_send_membership_expired_dm" type="checkbox" id="ets_memberpress_discord_send_membership_expired_dm" 
 		<?php
@@ -71,7 +71,7 @@ $ets_memberpress_discord_cancel_message             = sanitize_text_field( trim(
 		</fieldset></td>
 	  </tr>
 	<tr>
-		<th scope="row"><?php echo __( 'Membership expired message', 'ets_memberpress_discord' ); ?></th>
+		<th scope="row"><?php echo __( 'Membership expired message', 'memberpress-discord-add-on' ); ?></th>
 		<td> <fieldset>
 		<textarea  class="ets_memberpress_discord_dm_textarea" name="ets_memberpress_discord_expiration_expired_message" id="ets_memberpress_discord_expiration_expired_message" row="25" cols="50"><?php if ( $ets_memberpress_discord_expiration_expired_message ) { echo esc_textarea( wp_unslash( stripslashes_deep ( $ets_memberpress_discord_expiration_expired_message ) ) ); } ?></textarea> 
 	<br/>
@@ -80,7 +80,7 @@ $ets_memberpress_discord_cancel_message             = sanitize_text_field( trim(
   </td>
 		</tr>
 	<tr>
-		<th scope="row"><?php echo __( 'Send membership cancel message', 'ets_memberpress_discord' ); ?></th>
+		<th scope="row"><?php echo __( 'Send membership cancel message', 'memberpress-discord-add-on' ); ?></th>
 		<td> <fieldset>
 		<input name="ets_memberpress_discord_send_membership_cancel_dm" type="checkbox" id="ets_memberpress_discord_send_membership_cancel_dm" 
 		<?php
@@ -91,7 +91,7 @@ $ets_memberpress_discord_cancel_message             = sanitize_text_field( trim(
 		</fieldset></td>
 	  </tr>
 		<tr>
-		<th scope="row"><?php echo __( 'Membership cancel message', 'ets_memberpress_discord' ); ?></th>
+		<th scope="row"><?php echo __( 'Membership cancel message', 'memberpress-discord-add-on' ); ?></th>
 		<td> <fieldset>
 		<textarea  class="ets_memberpress_discord_dm_textarea" name="ets_memberpress_discord_cancel_message" id="ets_memberpress_discord_cancel_message" row="25" cols="50"><?php if ( $ets_memberpress_discord_cancel_message ) { echo esc_textarea( wp_unslash( stripslashes_deep ( $ets_memberpress_discord_cancel_message ) ) ); } ?></textarea> 
 	<br/>
@@ -100,7 +100,7 @@ $ets_memberpress_discord_cancel_message             = sanitize_text_field( trim(
   </td>
 		</tr>
   <tr>
-		<th scope="row"><?php echo __( 'Re-assign roles upon payment failure', 'ets_memberpress_discord' ); ?></th>
+		<th scope="row"><?php echo __( 'Re-assign roles upon payment failure', 'memberpress-discord-add-on' ); ?></th>
 		<td> <fieldset>
 		<input name="upon_failed_payment" type="checkbox" id="upon_failed_payment" 
 		<?php
@@ -111,7 +111,7 @@ $ets_memberpress_discord_cancel_message             = sanitize_text_field( trim(
 		</fieldset></td>
 	  </tr>
 	  </tr>
-		<th scope="row"><?php echo __( 'Retry Failed API calls', 'ets_memberpress_discord' ); ?></th>
+		<th scope="row"><?php echo __( 'Retry Failed API calls', 'memberpress-discord-add-on' ); ?></th>
 		<td> <fieldset>
 		<input name="retry_failed_api" type="checkbox" id="retry_failed_api" 
 		<?php
@@ -122,25 +122,25 @@ $ets_memberpress_discord_cancel_message             = sanitize_text_field( trim(
 		</fieldset></td>
 	  </tr>
 	<tr>
-		<th scope="row"><?php echo __( 'How many times a failed API call should get re-try', 'ets_memberpress_discord' ); ?></th>
+		<th scope="row"><?php echo __( 'How many times a failed API call should get re-try', 'memberpress-discord-add-on' ); ?></th>
 		<td> <fieldset>
 		<input name="ets_memberpress_retry_api_count" type="number" min="1" id="ets_memberpress_retry_api_count" value="<?php if ( isset( $retry_api_count ) ) { echo esc_attr( $retry_api_count ); } else { echo 1; } ?>">
 		</fieldset></td>
 	  </tr> 
 	  <tr>
-		<th scope="row"><?php echo __( 'Set job queue concurrency', 'ets_memberpress_discord' ); ?></th>
+		<th scope="row"><?php echo __( 'Set job queue concurrency', 'memberpress-discord-add-on' ); ?></th>
 		<td> <fieldset>
 		<input name="set_job_cnrc" type="number" min="1" id="set_job_cnrc" value="<?php if ( isset( $set_job_cnrc ) ) { echo esc_attr( $set_job_cnrc ); } else { echo 1; } ?>">
 		</fieldset></td>
 	  </tr>
 	  <tr>
-		<th scope="row"><?php echo __( 'Set job queue batch size', 'ets_memberpress_discord' ); ?></th>
+		<th scope="row"><?php echo __( 'Set job queue batch size', 'memberpress-discord-add-on' ); ?></th>
 		<td> <fieldset>
 		<input name="set_job_q_batch_size" type="number" min="1" id="set_job_q_batch_size" value="<?php if ( isset( $set_job_q_batch_size ) ) { echo esc_attr( $set_job_q_batch_size ); } else { echo 10; } ?>">
 		</fieldset></td>
 	  </tr>
 	<tr>
-		<th scope="row"><?php echo __( 'Log API calls response (For debugging purpose)', 'ets_memberpress_discord' ); ?></th>
+		<th scope="row"><?php echo __( 'Log API calls response (For debugging purpose)', 'memberpress-discord-add-on' ); ?></th>
 		<td> <fieldset>
 		<input name="log_api_res" type="checkbox" id="log_api_res" 
 		<?php
@@ -155,7 +155,7 @@ $ets_memberpress_discord_cancel_message             = sanitize_text_field( trim(
   </table>
   <div class="bottom-btn">
 	<button type="submit" name="adv_submit" value="ets_submit" class="ets-submit ets-bg-green">
-	  <?php echo __( 'Save Settings', 'ets_memberpress_discord' ); ?>
+	  <?php echo __( 'Save Settings', 'memberpress-discord-add-on' ); ?>
 	</button>
   </div>
 </form>

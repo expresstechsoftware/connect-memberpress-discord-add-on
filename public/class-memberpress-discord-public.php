@@ -107,18 +107,18 @@ class Memberpress_Discord_Public {
 		if ( ets_memberpress_discord_check_saved_settings_status() ) {
 			if ( $access_token ) {
 				?>
-				<label class="ets-connection-lbl"><?php echo __( 'Discord connection', 'ets_memberpress_discord' ); ?></label>
-				<a href="#" class="ets-btn btn-disconnect" id="disconnect-discord" data-user-id="<?php echo esc_attr( $user_id ); ?>"><?php echo __( 'Disconnect From Discord ', 'ets_memberpress_discord' ); ?><i class='fab fa-discord'></i></a>
+				<label class="ets-connection-lbl"><?php echo __( 'Discord connection', 'memberpress-discord-add-on' ); ?></label>
+				<a href="#" class="ets-btn btn-disconnect" id="disconnect-discord" data-user-id="<?php echo esc_attr( $user_id ); ?>"><?php echo __( 'Disconnect From Discord ', 'memberpress-discord-add-on' ); ?><i class='fab fa-discord'></i></a>
 				<span class="ets-spinner"></span>
 				<?php
 			} elseif ( current_user_can( 'memberpress_authorized' ) && $mapped_role_names || $allow_none_member == 'yes' ) {
 				?>
-				<label class="ets-connection-lbl"><?php echo __( 'Discord connection', 'ets_memberpress_discord' ); ?></label>
-				<a href="?action=memberpress-discord-login" class="btn-connect ets-btn" ><?php echo __( 'Connect To Discord', 'ets_memberpress_discord' ); ?> <i class='fab fa-discord'></i></a>
+				<label class="ets-connection-lbl"><?php echo __( 'Discord connection', 'memberpress-discord-add-on' ); ?></label>
+				<a href="?action=memberpress-discord-login" class="btn-connect ets-btn" ><?php echo __( 'Connect To Discord', 'memberpress-discord-add-on' ); ?> <i class='fab fa-discord'></i></a>
 				<?php if ( $mapped_role_names ) { ?>
 					<p class="ets_assigned_role">
 					<?php
-					echo __( 'Following Roles will be assigned to you in Discord: ', 'ets_memberpress_discord' );
+					echo __( 'Following Roles will be assigned to you in Discord: ', 'memberpress-discord-add-on' );
 					foreach ( $mapped_role_names as $mapped_role_name ) {
 						echo esc_html( $mapped_role_name ) . ', ';
 					}

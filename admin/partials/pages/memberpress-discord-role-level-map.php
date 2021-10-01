@@ -5,21 +5,21 @@ $default_role        = sanitize_text_field( trim( get_option( 'ets_memberpress_d
 $allow_none_member = sanitize_text_field( trim( get_option( 'ets_memberpress_allow_none_member' ) ) );
 ?>
 <div class="notice notice-warning ets-notice">
-	<p><i class='fas fa-info'></i> <?php echo __( 'Drag and Drop the Discord Roles over to the MemberPress Levels', 'ets_memberpress_discord' ); ?></p>
+	<p><i class='fas fa-info'></i> <?php echo __( 'Drag and Drop the Discord Roles over to the MemberPress Levels', 'memberpress-discord-add-on' ); ?></p>
 </div>
 <div class="notice notice-warning ets-notice">
-	<p><i class='fas fa-info'></i> <?php echo __( 'Note: Inactive memberships will not display', 'ets_memberpress_discord' ); ?></p>
+	<p><i class='fas fa-info'></i> <?php echo __( 'Note: Inactive memberships will not display', 'memberpress-discord-add-on' ); ?></p>
 </div>
 <div class="row-container">
 	<div class="ets-column discord-roles-col">
-		<h2><?php echo __( 'Discord Roles', 'ets_memberpress_discord' ); ?></h2>
+		<h2><?php echo __( 'Discord Roles', 'memberpress-discord-add-on' ); ?></h2>
 		<hr>
 		<div class="discord-roles">
 			<span class="spinner"></span>
 		</div>
 	</div>
 	<div class="ets-column">
-		<h2><?php echo __( 'MemberPress Memberships', 'ets_memberpress_discord' ); ?></h2>
+		<h2><?php echo __( 'MemberPress Memberships', 'memberpress-discord-add-on' ); ?></h2>
 		<hr>
 		<div class="memberpress-levels">
 			<?php
@@ -37,18 +37,18 @@ $allow_none_member = sanitize_text_field( trim( get_option( 'ets_memberpress_all
 	<table class="form-table" role="presentation">
 	<tbody>
 		<tr>
-			<th scope="row"><label for="defaultRole"><?php echo __( 'Default Role', 'ets_memberpress_discord' ); ?></label></th>
+			<th scope="row"><label for="defaultRole"><?php echo __( 'Default Role', 'memberpress-discord-add-on' ); ?></label></th>
 			<td>
 				<?php wp_nonce_field( 'discord_role_mappings_nonce', 'ets_memberpress_discord_role_mappings_nonce' ); ?>
 				<input type="hidden" id="selected_default_role" value="<?php echo esc_attr( $default_role ); ?>">
 				<select id="defaultRole" name="defaultRole">
-					<option value="none"><?php echo __( '-None-', 'ets_memberpress_discord' ); ?></option>
+					<option value="none"><?php echo __( '-None-', 'memberpress-discord-add-on' ); ?></option>
 				</select>
-			<p class="description"><?php echo __( 'This Role will be assigned to all level members', 'ets_memberpress_discord' ); ?></p>
+			<p class="description"><?php echo __( 'This Role will be assigned to all level members', 'memberpress-discord-add-on' ); ?></p>
 			</td>
 		</tr>
 		<tr>
-		<th scope="row"><label><?php echo __( 'Allow non-members', 'ets_memberpress_discord' ); ?></label></th>
+		<th scope="row"><label><?php echo __( 'Allow non-members', 'memberpress-discord-add-on' ); ?></label></th>
 		<td>
 			<fieldset>
 				<label><input type="radio" name="allow_none_member" value="yes"  
@@ -56,13 +56,13 @@ $allow_none_member = sanitize_text_field( trim( get_option( 'ets_memberpress_all
 				if ( 'yes' === $allow_none_member ) {
 					echo 'checked="checked"'; }
 				?>
-				> <span><?php echo __( 'Yes', 'ets_memberpress_discord' ); ?></span></label><br>
+				> <span><?php echo __( 'Yes', 'memberpress-discord-add-on' ); ?></span></label><br>
 				<label><input type="radio" name="allow_none_member" value="no" 
 				<?php
 				if ( empty( $allow_none_member ) || 'no' === $allow_none_member ) {
 					echo 'checked="checked"'; }
 				?>
-				> <span><?php echo __( 'No', 'ets_memberpress_discord' ); ?></span></label>
+				> <span><?php echo __( 'No', 'memberpress-discord-add-on' ); ?></span></label>
 				<p class="description"><?php echo __( 'This setting will apply on Cancel and Expiry of Membership' ); ?></p>
 			</fieldset>
 		</td>
@@ -80,10 +80,10 @@ $allow_none_member = sanitize_text_field( trim( get_option( 'ets_memberpress_all
   </div>
   <div class="bottom-btn">
 	<button type="submit" name="submit" value="ets_submit" class="ets-submit ets-bg-green">
-	  <?php echo __( 'Save Settings', 'ets_memberpress_discord' ); ?>
+	  <?php echo __( 'Save Settings', 'memberpress-discord-add-on' ); ?>
 	</button>
 	<button id="MemberPressRevertMapping" name="flush" class="ets-submit ets-bg-red">
-	  <?php echo __( 'Flush Mappings', 'ets_memberpress_discord' ); ?>
+	  <?php echo __( 'Flush Mappings', 'memberpress-discord-add-on' ); ?>
 	</button>
   </div>
 </form>
