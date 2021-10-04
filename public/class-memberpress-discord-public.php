@@ -134,6 +134,16 @@ class Memberpress_Discord_Public {
 	}
 
 	/**
+	 * Show status of Memberpress connection with Discord user
+	 *
+	 * @param NONE
+	 * @return NONE
+	 */
+	public function ets_memberpress_show_discord_button() {
+		echo do_shortcode( '[discord_connect_button]' );
+	}
+
+	/**
 	 * For authorization process call discord API
 	 *
 	 * @param NONE
