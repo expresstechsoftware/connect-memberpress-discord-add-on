@@ -180,7 +180,7 @@ class Memberpress_Discord {
 
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
-		$this->loader->add_shortcode( 'discord_connect_button', $plugin_public, 'ets_memberpress_discord_add_connect_button' );
+		$this->loader->add_shortcode( 'mepr_discord_button', $plugin_public, 'ets_memberpress_discord_add_connect_button' );
 		$this->loader->add_action( 'mepr-account-home-fields', $plugin_public, 'ets_memberpress_show_discord_button' );
 		$this->loader->add_action( 'init', $plugin_public, 'ets_memberpress_discord_discord_api_callback' );
 		$this->loader->add_action( 'wp_ajax_memberpress_disconnect_from_discord', $plugin_public, 'ets_memberpress_disconnect_from_discord' );

@@ -140,7 +140,7 @@ class Memberpress_Discord_Public {
 	 * @return NONE
 	 */
 	public function ets_memberpress_show_discord_button() {
-		echo do_shortcode( '[discord_connect_button]' );
+		echo do_shortcode( '[mepr_discord_button]' );
 	}
 
 	/**
