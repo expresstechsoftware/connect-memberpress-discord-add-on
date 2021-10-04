@@ -20,6 +20,15 @@ $ets_memberpress_discord_cancel_message             = sanitize_text_field( trim(
 <?php wp_nonce_field( 'save_discord_adv_settings', 'ets_discord_save_adv_settings' ); ?>
   <table class="form-table" role="presentation">
 	<tbody>
+	<tr>
+		<th scope="row"><?php echo __( 'Shortcode:', 'memberpress-discord-add-on' ); ?></th>
+		<td> <fieldset>
+		[mepr_discord_button]
+		<br/>
+		<small><?php echo __( 'Use this shortcode to display Discord Connect button anywhere on your website, Optionally you can make your redirect url to that page on which the button shortcode is being added.', 'memberpress-discord-add-on' ); ?></small>
+		</fieldset></td>
+	  </tr>
+	<tr>
   <tr>
 		<th scope="row"><?php echo __( 'Send welcome message', 'memberpress-discord-add-on' ); ?></th>
 		<td> <fieldset>
