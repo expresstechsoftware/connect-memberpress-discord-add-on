@@ -56,17 +56,18 @@ function write_api_response_logs( $response_arr, $user_id, $backtrace_arr = arra
 		$user_details = '::User Id:' . $user_id;
 	}
 	$log_api_response = get_option( 'ets_memberpress_discord_log_api_response' );
-	$log_file_name    = Memberpress_Discord_Admin::$log_file_name;
+	$uuid     = get_option( 'ets_memberpress_discord_uuid_file_name' );
+	$log_file_name    = $uuid . Memberpress_Discord_Admin::$log_file_name;
 
 	if ( is_array( $response_arr ) && array_key_exists( 'code', $response_arr ) ) {
 		$error .= '==>File:' . $backtrace_arr['file'] . $user_details . '::Line:' . $backtrace_arr['line'] . '::Function:' . $backtrace_arr['function'] . '::' . $response_arr['code'] . ':' . $response_arr['message'];
-		file_put_contents( MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . $log_file_name, $error . PHP_EOL, FILE_APPEND | LOCK_EX );
+		file_put_contents( WP_CONTENT_DIR . '/' . $log_file_name, $error . PHP_EOL, FILE_APPEND | LOCK_EX );
 	} elseif ( is_array( $response_arr ) && array_key_exists( 'error', $response_arr ) ) {
 		$error .= '==>File:' . $backtrace_arr['file'] . $user_details . '::Line:' . $backtrace_arr['line'] . '::Function:' . $backtrace_arr['function'] . '::' . $response_arr['error'];
-		file_put_contents( MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . $log_file_name, $error . PHP_EOL, FILE_APPEND | LOCK_EX );
+		file_put_contents( WP_CONTENT_DIR . '/' . $log_file_name, $error . PHP_EOL, FILE_APPEND | LOCK_EX );
 	} elseif ( $log_api_response == true ) {
 		$error .= json_encode( $response_arr ) . '::' . $user_id;
-		file_put_contents( MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . $log_file_name, $error . PHP_EOL, FILE_APPEND | LOCK_EX );
+		file_put_contents( WP_CONTENT_DIR . '/' . $log_file_name, $error . PHP_EOL, FILE_APPEND | LOCK_EX );
 	}
 
 }

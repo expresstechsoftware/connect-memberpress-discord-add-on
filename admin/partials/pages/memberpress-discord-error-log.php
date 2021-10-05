@@ -1,7 +1,8 @@
 <div class="error-log">
 <?php
-	$filename = Memberpress_Discord_Admin::$log_file_name;
-	$handle   = fopen( MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . $filename, 'a+' );
+	$uuid     = get_option( 'ets_memberpress_discord_uuid_file_name' );
+	$filename = $uuid . Memberpress_Discord_Admin::$log_file_name;
+	$handle   = fopen( WP_CONTENT_DIR . '/' . $filename, 'a+' );
 while ( ! feof( $handle ) ) {
 	echo fgets( $handle ) . '<br />';
 }
@@ -17,6 +18,6 @@ while ( ! feof( $handle ) ) {
 		<input type="button" class="ets-submit ets-bg-green" value="Refresh" onClick="window.location.reload()">
 	</div>
 	<div class="form-group">
-		<a href="<?php echo MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . 'discord_api_logs.txt'; ?>" class="ets-submit ets-bg-download" download>Download</a>
+		<a href="<?php echo esc_attr( content_url('/') . $filename ); ?>" class="ets-submit ets-bg-download" download><?php echo __( 'Download', 'memberpress-discord-add-on' ); ?></a>
 	</div>
 </div>

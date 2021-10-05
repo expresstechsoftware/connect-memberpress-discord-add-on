@@ -356,9 +356,10 @@ class Memberpress_Discord_Admin {
 			exit();
 		}
 		try {
-			$file_name = $this::$log_file_name;
-			if ( fopen( MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . $file_name, 'w' ) ) {
-				$myfile = fopen( MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . $file_name, 'w' );
+			$uuid      = get_option( 'ets_memberpress_discord_uuid_file_name' );
+			$file_name = $uuid . $this::$log_file_name;
+			if ( fopen( WP_CONTENT_DIR . '/' . $file_name, 'w' ) ) {
+				$myfile = fopen( WP_CONTENT_DIR . '/' . $file_name, 'w' );
 				$txt    = current_time( 'mysql' ) . " => Clear logs Successfully\n";
 				fwrite( $myfile, $txt );
 				fclose( $myfile );
