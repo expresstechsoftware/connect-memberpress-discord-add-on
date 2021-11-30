@@ -50,8 +50,8 @@ class Memberpress_Discord_Public {
 	 */
 	public function enqueue_styles() {
 
-		wp_enqueue_style( $this->plugin_name . 'public_css', plugin_dir_url( __FILE__ ) . 'css/memberpress-discord-public.min.css', array(), $this->version, 'all' );
-
+		wp_register_style( $this->plugin_name . 'public_css', plugin_dir_url( __FILE__ ) . 'css/memberpress-discord-public.min.css', array(), $this->version, 'all' );
+		wp_register_style( $this->plugin_name . 'font_awesome_css', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css', array(), $this->version, 'all' );
 	}
 
 	/**
@@ -61,7 +61,7 @@ class Memberpress_Discord_Public {
 	 */
 	public function enqueue_scripts() {
 
-		wp_enqueue_script( $this->plugin_name . 'public_js', plugin_dir_url( __FILE__ ) . 'js/memberpress-discord-public.min.js', array( 'jquery' ), $this->version, false );
+		wp_register_script( $this->plugin_name . 'public_js', plugin_dir_url( __FILE__ ) . 'js/memberpress-discord-public.min.js', array( 'jquery' ), $this->version, false );
 		$script_params = array(
 			'admin_ajax'                           => admin_url( 'admin-ajax.php' ),
 			'permissions_const'                    => MEMBERPRESS_DISCORD_BOT_PERMISSIONS,
@@ -82,6 +82,9 @@ class Memberpress_Discord_Public {
 			wp_send_json_error( 'Unauthorized user', 401 );
 			exit();
 		}
+		wp_enqueue_style($this->plugin_name . 'public_css');
+		wp_enqueue_style($this->plugin_name . 'font_awesome_css');
+		wp_enqueue_script($this->plugin_name . 'public_js');
 		$user_id                              = sanitize_text_field( trim( get_current_user_id() ) );
 		$access_token                         = sanitize_text_field( trim( get_user_meta( $user_id, '_ets_memberpress_discord_access_token', true ) ) );
 		$allow_none_member                    = sanitize_text_field( trim( get_option( 'ets_memberpress_allow_none_member' ) ) );

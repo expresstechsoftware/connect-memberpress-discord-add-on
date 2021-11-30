@@ -54,10 +54,9 @@ class Memberpress_Discord_Admin {
 	 * @since    1.0.0
 	 */
 	public function enqueue_styles() {
-
-		wp_enqueue_style( $this->plugin_name . 'tabs_css', plugin_dir_url( __FILE__ ) . 'css/skeletabs.css', array(), $this->version, 'all' );
-		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/memberpress-discord-admin.min.css', array(), $this->version, 'all' );
-		wp_enqueue_style( $this->plugin_name . 'font_awesome_css', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css', array(), $this->version, 'all' );
+		wp_register_style( $this->plugin_name . 'tabs_css', plugin_dir_url( __FILE__ ) . 'css/skeletabs.css', array(), $this->version, 'all' );
+		wp_register_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/memberpress-discord-admin.min.css', array(), $this->version, 'all' );
+		wp_register_style( $this->plugin_name . 'font_awesome_css', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css', array(), $this->version, 'all' );
 	}
 
 	/**
@@ -67,12 +66,8 @@ class Memberpress_Discord_Admin {
 	 */
 	public function enqueue_scripts() {
 
-		wp_enqueue_script( $this->plugin_name . 'tabs_js', plugin_dir_url( __FILE__ ) . 'js/skeletabs.js', array( 'jquery' ), $this->version, false );
-		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/memberpress-discord-admin.min.js', array( 'jquery' ), $this->version, false );
-		wp_enqueue_script( $this->plugin_name . 'font_awesome_js', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/js/all.min.js', array( 'jquery' ), $this->version, false );
-		wp_enqueue_script( 'jquery-ui-draggable' );
-		wp_enqueue_script( 'jquery-ui-droppable' );
-
+		wp_register_script( $this->plugin_name . 'tabs_js', plugin_dir_url( __FILE__ ) . 'js/skeletabs.js', array( 'jquery' ), $this->version, false );
+		wp_register_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/memberpress-discord-admin.min.js', array( 'jquery' ), $this->version, false );
 		$script_params = array(
 			'admin_ajax'                    => admin_url( 'admin-ajax.php' ),
 			'permissions_const'             => MEMBERPRESS_DISCORD_BOT_PERMISSIONS,
@@ -100,6 +95,13 @@ class Memberpress_Discord_Admin {
 			wp_send_json_error( 'You do not have sufficient rights', 403 );
 			exit();
 		}
+		wp_enqueue_style($this->plugin_name . 'tabs_css');
+		wp_enqueue_style($this->plugin_name);
+		wp_enqueue_style($this->plugin_name . 'font_awesome_css');
+		wp_enqueue_script($this->plugin_name . 'tabs_js');
+		wp_enqueue_script($this->plugin_name);
+		wp_enqueue_script( 'jquery-ui-draggable' );
+		wp_enqueue_script( 'jquery-ui-droppable' );
 		require_once MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . 'admin/partials/memberpress-discord-admin-display.php';
 	}
 
@@ -821,6 +823,8 @@ class Memberpress_Discord_Admin {
 	 * @return ARRAY  $return
 	 */
 	public function ets_memberpress_discord_members_list_add_column( $columns ) {
+		wp_enqueue_style($this->plugin_name);
+		wp_enqueue_script($this->plugin_name);
 		$columns['col_memberpress_discord']     = __( 'Discord', 'memberpress-discord-add-on' );
 		$columns['col_memberpress_joined_date'] = __( 'Joined Date', 'memberpress-discord-add-on' );
 		return $columns;
@@ -836,7 +840,6 @@ class Memberpress_Discord_Admin {
 	 */
 	public function ets_memberpress_discord_members_list_add_custom_column_value( $attributes, $rec, $column_name, $column_display_name ) {
 		$access_token = sanitize_text_field( trim( get_user_meta( $rec->ID, '_ets_memberpress_discord_access_token', true ) ) );
-
 		switch ( $column_name ) {
 			case 'col_memberpress_discord':
 				?>
