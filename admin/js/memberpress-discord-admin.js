@@ -56,13 +56,23 @@
 						}
 
 						$("#maaping_json_val").html(mapjson);
+						console.log(mapjson);
 						$.each(JSON.parse(mapjson), function (key, val) {
 							var arrayofkey = key.split('id_');
-							$('*[data-level_id="' + arrayofkey[1] + '"]').append($('*[data-role_id="' + val + '"]')).attr('data-drop-role_id', val).find('span').css({ 'order': '2' });
-							if (jQuery('*[data-level_id="' + arrayofkey[1] + '"]').find('.makeMeDraggable').length >= 1) {
+							var preclone = $('*[data-role_id="' + val + '"]').clone();
+							console.log(preclone.length);
+							if(preclone.length>1){
+								preclone.slice(1).hide();
+							}
+							if (jQuery('*[data-level_id="' + arrayofkey[1] + '"]').find('*[data-role_id="' + val + '"]').length == 0) {
+								$('*[data-level_id="' + arrayofkey[1] + '"]').append(preclone).attr('data-drop-role_id', val).find('span').css({ 'order': '2' });
+							}
+							if ($('*[data-level_id="' + arrayofkey[1] + '"]').find('.makeMeDraggable').length >= 1) {
 								$('*[data-level_id="' + arrayofkey[1] + '"]').droppable("destroy");
 							}
-							$('*[data-role_id="' + val + '"]').css({ 'width': '100%', 'left': '0', 'top': '0', 'margin-bottom': '0px', 'order': '1' }).attr('data-level_id', arrayofkey[1]);
+							preclone.css({ 'width': '100%', 'left': '0', 'top': '0', 'margin-bottom': '0px', 'order': '1' }).attr('data-level_id', arrayofkey[1]);
+							makeDrag(preclone);
+							
 						});
 					}
 
@@ -155,12 +165,16 @@
 			function makeDrag(el) {
 				// Pass me an object, and I will make it draggable
 				el.draggable({
-					revert: "invalid"
+					revert: "invalid",
+					helper: 'clone'
 				});
 			}
 
 			/*Handel droppable event for saved mapping*/
 			function handlePreviousDropEvent(event, ui) {
+				if($(ui.draggable).attr('data-level_id').length > 0){
+					$(ui.draggable).remove().hide();
+				}
 				var draggable = ui.draggable;
 				$(this).append(draggable);
 				$('*[data-drop-role_id="' + draggable.data('role_id') + '"]').droppable({
@@ -173,7 +187,7 @@
 				$.each(oldItems, function (key, val) {
 					if (val) {
 						var arrayofval = val.split(',');
-						if (arrayofval[0] == 'level_id_' + draggable.data('level_id') || arrayofval[1] == draggable.data('role_id')) {
+						if (arrayofval[0] == 'level_id_' + draggable.data('level_id') && arrayofval[1] == draggable.data('role_id')) {
 							delete oldItems[key];
 						}
 					}
@@ -203,32 +217,37 @@
 			function handleDropEvent(event, ui) {
 				var draggable = ui.draggable;
 				var newItem = [];
-				$('*[data-drop-role_id="' + draggable.data('role_id') + '"]').droppable({
+				
+				var newClone = $(ui.helper).clone();
+				if($(this).find("[data-role_id='" + newClone.data('role_id') + "']").length == 1){
+					return false;
+				}
+				$('*[data-drop-role_id="' + newClone.data('role_id') + '"]').droppable({
 					drop: handleDropEvent,
 					hoverClass: 'hoverActive',
 				});
-				$('*[data-drop-role_id="' + draggable.data('role_id') + '"]').attr('data-drop-role_id', '');
-				if ($(this).data('drop-role_id') != draggable.data('role_id')) {
+				$('*[data-drop-role_id="' + newClone.data('role_id') + '"]').attr('data-drop-role_id', '');
+				if ($(this).data('drop-role_id') != newClone.data('role_id')) {
 					var oldItems = JSON.parse(localStorage.getItem('MemberPressMapArray')) || [];
-					$(this).attr('data-drop-role_id', draggable.data('role_id'));
-					draggable.attr('data-level_id', $(this).data('level_id'));
+					$(this).attr('data-drop-role_id', newClone.data('role_id'));
+					newClone.attr('data-level_id', $(this).data('level_id'));
 
 					$.each(oldItems, function (key, val) {
 						if (val) {
 							var arrayofval = val.split(',');
-							if (arrayofval[0] == 'level_id_' + $(this).data('level_id') || arrayofval[1] == draggable.data('role_id')) {
+							if (arrayofval[0] == 'level_id_' + $(this).data('level_id') ) {
 								delete oldItems[key];
 							}
 						}
 					});
 
 					var newkey = 'level_id_' + $(this).data('level_id');
-					oldItems.push(newkey + ',' + draggable.data('role_id'));
+					oldItems.push(newkey + ',' + newClone.data('role_id'));
 					var jsonStart = "{";
 					$.each(oldItems, function (key, val) {
 						if (val) {
 							var arrayofval = val.split(',');
-							if (arrayofval[0] == 'level_id_' + $(this).data('level_id') || arrayofval[1] != draggable.data('role_id') && arrayofval[0] != 'level_id_' + $(this).data('level_id') || arrayofval[1] == draggable.data('role_id')) {
+							if (arrayofval[0] == 'level_id_' + $(this).data('level_id') || arrayofval[1] != newClone.data('role_id') && arrayofval[0] != 'level_id_' + $(this).data('level_id') || arrayofval[1] == newClone.data('role_id')) {
 								jsonStart = jsonStart + '"' + arrayofval[0] + '":' + '"' + arrayofval[1] + '",';
 							}
 						}
@@ -245,13 +264,22 @@
 					$("#maaping_json_val").html(MemberPressMappingjson);
 				}
 
-				$(this).append(ui.draggable);
+				// $(this).append(ui.draggable);
+				// $(this).find('span').css({ 'order': '2' });
+				$(this).append(newClone);
 				$(this).find('span').css({ 'order': '2' });
 				if (jQuery(this).find('.makeMeDraggable').length >= 1) {
 					$(this).droppable("destroy");
-				}
+			    }
+				makeDrag($('.makeMeDraggable'));
 
-				draggable.css({ 'width': '100%', 'left': '0', 'top': '0', 'margin-bottom': '0px', 'order': '1' });
+				
+				// if (jQuery(this).find('.makeMeDraggable').data(role_id) == newClone.) {
+				//  	$(this).droppable("destroy");
+				// }
+				newClone.css({ 'width': '100%','margin-bottom': '0px', 'left': '0', 'position':'unset', 'order': '1' });
+				//$('.discord-roles').append($(newClone));
+				//(this).css({ 'width': '100%', 'left': '0', 'top': '0', 'margin-bottom': '0px', 'order': '2' });
 			}
 		}
 	});
