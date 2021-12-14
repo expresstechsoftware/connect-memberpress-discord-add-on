@@ -166,7 +166,10 @@
 				// Pass me an object, and I will make it draggable
 				el.draggable({
 					revert: "invalid",
-					helper: 'clone'
+					helper: 'clone',
+					start: function(e, ui) {
+					ui.helper.css({"width":"45%"});
+					}
 				});
 			}
 
