@@ -175,10 +175,11 @@
 
 			/*Handel droppable event for saved mapping*/
 			function handlePreviousDropEvent(event, ui) {
-				if($(ui.draggable).attr('data-level_id').length > 0){
+				var draggable = ui.draggable;
+				if(draggable.data('level_id')){
 					$(ui.draggable).remove().hide();
 				}
-				var draggable = ui.draggable;
+				
 				$(this).append(draggable);
 				$('*[data-drop-role_id="' + draggable.data('role_id') + '"]').droppable({
 					drop: handleDropEvent,
@@ -222,7 +223,7 @@
 				var newItem = [];
 				
 				var newClone = $(ui.helper).clone();
-				if($(this).find("[data-role_id='" + newClone.data('role_id') + "']").length == 1){
+				if($(this).find(".makeMeDraggable").length >= 1){
 					return false;
 				}
 				$('*[data-drop-role_id="' + newClone.data('role_id') + '"]').droppable({
