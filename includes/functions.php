@@ -13,12 +13,12 @@
 function ets_memberpress_discord_get_memberpress_formated_discord_redirect_url( $url ) {
 	$parsed = parse_url( $url, PHP_URL_QUERY );
 	if ( $parsed === null ) {
-		return $url .= '?via=discord';
+		return $url .= '?via=mem-discord';
 	} else {
-		if ( stristr( $url, 'via=discord' ) !== false ) {
+		if ( stristr( $url, 'via=mem-discord' ) !== false ) {
 			return $url;
 		} else {
-			return $url .= '&via=discord';
+			return $url .= '&via=mem-discord';
 		}
 	}
 }

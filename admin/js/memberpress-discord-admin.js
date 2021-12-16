@@ -56,11 +56,9 @@
 						}
 
 						$("#maaping_json_val").html(mapjson);
-						console.log(mapjson);
 						$.each(JSON.parse(mapjson), function (key, val) {
 							var arrayofkey = key.split('id_');
 							var preclone = $('*[data-role_id="' + val + '"]').clone();
-							console.log(preclone.length);
 							if(preclone.length>1){
 								preclone.slice(1).hide();
 							}
