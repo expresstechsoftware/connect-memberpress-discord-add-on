@@ -107,33 +107,29 @@ class Memberpress_Discord_Public {
 		if ( 'none' !== $default_role && is_array( $all_roles ) && array_key_exists( $default_role, $all_roles ) ) {
 			$default_role_name = $all_roles[ $default_role ];
 		}
+		$ets_memberpress_connecttodiscord_btn = '';
 		if ( ets_memberpress_discord_check_saved_settings_status() ) {
 			if ( $access_token ) {
-				?>
-				<label class="ets-connection-lbl"><?php echo __( 'Discord connection', 'memberpress-discord-add-on' ); ?></label>
-				<a href="#" class="ets-btn btn-disconnect" id="disconnect-discord" data-user-id="<?php echo esc_attr( $user_id ); ?>"><?php echo __( 'Disconnect From Discord ', 'memberpress-discord-add-on' ); ?><i class='fab fa-discord'></i></a>
-				<span class="ets-spinner"></span>
-				<?php
+				$ets_memberpress_connecttodiscord_btn .= '<label class="ets-connection-lbl">'. esc_html__( 'Discord connection', 'memberpress-discord-add-on' ) .'</label>';
+				$ets_memberpress_connecttodiscord_btn .= '<a href="#" class="ets-btn btn-disconnect" id="disconnect-discord" data-user-id="'. esc_attr( $user_id ) .'">'. esc_html__( 'Disconnect From Discord ', 'memberpress-discord-add-on' ) .'<i class="fab fa-discord"></i></a>';
+				$ets_memberpress_connecttodiscord_btn .= '<span class="ets-spinner"></span>';
 			} elseif ( current_user_can( 'memberpress_authorized' ) && $mapped_role_names || $allow_none_member == 'yes' ) {
-				?>
-				<label class="ets-connection-lbl"><?php echo __( 'Discord connection', 'memberpress-discord-add-on' ); ?></label>
-				<a href="?action=memberpress-discord-login" class="btn-connect ets-btn" ><?php echo __( 'Connect To Discord', 'memberpress-discord-add-on' ); ?> <i class='fab fa-discord'></i></a>
-				<?php if ( $mapped_role_names ) { ?>
-					<p class="ets_assigned_role">
-					<?php
-					echo __( 'Following Roles will be assigned to you in Discord: ', 'memberpress-discord-add-on' );
+				$ets_memberpress_connecttodiscord_btn .= '<label class="ets-connection-lbl">'. esc_html__( 'Discord connection', 'memberpress-discord-add-on' ) .'</label>';
+				$ets_memberpress_connecttodiscord_btn .= '<a href="?action=memberpress-discord-login" class="btn-connect ets-btn" >'. esc_html__( 'Connect To Discord', 'memberpress-discord-add-on' ) .'<i class="fab fa-discord"></i></a>';
+				if ( $mapped_role_names ) {
+					$ets_memberpress_connecttodiscord_btn .= '<p class="ets_assigned_role">';
+					$ets_memberpress_connecttodiscord_btn .= esc_html__( 'Following Roles will be assigned to you in Discord: ', 'memberpress-discord-add-on' );
 					foreach ( $mapped_role_names as $mapped_role_name ) {
-						echo esc_html( $mapped_role_name ) . ', ';
+						$ets_memberpress_connecttodiscord_btn .= esc_html( $mapped_role_name ) . ', ';
 					}
 					if ( $default_role_name ) {
-						echo esc_html( $default_role_name );
+						$ets_memberpress_connecttodiscord_btn .= esc_html( $default_role_name );
 					}
-					?>
-					</p>
-				<?php } ?>
-				<?php
+					$ets_memberpress_connecttodiscord_btn .= '</p>';
+				}
 			}
 		}
+		return $ets_memberpress_connecttodiscord_btn;
 	}
 
 	/**
