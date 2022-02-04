@@ -56,7 +56,6 @@ class Memberpress_Discord_Admin {
 	public function enqueue_styles() {
 		wp_register_style( $this->plugin_name . 'tabs_css', plugin_dir_url( __FILE__ ) . 'css/skeletabs.css', array(), $this->version, 'all' );
 		wp_register_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/memberpress-discord-admin.min.css', array(), $this->version, 'all' );
-		wp_register_style( $this->plugin_name . 'font_awesome_css', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css', array(), $this->version, 'all' );
 	}
 
 	/**
@@ -97,7 +96,6 @@ class Memberpress_Discord_Admin {
 		}
 		wp_enqueue_style($this->plugin_name . 'tabs_css');
 		wp_enqueue_style($this->plugin_name);
-		wp_enqueue_style($this->plugin_name . 'font_awesome_css');
 		wp_enqueue_script($this->plugin_name . 'tabs_js');
 		wp_enqueue_script($this->plugin_name);
 		wp_enqueue_script( 'jquery-ui-draggable' );

@@ -51,7 +51,6 @@ class Memberpress_Discord_Public {
 	public function enqueue_styles() {
 
 		wp_register_style( $this->plugin_name . 'public_css', plugin_dir_url( __FILE__ ) . 'css/memberpress-discord-public.min.css', array(), $this->version, 'all' );
-		wp_register_style( $this->plugin_name . 'font_awesome_css', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css', array(), $this->version, 'all' );
 	}
 
 	/**
@@ -83,7 +82,6 @@ class Memberpress_Discord_Public {
 			exit();
 		}
 		wp_enqueue_style($this->plugin_name . 'public_css');
-		wp_enqueue_style($this->plugin_name . 'font_awesome_css');
 		wp_enqueue_script($this->plugin_name . 'public_js');
 		$user_id                              = sanitize_text_field( trim( get_current_user_id() ) );
 		$access_token                         = sanitize_text_field( trim( get_user_meta( $user_id, '_ets_memberpress_discord_access_token', true ) ) );
