@@ -510,14 +510,18 @@ class Memberpress_Discord_Public {
 			wp_send_json_error( 'Unauthorized user', 401 );
 			exit();
 		}
+
 		// Check for nonce security
 		if ( isset( $_POST['ets_memberpress_discord_public_nonce'] ) && ! wp_verify_nonce( $_POST['ets_memberpress_discord_public_nonce'], 'ets-memberpress-discord-public-ajax-nonce' ) ) {
 				wp_send_json_error( 'You do not have sufficient rights', 403 );
 				exit();
 		}
 		$user_id = sanitize_text_field( trim( $_POST['user_id'] ) );
+		$memberpress_member_kick_out = sanitize_text_field( trim( get_option( 'ets_memberpress_member_kick_out' ) ) );
 		if ( $user_id ) {
-			$this->memberpress_delete_member_from_guild( $user_id, false );
+			if( $memberpress_member_kick_out == true ){
+				$this->memberpress_delete_member_from_guild( $user_id, false );
+			}
 			delete_user_meta( $user_id, '_ets_memberpress_discord_access_token' );
 		}
 		$event_res = array(

@@ -5,6 +5,7 @@ $retry_failed_api                             = sanitize_text_field( trim( get_o
 $set_job_cnrc                                 = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_job_queue_concurrency' ) ) );
 $set_job_q_batch_size                         = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_job_queue_batch_size' ) ) );
 $retry_api_count                              = sanitize_text_field( trim( get_option( 'ets_memberpress_retry_api_count' ) ) );
+$memberpress_member_kick_out                              = sanitize_text_field( trim( get_option( 'ets_memberpress_member_kick_out' ) ) );
 $ets_memberpress_discord_send_expiration_warning_dm = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_send_expiration_warning_dm' ) ) );
 $ets_memberpress_discord_expiration_warning_message = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_expiration_warning_message' ) ) );
 $ets_memberpress_discord_expired_message            = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_expired_message' ) ) );
@@ -125,6 +126,17 @@ $ets_memberpress_discord_cancel_message             = sanitize_text_field( trim(
 		<input name="retry_failed_api" type="checkbox" id="retry_failed_api" 
 		<?php
 		if ( $retry_failed_api == true ) {
+			echo 'checked="checked"'; }
+		?>
+		 value="1">
+		</fieldset></td>
+	  </tr>
+	  <tr>
+		<th scope="row"><?php echo __( 'Kick members out when they Disconnect their Account?', 'pmpro-discord-add-on' ); ?></th>
+		<td> <fieldset>
+		<input name="memberpress_member_kick_out" type="checkbox" id="memberpress_member_kick_out" 
+		<?php
+		if ( $memberpress_member_kick_out == true ) {
 			echo 'checked="checked"'; }
 		?>
 		 value="1">

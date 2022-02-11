@@ -259,6 +259,12 @@ class Memberpress_Discord_Admin {
 					update_option( 'ets_memberpress_retry_failed_api', false );
 				}
 
+				if ( isset( $_POST['memberpress_member_kick_out'] ) ) {
+					update_option( 'ets_memberpress_member_kick_out', true );
+				} else {
+					update_option( 'ets_memberpress_member_kick_out', false );
+				}
+
 				if ( isset( $_POST['ets_memberpress_discord_send_welcome_dm'] ) ) {
 					update_option( 'ets_memberpress_discord_send_welcome_dm', true );
 				} else {
