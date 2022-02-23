@@ -132,7 +132,7 @@ $ets_memberpress_discord_cancel_message             = sanitize_text_field( trim(
 		</fieldset></td>
 	  </tr>
 	  <tr>
-		<th scope="row"><?php echo __( 'Kick members out when they Disconnect their Account?', 'pmpro-discord-add-on' ); ?></th>
+		<th scope="row"><?php echo __( 'Kick members out when they Disconnect their Account?', 'memberpress-discord-add-on' ); ?></th>
 		<td> <fieldset>
 		<input name="memberpress_member_kick_out" type="checkbox" id="memberpress_member_kick_out" 
 		<?php

@@ -94,10 +94,10 @@ class Memberpress_Discord_Admin {
 			wp_send_json_error( 'You do not have sufficient rights', 403 );
 			exit();
 		}
-		wp_enqueue_style($this->plugin_name . 'tabs_css');
-		wp_enqueue_style($this->plugin_name);
-		wp_enqueue_script($this->plugin_name . 'tabs_js');
-		wp_enqueue_script($this->plugin_name);
+		wp_enqueue_style( $this->plugin_name . 'tabs_css' );
+		wp_enqueue_style( $this->plugin_name );
+		wp_enqueue_script( $this->plugin_name . 'tabs_js' );
+		wp_enqueue_script( $this->plugin_name );
 		wp_enqueue_script( 'jquery-ui-draggable' );
 		wp_enqueue_script( 'jquery-ui-droppable' );
 		require_once MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . 'admin/partials/memberpress-discord-admin-display.php';
@@ -793,8 +793,10 @@ class Memberpress_Discord_Admin {
 		$active_memberships    = ets_memberpress_discord_get_active_memberships( $txn->user_id );
 		$complete_txn          = array();
 		$active_product_ids    = array();
-		foreach ( $active_memberships as $active_membership ) {
-			array_push( $active_product_ids, $active_membership->product_id );
+		if ( count( $active_memberships ) > 0 ) {
+			foreach ( $active_memberships as $active_membership ) {
+				array_push( $active_product_ids, $active_membership->product_id );
+			}
 		}
 		if ( ! empty( $txn ) ) {
 				$complete_txn = array(
@@ -827,8 +829,8 @@ class Memberpress_Discord_Admin {
 	 * @return ARRAY  $return
 	 */
 	public function ets_memberpress_discord_members_list_add_column( $columns ) {
-		wp_enqueue_style($this->plugin_name);
-		wp_enqueue_script($this->plugin_name);
+		wp_enqueue_style( $this->plugin_name );
+		wp_enqueue_script( $this->plugin_name );
 		$columns['col_memberpress_discord']     = __( 'Discord', 'memberpress-discord-add-on' );
 		$columns['col_memberpress_joined_date'] = __( 'Joined Date', 'memberpress-discord-add-on' );
 		return $columns;

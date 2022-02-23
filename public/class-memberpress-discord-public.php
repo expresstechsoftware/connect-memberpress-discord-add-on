@@ -174,7 +174,7 @@ class Memberpress_Discord_Public {
 				wp_redirect( $discord_authorise_api_url, 302, get_site_url() );
 				exit;
 			}
-			if ( isset( $_GET['code'] ) && isset( $_GET['via'] ) ) {
+			if ( isset( $_GET['code'] ) && isset( $_GET['via'] ) && $_GET['via'] == 'mem-discord' ) {
 				$membership_private_obj = ets_memberpress_discord_get_active_memberships( $user_id );
 				$active_memberships     = array();
 				if ( ! empty( $membership_private_obj ) ) {
@@ -523,6 +523,7 @@ class Memberpress_Discord_Public {
 				$this->memberpress_delete_member_from_guild( $user_id, false );
 			}
 			delete_user_meta( $user_id, '_ets_memberpress_discord_access_token' );
+      delete_user_meta( $user_id, '_ets_memberpress_discord_refresh_token' );
 		}
 		$event_res = array(
 			'status'  => 1,

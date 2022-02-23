@@ -3,6 +3,7 @@ $user_id             = sanitize_text_field( trim( get_current_user_id() ) );
 $mpr_memberships        = get_posts( array('post_type' => 'memberpressproduct', 'post_status' => 'publish') );
 $default_role        = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_default_role_id' ) ) );
 $allow_none_member = sanitize_text_field( trim( get_option( 'ets_memberpress_allow_none_member' ) ) );
+$ets_discord_roles = sanitize_text_field( get_option( 'ets_memberpress_discord_role_mapping' ) );
 ?>
 <div class="notice notice-warning ets-notice">
 	<p><i class='fas fa-info'></i> <?php echo __( 'Drag and Drop the Discord Roles over to the MemberPress Levels', 'memberpress-discord-add-on' ); ?></p>
