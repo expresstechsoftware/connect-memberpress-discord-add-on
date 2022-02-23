@@ -4,6 +4,7 @@ $mpr_memberships        = get_posts( array('post_type' => 'memberpressproduct', 
 $default_role        = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_default_role_id' ) ) );
 $allow_none_member = sanitize_text_field( trim( get_option( 'ets_memberpress_allow_none_member' ) ) );
 $ets_discord_roles = sanitize_text_field( get_option( 'ets_memberpress_discord_role_mapping' ) );
+$current_url = ets_memberpress_discord_get_current_screen_url();
 ?>
 <div class="notice notice-warning ets-notice">
 	<p><i class='fas fa-info'></i> <?php echo __( 'Drag and Drop the Discord Roles over to the MemberPress Levels', 'memberpress-discord-add-on' ); ?></p>
@@ -35,6 +36,7 @@ $ets_discord_roles = sanitize_text_field( get_option( 'ets_memberpress_discord_r
 </div>
 <form method="post" action="<?php echo esc_attr( get_site_url() ) . '/wp-admin/admin-post.php' ?>">
 	<input type="hidden" name="action" value="memberpress_discord_role_mapping">
+  <input type="hidden" name="current_url" value="<?php echo esc_html( $current_url ); ?> " />
 	<table class="form-table" role="presentation">
 	<tbody>
 		<tr>

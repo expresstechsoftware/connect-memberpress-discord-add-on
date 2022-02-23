@@ -15,9 +15,11 @@ $ets_memberpress_discord_send_welcome_dm            = sanitize_text_field( trim(
 $ets_memberpress_discord_welcome_message            = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_welcome_message' ) ) );
 $ets_memberpress_discord_send_membership_cancel_dm  = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_send_membership_cancel_dm' ) ) );
 $ets_memberpress_discord_cancel_message             = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_cancel_message' ) ) );
+$current_url = ets_memberpress_discord_get_current_screen_url();
 ?>
 <form method="post" action="<?php echo esc_attr( get_site_url() ) . '/wp-admin/admin-post.php' ?>">
 <input type="hidden" name="action" value="memberpress_discord_advance_settings">
+<input type="hidden" name="current_url" value="<?php echo esc_html( $current_url ); ?> " />
 <?php wp_nonce_field( 'save_discord_adv_settings', 'ets_discord_save_adv_settings' ); ?>
   <table class="form-table" role="presentation">
 	<tbody>

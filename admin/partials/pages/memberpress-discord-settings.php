@@ -5,6 +5,7 @@ $discord_bot_token                    = sanitize_text_field( trim( get_option( '
 $ets_memberpress_discord_redirect_url = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_redirect_url' ) ) );
 $ets_discord_roles                    = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_role_mapping' ) ) );
 $ets_memberpress_discord_server_id    = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_server_id' ) ) );
+$current_url = ets_memberpress_discord_get_current_screen_url();
 if ( empty( $ets_memberpress_discord_redirect_url ) ) {
 	$acc_url                              = sanitize_text_field( trim( get_site_url() . '/account' ) );
 	$ets_memberpress_discord_redirect_url = ets_memberpress_discord_get_memberpress_formated_discord_redirect_url( $acc_url );
@@ -12,6 +13,7 @@ if ( empty( $ets_memberpress_discord_redirect_url ) ) {
 ?>
 <form method="post" action="<?php echo esc_attr( get_site_url() ) . '/wp-admin/admin-post.php'; ?>">
 <input type="hidden" name="action" value="memberpress_discord_general_settings">
+<input type="hidden" name="current_url" value="<?php echo esc_html( $current_url ); ?> " />
 	<?php wp_nonce_field( 'save_discord_settings', 'ets_discord_save_settings' ); ?>
 	<div class="ets-input-group">
 		<label><?php echo __( 'Client ID', 'memberpress-discord-add-on' ); ?> :</label>

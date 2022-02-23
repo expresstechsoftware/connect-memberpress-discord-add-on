@@ -148,10 +148,10 @@ class Memberpress_Discord_Admin {
 				}
 
 				$message = 'Your settings are saved successfully.';
-				if ( isset( $_SERVER['HTTP_REFERER'] ) ) {
+				if ( isset( $_POST['current_url'] ) ) {
 					// This will delete Stale DM channels.
 					delete_metadata( 'user', 0, '_ets_memberpress_discord_dm_channel', '', true );
-					$pre_location = $_SERVER['HTTP_REFERER'] . '&save_settings_msg=' . $message . '#mepr_general_settings';
+					$pre_location = sanitize_text_field( $_POST['current_url'] ) . '&save_settings_msg=' . $message . '#mepr_general_settings';
 					wp_safe_redirect( $pre_location );
 				}
 			}
@@ -188,8 +188,8 @@ class Memberpress_Discord_Admin {
 				}
 
 				$message = 'Your mappings are saved successfully.';
-				if ( isset( $_SERVER['HTTP_REFERER'] ) ) {
-					$pre_location = $_SERVER['HTTP_REFERER'] . '&save_settings_msg=' . $message . '#mepr_role_mapping';
+				if ( isset( $_POST['current_url'] ) ) {
+					$pre_location = sanitize_text_field( $_POST['current_url'] )  . '&save_settings_msg=' . $message . '#mepr_role_mapping';
 					wp_safe_redirect( $pre_location );
 				}
 			}
@@ -198,8 +198,8 @@ class Memberpress_Discord_Admin {
 				delete_option( 'ets_memberpress_discord_default_role_id' );
 				delete_option( 'ets_memberpress_allow_none_member' );
 				$message = ' Your settings flushed successfully.';
-				if ( isset( $_SERVER['HTTP_REFERER'] ) ) {
-					$pre_location = $_SERVER['HTTP_REFERER'] . '&save_settings_msg=' . $message . '#mepr_role_mapping';
+				if ( isset( $_POST['current_url'] ) ) {
+					$pre_location = sanitize_text_field( $_POST['current_url'] ) . '&save_settings_msg=' . $message . '#mepr_role_mapping';
 					wp_safe_redirect( $pre_location );
 				}
 			}
@@ -337,8 +337,8 @@ class Memberpress_Discord_Admin {
 					}
 				}
 				$message = 'Your settings are saved successfully.';
-				if ( isset( $_SERVER['HTTP_REFERER'] ) ) {
-					$pre_location = $_SERVER['HTTP_REFERER'] . '&save_settings_msg=' . $message . '#mepr_advance';
+				if ( isset( $_POST['current_url'] ) ) {
+					$pre_location = sanitize_text_field( $_POST['current_url'] ) . '&save_settings_msg=' . $message . '#mepr_advance';
 					wp_safe_redirect( $pre_location );
 				}
 			}
@@ -421,8 +421,8 @@ class Memberpress_Discord_Admin {
 
 				if ( $mail ) {
 					$message = 'Your request have been successfully submitted!';
-					if ( isset( $_SERVER['HTTP_REFERER'] ) ) {
-						$pre_location = $_SERVER['HTTP_REFERER'] . '&save_settings_msg=' . $message . '#mepr_support';
+					if ( isset( $_POST['current_url'] ) ) {
+						$pre_location = sanitize_text_field( $_POST['current_url'] ) . '&save_settings_msg=' . $message . '#mepr_support';
 						wp_safe_redirect( $pre_location );
 					}
 				}

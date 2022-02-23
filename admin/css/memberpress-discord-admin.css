@@ -110,11 +110,12 @@
   background-color: #FF0000;
 }
 .clrbtndiv{
-    max-width: 230px;
     display: flex;
 }
 .clrbtndiv .form-group{
   display: flex;
+  align-items: center;
+  margin: 1px;
 }
 .clrbtndiv .form-group .spinner{
   margin: 10px 10px 0;
