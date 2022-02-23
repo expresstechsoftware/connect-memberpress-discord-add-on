@@ -958,4 +958,24 @@ class Memberpress_Discord_Admin {
 			}
 		}
 	}
+
+	/*
+	Method to catch the admin BOT connect action
+	* @param NONE
+	* @return NONE
+	*/
+	public function ets_memberpress_discord_connect_bot() {
+		if ( isset( $_GET['action'] ) && 'mepr-discord-connectToBot' === $_GET['action'] ) {
+			$params                    = array(
+				'client_id'   => sanitize_text_field( trim( get_option( 'ets_memberpress_discord_client_id' ) ) ),
+				'permissions' => MEMBERPRESS_DISCORD_BOT_PERMISSIONS,
+				'scope'       => 'bot',
+				'guild_id'    => sanitize_text_field( trim( get_option( 'ets_memberpress_discord_server_id' ) ) ),
+			);
+			$discord_authorise_api_url = MEMBERPRESS_DISCORD_API_URL . 'oauth2/authorize?' . http_build_query( $params );
+
+			wp_redirect( $discord_authorise_api_url, 302, get_site_url() );
+			exit;
+		}
+	}
 }

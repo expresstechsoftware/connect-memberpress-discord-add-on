@@ -28,7 +28,7 @@ if ( empty( $ets_memberpress_discord_redirect_url ) ) {
 	</div>
 	<div class="ets-input-group">
 		<label><?php echo __( 'Bot Token', 'memberpress-discord-add-on' ); ?> :</label>
-		<input type="text" class="ets-input" name="ets_memberpress_discord_bot_token" value="<?php if ( isset( $discord_bot_token ) ) { echo esc_attr( $discord_bot_token ); } ?>" required placeholder="<?php echo __( 'Discord Bot Token', 'memberpress-discord-add-on' ); ?>">
+		<input type="password" class="ets-input" name="ets_memberpress_discord_bot_token" value="<?php if ( isset( $discord_bot_token ) ) { echo esc_attr( $discord_bot_token ); } ?>" required placeholder="<?php echo __( 'Discord Bot Token', 'memberpress-discord-add-on' ); ?>">
 	</div>
 	<div class="ets-input-group">
 		<label><?php echo __( 'Server Id', 'memberpress-discord-add-on' ); ?> :</label>
@@ -44,7 +44,7 @@ if ( empty( $ets_memberpress_discord_redirect_url ) ) {
 		<?php echo __( 'Save Settings', 'memberpress-discord-add-on' ); ?>
 		</button>
 		<?php if ( get_option( 'ets_memberpress_discord_client_id' ) ) : ?>
-		<a href="?action=discord-connectToBot" class="ets-btn btn-connect-to-bot" id="connect-discord-bot"><?php echo __( 'Connect your Bot', 'memberpress-discord-add-on' ); ?> <i class='fab fa-discord'></i></a>
+		<a href="?action=mepr-discord-connectToBot" class="ets-btn btn-connect-to-bot" id="connect-discord-bot"><?php echo __( 'Connect your Bot', 'memberpress-discord-add-on' ); ?> <i class='fab fa-discord'></i></a>
 		<?php endif; ?>
 	</p>
 </form>

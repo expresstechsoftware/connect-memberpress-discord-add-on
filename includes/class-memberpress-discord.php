@@ -165,6 +165,7 @@ class Memberpress_Discord {
 		$this->loader->add_action( 'ets_memberpress_discord_as_schedule_delete_role', $plugin_admin, 'ets_memberpress_discord_as_handler_delete_memberrole', 10, 3 );
 		$this->loader->add_action( 'ets_memberpress_discord_as_handle_memberpress_complete_transaction', $plugin_admin, 'ets_memberpress_discord_as_handler_memberpress_complete_transaction', 10, 2 );
 		$this->loader->add_action( 'before_delete_post', $plugin_admin, 'ets_memberpress_discord_as_schedule_job_membership_level_deleted' );
+    $this->loader->add_action( 'init', $plugin_admin, 'ets_memberpress_discord_connect_bot' );
 	}
 
 	/**
