@@ -109,7 +109,7 @@ class Memberpress_Discord_Public {
 		if ( ets_memberpress_discord_check_saved_settings_status() ) {
 			if ( $access_token ) {
 				$ets_memberpress_connecttodiscord_btn .= '<div><label class="ets-connection-lbl">'. esc_html__( 'Discord connection', 'memberpress-discord-add-on' ) .'</label>';
-				$ets_memberpress_connecttodiscord_btn .= '<a href="#" class="ets-btn btn-disconnect" id="disconnect-discord" data-user-id="'. esc_attr( $user_id ) .'">'. esc_html__( 'Disconnect From Discord ', 'memberpress-discord-add-on' ) .'<i class="fab fa-discord"></i></a>';
+				$ets_memberpress_connecttodiscord_btn .= '<a href="#" class="ets-btn btn-disconnect"  data-user-id="'. esc_attr( $user_id ) .'">'. esc_html__( 'Disconnect From Discord ', 'memberpress-discord-add-on' ) .'<i class="fab fa-discord"></i></a>';
 				$ets_memberpress_connecttodiscord_btn .= '<span class="ets-spinner"></span>';
 			} elseif ( current_user_can( 'memberpress_authorized' ) && $mapped_role_names || $allow_none_member == 'yes' ) {
 				$ets_memberpress_connecttodiscord_btn .= '<div><label class="ets-connection-lbl">'. esc_html__( 'Discord connection', 'memberpress-discord-add-on' ) .'</label>';
