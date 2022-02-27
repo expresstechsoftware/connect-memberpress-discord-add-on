@@ -5,7 +5,8 @@ $retry_failed_api                             = sanitize_text_field( trim( get_o
 $set_job_cnrc                                 = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_job_queue_concurrency' ) ) );
 $set_job_q_batch_size                         = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_job_queue_batch_size' ) ) );
 $retry_api_count                              = sanitize_text_field( trim( get_option( 'ets_memberpress_retry_api_count' ) ) );
-$memberpress_member_kick_out                              = sanitize_text_field( trim( get_option( 'ets_memberpress_member_kick_out' ) ) );
+$memberpress_member_kick_out                  = sanitize_text_field( trim( get_option( 'ets_memberpress_member_kick_out' ) ) );
+$memberpress_member_discord_login                   = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_login_with_discord' ) ) );
 $ets_memberpress_discord_send_expiration_warning_dm = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_send_expiration_warning_dm' ) ) );
 $ets_memberpress_discord_expiration_warning_message = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_expiration_warning_message' ) ) );
 $ets_memberpress_discord_expired_message            = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_expired_message' ) ) );
@@ -143,6 +144,20 @@ $current_url = ets_memberpress_discord_get_current_screen_url();
 		?>
 		 value="1">
 		</fieldset></td>
+		<small><?php echo __( 'Members will be kicked out if this setting is checked.', 'memberpress-discord-add-on' ); ?></small>
+	  </tr>
+	  <tr>
+		<th scope="row"><?php echo __( 'Login with Discord on checkout Page', 'memberpress-discord-add-on' ); ?></th>
+		<td> <fieldset>
+		<input name="memberpress_member_discord_login" type="checkbox" id="memberpress_member_discord_login" 
+		<?php
+		if ( $memberpress_member_discord_login == true ) {
+			echo 'checked="checked"'; }
+		?>
+		 value="1">
+		</fieldset>
+    <small><?php echo __( 'A new account will be created if the discord account E-mail is not exist into the system.', 'memberpress-discord-add-on' ); ?></small>
+  </td>
 	  </tr>
 	<tr>
 		<th scope="row"><?php echo __( 'How many times a failed API call should get re-try', 'memberpress-discord-add-on' ); ?></th>

@@ -37,6 +37,10 @@ if ( isset( $_GET['save_settings_msg'] ) ) {
 				</button>
 				</li>
 				<li class="skltbs-tab-item">
+				<button class="skltbs-tab" data-identity="appearance" data-toggle="tab" data-event="ets_appearance"><?php echo __( 'Appearance', 'memberpress-discord-add-on' ); ?>	
+				</button>
+				</li>
+				<li class="skltbs-tab-item">
 				<button class="skltbs-tab" data-identity="logs" data-toggle="tab" data-event="ets_logs"><?php echo __( 'Logs', 'memberpress-discord-add-on' ); ?>	
 				</button>
 				</li>
@@ -60,6 +64,9 @@ if ( isset( $_GET['save_settings_msg'] ) ) {
 				<?php endif; ?>
 				<div id='mepr_advance' class="skltbs-panel">
 				<?php require_once MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . 'admin/partials/pages/memberpress-discord-advance.php'; ?>
+				</div>
+				<div id='mepr_appearance' class="skltbs-panel">
+				<?php require_once MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . 'admin/partials/pages/memberpress-discord-appearance.php'; ?>
 				</div>
 				<div id='mepr_logs' class="skltbs-panel">
 				<?php require_once MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . 'admin/partials/pages/memberpress-discord-error-log.php'; ?>

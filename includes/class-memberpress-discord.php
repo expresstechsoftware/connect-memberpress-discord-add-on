@@ -147,6 +147,7 @@ class Memberpress_Discord {
 		$this->loader->add_action( 'admin_post_memberpress_discord_general_settings', $plugin_admin, 'ets_memberpress_discord_general_settings' );
 		$this->loader->add_action( 'admin_post_memberpress_discord_role_mapping', $plugin_admin, 'ets_memberpress_discord_role_mapping' );
 		$this->loader->add_action( 'admin_post_memberpress_discord_advance_settings', $plugin_admin, 'ets_memberpress_discord_advance_settings' );
+		$this->loader->add_action( 'admin_post_memberpress_discord_save_appearance_settings', $plugin_admin, 'ets_memberpress_discord_save_appearance_settings' );
 		$this->loader->add_action( 'admin_post_memberpress_discord_send_support_mail', $plugin_admin, 'ets_memberpress_discord_send_support_mail' );
 		$this->loader->add_action( 'wp_ajax_memberpress_load_discord_roles', $plugin_admin, 'ets_memberpress_load_discord_roles' );
 		$this->loader->add_action( 'wp_ajax_memberpress_discord_clear_logs', $plugin_admin, 'ets_memberpress_discord_clear_logs' );
@@ -165,7 +166,7 @@ class Memberpress_Discord {
 		$this->loader->add_action( 'ets_memberpress_discord_as_schedule_delete_role', $plugin_admin, 'ets_memberpress_discord_as_handler_delete_memberrole', 10, 3 );
 		$this->loader->add_action( 'ets_memberpress_discord_as_handle_memberpress_complete_transaction', $plugin_admin, 'ets_memberpress_discord_as_handler_memberpress_complete_transaction', 10, 2 );
 		$this->loader->add_action( 'before_delete_post', $plugin_admin, 'ets_memberpress_discord_as_schedule_job_membership_level_deleted' );
-    $this->loader->add_action( 'init', $plugin_admin, 'ets_memberpress_discord_connect_bot' );
+    	$this->loader->add_action( 'admin_init', $plugin_admin, 'ets_memberpress_discord_connect_bot' );
 	}
 
 	/**
@@ -184,11 +185,13 @@ class Memberpress_Discord {
 		$this->loader->add_shortcode( 'mepr_discord_button', $plugin_public, 'ets_memberpress_discord_add_connect_button' );
 		$this->loader->add_action( 'mepr-account-home-fields', $plugin_public, 'ets_memberpress_show_discord_button' );
 		$this->loader->add_action( 'init', $plugin_public, 'ets_memberpress_discord_discord_api_callback' );
+		$this->loader->add_action( 'init', $plugin_public, 'ets_memberpress_discord_act_on_url_action' );
 		$this->loader->add_action( 'wp_ajax_memberpress_disconnect_from_discord', $plugin_public, 'ets_memberpress_disconnect_from_discord' );
 		$this->loader->add_action( 'ets_memberpress_discord_as_handle_add_member_to_guild', $plugin_public, 'ets_memberpress_discord_as_handler_add_member_to_guild', 10, 4 );
 		$this->loader->add_action( 'ets_memberpress_discord_as_schedule_delete_member', $plugin_public, 'ets_memberpress_discord_as_handler_delete_member_from_guild', 10, 3 );
 		$this->loader->add_action( 'ets_memberpress_discord_as_send_welcome_dm', $this, 'ets_memberpress_discord_handler_send_dm', 10, 3 );
 		$this->loader->add_action( 'ets_memberpress_discord_as_schedule_member_put_role', $plugin_public, 'ets_memberpress_discord_as_handler_put_memberrole', 10, 3 );
+		$this->loader->add_action( 'mepr-checkout-after-password-fields', $plugin_public, 'ets_memberpress_discord_login_with_discord_button' );
 	}
 
 	/**

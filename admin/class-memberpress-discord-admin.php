@@ -66,7 +66,7 @@ class Memberpress_Discord_Admin {
 	public function enqueue_scripts() {
 
 		wp_register_script( $this->plugin_name . 'tabs_js', plugin_dir_url( __FILE__ ) . 'js/skeletabs.js', array( 'jquery' ), $this->version, false );
-		wp_register_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/memberpress-discord-admin.min.js', array( 'jquery' ), $this->version, false );
+		wp_register_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/memberpress-discord-admin.js', array( 'jquery' ), $this->version, false );
 		$script_params = array(
 			'admin_ajax'                    => admin_url( 'admin-ajax.php' ),
 			'permissions_const'             => MEMBERPRESS_DISCORD_BOT_PERMISSIONS,
@@ -100,6 +100,8 @@ class Memberpress_Discord_Admin {
 		wp_enqueue_script( $this->plugin_name );
 		wp_enqueue_script( 'jquery-ui-draggable' );
 		wp_enqueue_script( 'jquery-ui-droppable' );
+		wp_enqueue_script( 'wp-color-picker' );
+		wp_enqueue_style( 'wp-color-picker' );
 		require_once MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . 'admin/partials/memberpress-discord-admin-display.php';
 	}
 
@@ -265,6 +267,12 @@ class Memberpress_Discord_Admin {
 					update_option( 'ets_memberpress_member_kick_out', false );
 				}
 
+				if ( isset( $_POST['memberpress_member_discord_login'] ) ) {
+					update_option( 'ets_memberpress_discord_login_with_discord', true );
+				} else {
+					update_option( 'ets_memberpress_discord_login_with_discord', false );
+				}
+
 				if ( isset( $_POST['ets_memberpress_discord_send_welcome_dm'] ) ) {
 					update_option( 'ets_memberpress_discord_send_welcome_dm', true );
 				} else {
@@ -343,6 +351,52 @@ class Memberpress_Discord_Admin {
 				}
 			}
 		}
+	}
+
+	/**
+	 * Save apearance settings
+	 *
+	 * @param NONE
+	 * @return NONE
+	 */
+	public function ets_memberpress_discord_save_appearance_settings() {
+		if ( ! current_user_can( 'administrator' ) ) {
+			wp_send_json_error( 'You do not have sufficient rights', 403 );
+			exit();
+		}
+
+		$ets_memberpress_btn_color            = isset( $_POST['ets_memberpress_btn_color'] ) && $_POST['ets_memberpress_btn_color'] !== '' ? sanitize_text_field( trim( $_POST['ets_memberpress_btn_color'] ) ) : '#77a02e';
+		$ets_memberpress_btn_disconnect_color = isset( $_POST['ets_memberpress_btn_disconnect_color'] ) && $_POST['ets_memberpress_btn_disconnect_color'] != '' ? sanitize_text_field( trim( $_POST['ets_memberpress_btn_disconnect_color'] ) ) : '#ff0000';
+		$ets_memberpress_loggedin_btn_text    = isset( $_POST['ets_memberpress_loggedin_btn_text'] ) && $_POST['ets_memberpress_loggedin_btn_text'] != '' ? sanitize_text_field( trim( $_POST['ets_memberpress_loggedin_btn_text'] ) ) : 'Connect To Discord';
+		$ets_memberpress_loggedout_btn_text   = isset( $_POST['ets_memberpress_loggedout_btn_text'] ) && $_POST['ets_memberpress_loggedout_btn_text'] != '' ? sanitize_text_field( trim( $_POST['ets_memberpress_loggedout_btn_text'] ) ) : 'Login With Discord';
+		$ets_memberpress_disconnect_btn_text  = $_POST['ets_memberpress_disconnect_btn_text'] ? sanitize_text_field( trim( $_POST['ets_memberpress_disconnect_btn_text'] ) ) : 'Disconnect From Discord';
+
+		if ( isset( $_POST['apr_submit'] ) ) {
+
+			if ( isset( $_POST['ets_discord_save_aprnc_settings'] ) && wp_verify_nonce( $_POST['ets_discord_save_aprnc_settings'], 'save_discord_aprnc_settings' ) ) {
+				if ( $ets_memberpress_btn_color ) {
+					update_option( 'ets_memberpress_discord_btn_color', $ets_memberpress_btn_color );
+				}
+				if ( $ets_memberpress_btn_disconnect_color ) {
+					update_option( 'ets_memberpress_btn_disconnect_color', $ets_memberpress_btn_disconnect_color );
+				}
+				if ( $ets_memberpress_loggedout_btn_text ) {
+					update_option( 'ets_memberpress_discord_loggedout_btn_text', $ets_memberpress_loggedout_btn_text );
+				}
+				if ( $ets_memberpress_loggedin_btn_text ) {
+					update_option( 'ets_memberpress_discord_loggedin_btn_text', $ets_memberpress_loggedin_btn_text );
+				}
+				if ( $ets_memberpress_disconnect_btn_text ) {
+					update_option( 'ets_memberpress_disconnect_btn_text', $ets_memberpress_disconnect_btn_text );
+				}
+				$message = 'Your settings are saved successfully.';
+				if ( isset( $_POST['current_url'] ) ) {
+					$pre_location = sanitize_text_field( $_POST['current_url'] ) . '&save_settings_msg=' . $message . '#mepr_appearance';
+					wp_safe_redirect( $pre_location );
+				}
+			}
+		}
+
 	}
 
 	/**
@@ -965,7 +1019,7 @@ class Memberpress_Discord_Admin {
 	* @return NONE
 	*/
 	public function ets_memberpress_discord_connect_bot() {
-    if ( ! current_user_can( 'administrator' ) ) {
+   		if ( ! current_user_can( 'administrator' ) ) {
 			wp_send_json_error( 'You do not have sufficient rights', 403 );
 			exit();
 		}

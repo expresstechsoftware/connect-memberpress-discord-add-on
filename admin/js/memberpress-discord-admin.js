@@ -284,6 +284,8 @@
 				//(this).css({ 'width': '100%', 'left': '0', 'top': '0', 'margin-bottom': '0px', 'order': '2' });
 			}
 		}
+		$('#ets_memberpress_btn_color').wpColorPicker();
+		$('#ets_memberpress_btn_disconnect_color').wpColorPicker();
 	});
 	/*Tab options*/
 	$.skeletabs.setDefaults({
