@@ -1019,11 +1019,11 @@ class Memberpress_Discord_Admin {
 	* @return NONE
 	*/
 	public function ets_memberpress_discord_connect_bot() {
-   		if ( ! current_user_can( 'administrator' ) ) {
-			wp_send_json_error( 'You do not have sufficient rights', 403 );
-			exit();
-		}
 		if ( isset( $_GET['action'] ) && 'mepr-discord-connectToBot' === $_GET['action'] ) {
+			if ( ! current_user_can( 'administrator' ) ) {
+				wp_send_json_error( 'You do not have sufficient rights', 403 );
+				exit();
+			}
 			$params                    = array(
 				'client_id'   => sanitize_text_field( trim( get_option( 'ets_memberpress_discord_client_id' ) ) ),
 				'permissions' => MEMBERPRESS_DISCORD_BOT_PERMISSIONS,

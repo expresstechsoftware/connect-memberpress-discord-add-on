@@ -146,19 +146,6 @@ class Memberpress_Discord_Public {
 	public function ets_memberpress_discord_discord_api_callback() {
 		if ( is_user_logged_in() ) {
 			$user_id = get_current_user_id();
-			// if ( isset( $_GET['action'] ) && 'memberpress-discord-login' === $_GET['action'] ) {
-			// 	$params                    = array(
-			// 		'client_id'     => sanitize_text_field( trim( get_option( 'ets_memberpress_discord_client_id' ) ) ),
-			// 		'redirect_uri'  => sanitize_text_field( trim( get_option( 'ets_memberpress_discord_redirect_url' ) ) ),
-			// 		'response_type' => 'code',
-			// 		'scope'         => 'identify email connections guilds guilds.join',
-			// 	);
-			// 	$discord_authorise_api_url = MEMBERPRESS_DISCORD_API_URL . 'oauth2/authorize?' . http_build_query( $params );
-
-			// 	wp_redirect( $discord_authorise_api_url, 302, get_site_url() );
-			// 	exit;
-			// }
-
 			if ( isset( $_GET['code'] ) && isset( $_GET['via'] ) && $_GET['via'] == 'mem-discord' ) {
 				$membership_private_obj = ets_memberpress_discord_get_active_memberships( $user_id );
 				$active_memberships     = array();
@@ -247,8 +234,8 @@ class Memberpress_Discord_Public {
 							wp_signon( $credentials, '' );
 							$discord_user_id = sanitize_text_field( trim( get_user_meta( $user_id, '_ets_memberpress_discord_user_id', true ) ) );
 							$this->ets_memberpress_discord_add_member_in_guild( $discord_user_id, $user_id, $access_token, '' );
-							if ( $_COOKIE[' ets_memberpress_discord_page'] ) {
-								wp_safe_redirect( urldecode_deep( $_COOKIE[' ets_memberpress_discord_page'] ) );
+							if ( $_COOKIE['ets_memberpress_discord_page'] ) {
+								wp_safe_redirect( urldecode_deep( $_COOKIE['ets_memberpress_discord_page'] ) );
 								exit();
 							}
 						}
@@ -545,11 +532,10 @@ class Memberpress_Discord_Public {
 			wp_send_json_error( 'Unauthorized user', 401 );
 			exit();
 		}
-
-		// Check for nonce security
+		// Check for nonce security.
 		if ( isset( $_POST['ets_memberpress_discord_public_nonce'] ) && ! wp_verify_nonce( $_POST['ets_memberpress_discord_public_nonce'], 'ets-memberpress-discord-public-ajax-nonce' ) ) {
-				wp_send_json_error( 'You do not have sufficient rights', 403 );
-				exit();
+			wp_send_json_error( 'You do not have sufficient rights', 403 );
+			exit();
 		}
 		$user_id = sanitize_text_field( trim( $_POST['user_id'] ) );
 		$memberpress_member_kick_out = sanitize_text_field( trim( get_option( 'ets_memberpress_member_kick_out' ) ) );
@@ -558,7 +544,7 @@ class Memberpress_Discord_Public {
 				$this->memberpress_delete_member_from_guild( $user_id, false );
 			}
 			delete_user_meta( $user_id, '_ets_memberpress_discord_access_token' );
-      delete_user_meta( $user_id, '_ets_memberpress_discord_refresh_token' );
+      		delete_user_meta( $user_id, '_ets_memberpress_discord_refresh_token' );
 		}
 		$event_res = array(
 			'status'  => 1,
@@ -692,8 +678,25 @@ class Memberpress_Discord_Public {
 			$discord_authorise_api_url = MEMBERPRESS_DISCORD_API_URL . 'oauth2/authorize?' . http_build_query( $params );
 			// cache the url param for 1 minute
 			if ( isset( $_GET['url'] ) ) {
-				setcookie( ' ets_memberpress_discord_page', $_GET['url'], time() + 60, '/' );
+				setcookie( 'ets_memberpress_discord_page', $_GET['url'], time() + 60, '/' );
 			}
+			wp_redirect( $discord_authorise_api_url, 302, get_site_url() );
+			exit;
+		}
+
+		if ( isset( $_GET['action'] ) && 'mepr-discord-connectToBot' === $_GET['action'] ) {
+			if ( ! current_user_can( 'administrator' ) ) {
+				wp_send_json_error( 'You do not have sufficient rights', 403 );
+				exit();
+			}
+			$params                    = array(
+				'client_id'   => sanitize_text_field( trim( get_option( 'ets_memberpress_discord_client_id' ) ) ),
+				'permissions' => MEMBERPRESS_DISCORD_BOT_PERMISSIONS,
+				'scope'       => 'bot',
+				'guild_id'    => sanitize_text_field( trim( get_option( 'ets_memberpress_discord_server_id' ) ) ),
+			);
+			$discord_authorise_api_url = MEMBERPRESS_DISCORD_API_URL . 'oauth2/authorize?' . http_build_query( $params );
+
 			wp_redirect( $discord_authorise_api_url, 302, get_site_url() );
 			exit;
 		}
