@@ -847,7 +847,7 @@ class Memberpress_Discord_Admin {
 		$active_memberships    = ets_memberpress_discord_get_active_memberships( $txn->user_id );
 		$complete_txn          = array();
 		$active_product_ids    = array();
-		if ( count( $active_memberships ) > 0 ) {
+		if ( is_array($active_memberships) && count( $active_memberships ) > 0 ) {
 			foreach ( $active_memberships as $active_membership ) {
 				array_push( $active_product_ids, $active_membership->product_id );
 			}
