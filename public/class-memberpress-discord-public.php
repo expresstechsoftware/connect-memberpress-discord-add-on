@@ -683,23 +683,6 @@ class Memberpress_Discord_Public {
 			wp_redirect( $discord_authorise_api_url, 302, get_site_url() );
 			exit;
 		}
-
-		if ( isset( $_GET['action'] ) && 'mepr-discord-connectToBot' === $_GET['action'] ) {
-			if ( ! current_user_can( 'administrator' ) ) {
-				wp_send_json_error( 'You do not have sufficient rights', 403 );
-				exit();
-			}
-			$params                    = array(
-				'client_id'   => sanitize_text_field( trim( get_option( 'ets_memberpress_discord_client_id' ) ) ),
-				'permissions' => MEMBERPRESS_DISCORD_BOT_PERMISSIONS,
-				'scope'       => 'bot',
-				'guild_id'    => sanitize_text_field( trim( get_option( 'ets_memberpress_discord_server_id' ) ) ),
-			);
-			$discord_authorise_api_url = MEMBERPRESS_DISCORD_API_URL . 'oauth2/authorize?' . http_build_query( $params );
-
-			wp_redirect( $discord_authorise_api_url, 302, get_site_url() );
-			exit;
-		}
 	}
 
 	/*

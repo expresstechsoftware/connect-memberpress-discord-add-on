@@ -1029,6 +1029,7 @@ class Memberpress_Discord_Admin {
 				'permissions' => MEMBERPRESS_DISCORD_BOT_PERMISSIONS,
 				'scope'       => 'bot',
 				'guild_id'    => sanitize_text_field( trim( get_option( 'ets_memberpress_discord_server_id' ) ) ),
+        'disable_guild_select' => 'true'
 			);
 			$discord_authorise_api_url = MEMBERPRESS_DISCORD_API_URL . 'oauth2/authorize?' . http_build_query( $params );
 
