@@ -68,7 +68,7 @@ function write_api_response_logs( $response_arr, $user_id, $backtrace_arr = arra
 		$user_details = '::User Id:' . $user_id;
 	}
 	$log_api_response = get_option( 'ets_memberpress_discord_log_api_response' );
-	$uuid     = get_option( 'ets_memberpress_discord_uuid_file_name' );
+	$uuid             = get_option( 'ets_memberpress_discord_uuid_file_name' );
 	$log_file_name    = $uuid . Memberpress_Discord_Admin::$log_file_name;
 
 	if ( is_array( $response_arr ) && array_key_exists( 'code', $response_arr ) ) {
@@ -225,7 +225,7 @@ function ets_memberpress_discord_get_formatted_dm( $user_id, $membership, $messa
 	$MEMBER_USERNAME                      = $user_obj->user_login;
 	$MEMBER_EMAIL                         = $user_obj->user_email;
 	if ( is_array( $all_roles ) && array_key_exists( $mapped_role_id, $all_roles ) ) {
-		$MEMBERSHIP_LEVEL = get_the_title($membership['product_id']);
+		$MEMBERSHIP_LEVEL = get_the_title( $membership['product_id'] );
 	} else {
 		$MEMBERSHIP_LEVEL = '';
 	}
@@ -288,8 +288,8 @@ function ets_memberpress_discord_get_active_memberships( $user_id ) {
 /**
  * Search on array by key and value
  *
- * @param ARRAY $array
- * @param STRING $key
+ * @param ARRAY   $array
+ * @param STRING  $key
  * @param VARCHAR $value
  * @return INT|NULL $active_memberships
  */
@@ -307,4 +307,31 @@ function array_search_by_key_and_value( $array, $key, $value ) {
 	}
 
 	return array_key_exists( $key, $results );
+}
+
+/**
+ * Get the bot name using API call
+ * @return NONE
+ */
+function ets_memberpress_discord_update_bot_name_option() {
+	$guild_id          = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_server_id' ) ) );
+	$discord_bot_token = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_bot_token' ) ) );
+	if ( $guild_id && $discord_bot_token ) {
+		$discod_current_user_api = MEMBERPRESS_DISCORD_API_URL . 'users/@me';
+		$app_args                = array(
+			'method'  => 'GET',
+			'headers' => array(
+				'Content-Type'  => 'application/json',
+				'Authorization' => 'Bot ' . $discord_bot_token,
+			),
+		);
+
+		$app_response = wp_remote_get( $discod_current_user_api, $app_args );
+		$response_arr = json_decode( wp_remote_retrieve_body( $app_response ), true );
+		if ( is_array( $response_arr ) && array_key_exists( 'username', $response_arr ) ) {
+			update_option( 'ets_memberpress_discord_connected_bot_name', $response_arr ['username'] );
+		} else {
+			delete_option( 'ets_memberpress_discord_connected_bot_name' );
+		}
+	}
 }

@@ -148,7 +148,7 @@ class Memberpress_Discord_Admin {
 				if ( $ets_memberpress_discord_server_id ) {
 					update_option( 'ets_memberpress_discord_server_id', $ets_memberpress_discord_server_id );
 				}
-
+        ets_memberpress_discord_update_bot_name_option();
 				$message = 'Your settings are saved successfully.';
 				if ( isset( $_POST['current_url'] ) ) {
 					// This will delete Stale DM channels.

@@ -6,6 +6,7 @@ $ets_memberpress_discord_redirect_url = sanitize_text_field( trim( get_option( '
 $ets_discord_roles                    = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_role_mapping' ) ) );
 $ets_memberpress_discord_server_id    = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_server_id' ) ) );
 $current_url = ets_memberpress_discord_get_current_screen_url();
+$ets_memberpress_discord_connected_bot_name =  sanitize_text_field( trim( get_option( 'ets_memberpress_discord_connected_bot_name' ) ) );
 if ( empty( $ets_memberpress_discord_redirect_url ) ) {
 	$acc_url                              = sanitize_text_field( trim( get_site_url() . '/account' ) );
 	$ets_memberpress_discord_redirect_url = ets_memberpress_discord_get_memberpress_formated_discord_redirect_url( $acc_url );
@@ -29,6 +30,11 @@ if ( empty( $ets_memberpress_discord_redirect_url ) ) {
 		<p class="description"><?php echo __( 'Registered discord app url', 'memberpress-discord-add-on' ); ?></p>
 	</div>
 	<div class="ets-input-group">
+  <?php
+            if ( isset( $ets_memberpress_discord_connected_bot_name ) && !empty( $ets_memberpress_discord_connected_bot_name ) ){
+                echo sprintf(__( '<p class="description msg-green">Make sure the Bot <b> %1$s </b> <span class="discord-bot"></span> have the high priority than the roles it has to manage. Open <a target="_blank" href="https://discord.com/channels/%2$s">Discord Server</a></p>', 'memberpress-discord-add-on'), $ets_memberpress_discord_connected_bot_name, $ets_memberpress_discord_server_id );
+            }
+            ?>
 		<label><?php echo __( 'Bot Token', 'memberpress-discord-add-on' ); ?> :</label>
 		<input type="password" class="ets-input" name="ets_memberpress_discord_bot_token" value="<?php if ( isset( $discord_bot_token ) ) { echo esc_attr( $discord_bot_token ); } ?>" required placeholder="<?php echo __( 'Discord Bot Token', 'memberpress-discord-add-on' ); ?>">
 	</div>
