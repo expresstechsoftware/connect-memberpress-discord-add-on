@@ -660,7 +660,8 @@ class Memberpress_Discord_Admin {
 	 */
 	private function ets_memberpress_discord_set_member_roles( $user_id, $expired_membership = false, $cancelled_membership = false, $is_schedule = true ) {
 		$memberpress_discord                                = new Memberpress_Discord();
-		$plugin_public                                      = new Memberpress_Discord_Public( $memberpress_discord->get_plugin_name(), $memberpress_discord->get_version() );
+    $plugin_admin = new Memberpress_Discord_Admin( $memberpress_discord->get_plugin_name(), $memberpress_discord->get_version() );
+		$plugin_public                                      = new Memberpress_Discord_Public( $memberpress_discord->get_plugin_name(), $memberpress_discord->get_version() , $plugin_admin );
 		$allow_none_member                                  = sanitize_text_field( trim( get_option( 'ets_memberpress_allow_none_member' ) ) );
 		$default_role                                       = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_default_role_id' ) ) );
 		$ets_memberpress_discord_role_mapping               = json_decode( get_option( 'ets_memberpress_discord_role_mapping' ), true );
@@ -699,8 +700,8 @@ class Memberpress_Discord_Admin {
 								'role_id'    => $mapped_role_id,
 								'product_id' => $active_membership->product_id,
 							);
-							update_user_meta( $user_id, '_ets_memberpress_discord_role_id_for_' . $active_membership->trans_num, $assigned_role );
-							delete_user_meta( $user_id, '_ets_memberpress_discord_expitration_warning_dm_for_' . $active_membership->trans_num );
+							update_user_meta( $user_id, '_ets_memberpress_discord_role_id_for_' . $active_membership->txn_number, $assigned_role );
+							delete_user_meta( $user_id, '_ets_memberpress_discord_expitration_warning_dm_for_' . $active_membership->txn_number );
 						}
 					}
 				}
@@ -797,7 +798,8 @@ class Memberpress_Discord_Admin {
 	 */
 	public function ets_memberpress_discord_as_handler_memberpress_complete_transaction( $user_id, $complete_txn ) {
 		$memberpress_discord                     = new Memberpress_Discord();
-		$plugin_public                           = new Memberpress_Discord_Public( $memberpress_discord->get_plugin_name(), $memberpress_discord->get_version() );
+    $plugin_admin = new Memberpress_Discord_Admin( $memberpress_discord->get_plugin_name(), $memberpress_discord->get_version() );
+		$plugin_public                           = new Memberpress_Discord_Public( $memberpress_discord->get_plugin_name(), $memberpress_discord->get_version(), $plugin_admin );
 		$ets_memberpress_discord_role_mapping    = json_decode( get_option( 'ets_memberpress_discord_role_mapping' ), true );
 		$default_role                            = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_default_role_id' ) ) );
 		$previous_default_role                   = get_user_meta( $user_id, '_ets_memberpress_discord_default_role_id', true );

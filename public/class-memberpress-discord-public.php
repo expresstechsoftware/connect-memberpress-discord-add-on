@@ -30,16 +30,26 @@ class Memberpress_Discord_Public {
 	private $version;
 
 	/**
+	 * The admin class instance
+	 *
+	 * @since    1.0.0
+	 * @access   private
+	 * @var      string    $version    The current version of this plugin.
+	 */
+	private $admin_cls_instace;
+
+	/**
 	 * Initialize the class and set its properties.
 	 *
 	 * @since    1.0.0
 	 * @param    string $plugin_name       The name of the plugin.
 	 * @param    string $version    The version of this plugin.
 	 */
-	public function __construct( $plugin_name, $version ) {
+	public function __construct( $plugin_name, $version, $plugin_admin ) {
 
 		$this->plugin_name = $plugin_name;
 		$this->version     = $version;
+		$this->admin_cls_instace     = $plugin_admin;
 
 	}
 
@@ -77,9 +87,9 @@ class Memberpress_Discord_Public {
 	 * @since    1.0.0
 	 */
 	public function ets_memberpress_discord_add_connect_button() {
-		
-		wp_enqueue_style($this->plugin_name . 'public_css');
-		wp_enqueue_script($this->plugin_name . 'public_js');
+
+		wp_enqueue_style( $this->plugin_name . 'public_css' );
+		wp_enqueue_script( $this->plugin_name . 'public_js' );
 		$user_id                              = sanitize_text_field( trim( get_current_user_id() ) );
 		$access_token                         = sanitize_text_field( trim( get_user_meta( $user_id, '_ets_memberpress_discord_access_token', true ) ) );
 		$allow_none_member                    = sanitize_text_field( trim( get_option( 'ets_memberpress_allow_none_member' ) ) );
@@ -105,12 +115,12 @@ class Memberpress_Discord_Public {
 		$ets_memberpress_connecttodiscord_btn = '';
 		if ( ets_memberpress_discord_check_saved_settings_status() ) {
 			if ( $access_token ) {
-				$ets_memberpress_connecttodiscord_btn .= '<div><label class="ets-connection-lbl">'. esc_html__( 'Discord connection', 'memberpress-discord-add-on' ) .'</label>';
-				$ets_memberpress_connecttodiscord_btn .= '<a href="#" class="ets-btn btn-disconnect"  data-user-id="'. esc_attr( $user_id ) .'">'. esc_html__( 'Disconnect From Discord ', 'memberpress-discord-add-on' ) .'<i class="fab fa-discord"></i></a>';
+				$ets_memberpress_connecttodiscord_btn .= '<div><label class="ets-connection-lbl">' . esc_html__( 'Discord connection', 'memberpress-discord-add-on' ) . '</label>';
+				$ets_memberpress_connecttodiscord_btn .= '<a href="#" class="ets-btn btn-disconnect"  data-user-id="' . esc_attr( $user_id ) . '">' . esc_html__( 'Disconnect From Discord ', 'memberpress-discord-add-on' ) . '<i class="fab fa-discord"></i></a>';
 				$ets_memberpress_connecttodiscord_btn .= '<span class="ets-spinner"></span>';
 			} elseif ( current_user_can( 'memberpress_authorized' ) && $mapped_role_names || $allow_none_member == 'yes' ) {
-				$ets_memberpress_connecttodiscord_btn .= '<div><label class="ets-connection-lbl">'. esc_html__( 'Discord connection', 'memberpress-discord-add-on' ) .'</label>';
-				$ets_memberpress_connecttodiscord_btn .= '<a href="?action=memberpress-discord-login" class="btn-connect ets-btn" >'. esc_html__( 'Connect To Discord', 'memberpress-discord-add-on' ) .'<i class="fab fa-discord"></i></a>';
+				$ets_memberpress_connecttodiscord_btn .= '<div><label class="ets-connection-lbl">' . esc_html__( 'Discord connection', 'memberpress-discord-add-on' ) . '</label>';
+				$ets_memberpress_connecttodiscord_btn .= '<a href="?action=memberpress-discord-login" class="btn-connect ets-btn" >' . esc_html__( 'Connect To Discord', 'memberpress-discord-add-on' ) . '<i class="fab fa-discord"></i></a>';
 				if ( $mapped_role_names ) {
 					$ets_memberpress_connecttodiscord_btn .= '<p class="ets_assigned_role">';
 					$ets_memberpress_connecttodiscord_btn .= esc_html__( 'Following Roles will be assigned to you in Discord: ', 'memberpress-discord-add-on' );
@@ -169,33 +179,17 @@ class Memberpress_Discord_Public {
 					if ( is_array( $res_body ) ) {
 						if ( array_key_exists( 'access_token', $res_body ) ) {
 							$access_token = sanitize_text_field( trim( $res_body['access_token'] ) );
-							update_user_meta( $user_id, '_ets_memberpress_discord_access_token', $access_token );
-							if ( array_key_exists( 'refresh_token', $res_body ) ) {
-								$refresh_token = sanitize_text_field( trim( $res_body['refresh_token'] ) );
-								update_user_meta( $user_id, '_ets_memberpress_discord_refresh_token', $refresh_token );
-							}
-							if ( array_key_exists( 'expires_in', $res_body ) ) {
-								$expires_in = $res_body['expires_in'];
-								$date       = new DateTime();
-								$date->add( DateInterval::createFromDateString( '' . $expires_in . ' seconds' ) );
-								$token_expiry_time = $date->getTimestamp();
-								update_user_meta( $user_id, '_ets_memberpress_discord_expires_in', $token_expiry_time );
-							}
 							$user_body = $this->get_discord_current_user( $access_token );
 
-							if ( is_array( $user_body ) && array_key_exists( 'discriminator', $user_body ) ) {
-								$discord_user_number           = $user_body['discriminator'];
-								$discord_user_name             = $user_body['username'];
-								$discord_user_name_with_number = $discord_user_name . '#' . $discord_user_number;
-								update_user_meta( $user_id, '_ets_memberpress_discord_username', $discord_user_name_with_number );
-							}
+							$this->memberpress_catch_discord_auth_callback( $res_body, $user_body , $user_id );
+
 							if ( is_array( $user_body ) && array_key_exists( 'id', $user_body ) ) {
 								$_ets_memberpress_discord_user_id = sanitize_text_field( trim( $user_body['id'] ) );
 								if ( $discord_exist_user_id === $_ets_memberpress_discord_user_id ) {
 									foreach ( $active_memberships as $active_membership ) {
-										$_ets_memberpress_discord_role_id = get_user_meta( $user_id, '_ets_memberpress_discord_role_id_for_' . $active_membership->trans_num, true );
+										$_ets_memberpress_discord_role_id = get_user_meta( $user_id, '_ets_memberpress_discord_role_id_for_' . $active_membership['txn_number'], true );
 										if ( ! empty( $_ets_memberpress_discord_role_id ) && $_ets_memberpress_discord_role_id['role_id'] != 'none' ) {
-											$this->memberpress_delete_discord_role( $user_id, $_ets_memberpress_discord_role_id['role_id'] );
+											$this->admin_cls_instace->memberpress_delete_discord_role( $user_id, $_ets_memberpress_discord_role_id['role_id'] );
 										}
 									}
 								}
@@ -206,10 +200,10 @@ class Memberpress_Discord_Public {
 					}
 				}
 			}
-		}else {
-			if ( isset( $_GET['code'] ) && isset( $_GET['via'] ) ) {
+		} else {
+			if ( isset( $_GET['code'] ) && isset( $_GET['via'] ) && $_GET['via'] == 'mem-discord' ) {
 				$code     = sanitize_text_field( trim( $_GET['code'] ) );
-				$response = $this->ets_memberpress_create_discord_auth_token( $code, 'new_created', '' );
+				$response = $this->ets_memberpress_create_discord_auth_token( $code, 'none_wp_user', '' );
 				if ( ! empty( $response ) && ! is_wp_error( $response ) ) {
 					$res_body = json_decode( wp_remote_retrieve_body( $response ), true );
 					if ( is_array( $res_body ) ) {
@@ -225,7 +219,7 @@ class Memberpress_Discord_Public {
 								$user_id = wp_create_user( $discord_user_email, $password, $discord_user_email );
 								wp_new_user_notification( $user_id, null, $password );
 							}
-							$this->memberpress_catch_discord_auth_callback( $res_body, $user_id );
+							$this->memberpress_catch_discord_auth_callback( $res_body, $user_body , $user_id );
 							$credentials = array(
 								'user_login'    => $discord_user_email,
 								'user_password' => $password,
@@ -316,8 +310,8 @@ class Memberpress_Discord_Public {
 		}
 		foreach ( $discord_roles as $key => $discord_role ) {
 			$assigned_role = array(
-				'role_id' => $discord_role,
-				'product_id'  => $active_memberships[ $key ]['product_id'],
+				'role_id'    => $discord_role,
+				'product_id' => $active_memberships[ $key ]['product_id'],
 			);
 			update_user_meta( $user_id, '_ets_memberpress_discord_role_id_for_' . $active_memberships[ $key ]['txn_number'], $assigned_role );
 			if ( $discord_role && $discord_role != 'none' && isset( $user_id ) ) {
@@ -334,7 +328,7 @@ class Memberpress_Discord_Public {
 		}
 
 		// Send welcome message.
-		if ( true == $ets_memberpress_discord_send_welcome_dm ) {
+		if ( is_array( $active_memberships ) && true == $ets_memberpress_discord_send_welcome_dm ) {
 			foreach ( $active_memberships as $active_membership ) {
 				as_schedule_single_action( ets_memberpress_discord_get_random_timestamp( ets_memberpress_discord_get_highest_last_attempt_timestamp() ), 'ets_memberpress_discord_as_send_welcome_dm', array( $user_id, $active_membership, 'welcome' ), MEMBERPRESS_DISCORD_AS_GROUP_NAME );
 			}
@@ -404,8 +398,8 @@ class Memberpress_Discord_Public {
 	 */
 	public function get_discord_current_user( $access_token ) {
 		// if ( ! is_user_logged_in() ) {
-		// 	wp_send_json_error( 'Unauthorized user', 401 );
-		// 	exit();
+		// wp_send_json_error( 'Unauthorized user', 401 );
+		// exit();
 		// }
 		$user_id = get_current_user_id();
 
@@ -437,7 +431,7 @@ class Memberpress_Discord_Public {
 	public function ets_memberpress_create_discord_auth_token( $code, $user_id, $active_memberships ) {
 		$discord_token_api_url = MEMBERPRESS_DISCORD_API_URL . 'oauth2/token';
 		if ( ! is_user_logged_in() ) {
-			if ( ! empty( $code ) && $user_id == 'new_created' && empty( $active_memberships )) {
+			if ( ! empty( $code ) && $user_id == 'none_wp_user' && empty( $active_memberships ) ) {
 				$args     = array(
 					'method'  => 'POST',
 					'headers' => array(
@@ -452,6 +446,11 @@ class Memberpress_Discord_Public {
 					),
 				);
 				$response = wp_remote_post( $discord_token_api_url, $args );
+				ets_memberpress_discord_log_api_response( $user_id, $discord_token_api_url, $args, $response );
+				if ( ets_memberpress_discord_check_api_errors( $response ) ) {
+					$response_arr = json_decode( wp_remote_retrieve_body( $response ), true );
+					write_api_response_logs( $response_arr, $user_id, debug_backtrace()[0] );
+				}
 				return $response;
 			} else {
 				wp_send_json_error( 'Unauthorized user', 401 );
@@ -465,9 +464,9 @@ class Memberpress_Discord_Public {
 		if ( empty( $active_memberships ) && 'no' === $allow_none_member ) {
 			return;
 		}
-		$response              = '';
-		$refresh_token         = sanitize_text_field( trim( get_user_meta( $user_id, '_ets_memberpress_discord_refresh_token', true ) ) );
-		$token_expiry_time     = sanitize_text_field( trim( get_user_meta( $user_id, '_ets_memberpress_discord_expires_in', true ) ) );
+		$response          = '';
+		$refresh_token     = sanitize_text_field( trim( get_user_meta( $user_id, '_ets_memberpress_discord_refresh_token', true ) ) );
+		$token_expiry_time = sanitize_text_field( trim( get_user_meta( $user_id, '_ets_memberpress_discord_expires_in', true ) ) );
 		if ( $refresh_token ) {
 			$date              = new DateTime();
 			$current_timestamp = $date->getTimestamp();
@@ -537,14 +536,14 @@ class Memberpress_Discord_Public {
 			wp_send_json_error( 'You do not have sufficient rights', 403 );
 			exit();
 		}
-		$user_id = sanitize_text_field( trim( $_POST['user_id'] ) );
+		$user_id                     = sanitize_text_field( trim( $_POST['user_id'] ) );
 		$memberpress_member_kick_out = sanitize_text_field( trim( get_option( 'ets_memberpress_member_kick_out' ) ) );
 		if ( $user_id ) {
-			if( $memberpress_member_kick_out == true ){
+			if ( $memberpress_member_kick_out == true ) {
 				$this->memberpress_delete_member_from_guild( $user_id, false );
 			}
 			delete_user_meta( $user_id, '_ets_memberpress_discord_access_token' );
-      		delete_user_meta( $user_id, '_ets_memberpress_discord_refresh_token' );
+			delete_user_meta( $user_id, '_ets_memberpress_discord_refresh_token' );
 		}
 		$event_res = array(
 			'status'  => 1,
@@ -621,16 +620,16 @@ class Memberpress_Discord_Public {
 	 * @param NONE
 	 * @return NONE
 	 */
-	public function ets_memberpress_discord_login_with_discord_button($membership_id) {
-		wp_enqueue_style($this->plugin_name . 'public_css');
+	public function ets_memberpress_discord_login_with_discord_button( $membership_id ) {
+		wp_enqueue_style( $this->plugin_name . 'public_css' );
 		if ( ! is_user_logged_in() ) {
-			$default_role                   = sanitize_text_field( trim( get_option( '_ets_memberpress_discord_default_role_id' ) ) );
+			$default_role                         = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_default_role_id' ) ) );
 			$ets_memberpress_discord_role_mapping = json_decode( get_option( 'ets_memberpress_discord_role_mapping' ), true );
-			$all_roles                      = json_decode( get_option( 'ets_memberpress_discord_all_roles' ), true );
-			$member_discord_login           = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_login_with_discord' ) ) );
-			$btn_color                      = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_btn_color' ) ) );
-			$btn_text                       = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_loggedout_btn_text' ) ) );
-			echo "<style>.memberpress-btn-connect{background-color: ".$btn_color.";}</style>";
+			$all_roles                            = json_decode( get_option( 'ets_memberpress_discord_all_roles' ), true );
+			$member_discord_login                 = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_login_with_discord' ) ) );
+			$btn_color                            = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_btn_color' ) ) );
+			$btn_text                             = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_loggedout_btn_text' ) ) );
+			echo '<style>.memberpress-btn-connect{background-color: ' . $btn_color . ';}</style>';
 			if ( $member_discord_login ) {
 				$curr_level_id     = $membership_id;
 				$mapped_role_name  = '';
@@ -639,8 +638,8 @@ class Memberpress_Discord_Public {
 					$default_role_name = $all_roles[ $default_role ];
 				}
 				if ( $curr_level_id && is_array( $all_roles ) ) {
-					if ( is_array( $ets_memberpress_discord_role_mapping ) && array_key_exists( 'memberpress_level_id_' . $curr_level_id, $ets_memberpress_discord_role_mapping ) ) {
-						$mapped_role_id = $ets_memberpress_discord_role_mapping[ 'memberpress_level_id_' . $curr_level_id ];
+					if ( is_array( $ets_memberpress_discord_role_mapping ) && array_key_exists( 'level_id_' . $curr_level_id, $ets_memberpress_discord_role_mapping ) ) {
+						$mapped_role_id = $ets_memberpress_discord_role_mapping[ 'level_id_' . $curr_level_id ];
 						if ( array_key_exists( $mapped_role_id, $all_roles ) ) {
 							$mapped_role_name = $all_roles[ $mapped_role_id ];
 						}
@@ -690,7 +689,7 @@ class Memberpress_Discord_Public {
 	*
 	* @param ARRAY $res_body
 	*/
-	private function memberpress_catch_discord_auth_callback( $res_body, $user_id ) {
+	private function memberpress_catch_discord_auth_callback( $res_body, $user_body , $user_id ) {
 		$discord_exist_user_id = sanitize_text_field( trim( get_user_meta( $user_id, '_ets_memberpress_discord_user_id', true ) ) );
 		$access_token          = sanitize_text_field( trim( $res_body['access_token'] ) );
 		update_user_meta( $user_id, '_ets_memberpress_discord_access_token', $access_token );
@@ -705,7 +704,6 @@ class Memberpress_Discord_Public {
 			$token_expiry_time = $date->getTimestamp();
 			update_user_meta( $user_id, '_ets_memberpress_discord_expires_in', $token_expiry_time );
 		}
-		$user_body = $this->get_discord_current_user( $access_token );
 
 		if ( is_array( $user_body ) && array_key_exists( 'discriminator', $user_body ) ) {
 			$discord_user_number           = $user_body['discriminator'];
@@ -718,7 +716,7 @@ class Memberpress_Discord_Public {
 			if ( $discord_exist_user_id == $_ets_memberpress_discord_user_id ) {
 				$_ets_memberpress_discord_role_id = sanitize_text_field( trim( get_user_meta( $user_id, '_ets_memberpress_discord_role_id', true ) ) );
 				if ( ! empty( $_ets_memberpress_discord_role_id ) && $_ets_memberpress_discord_role_id != 'none' ) {
-					$this->memberpress_delete_discord_role( $user_id, $_ets_memberpress_discord_role_id );
+					$this->admin_cls_instace->memberpress_delete_discord_role( $user_id, $_ets_memberpress_discord_role_id );
 				}
 			}
 			update_user_meta( $user_id, '_ets_memberpress_discord_user_id', $_ets_memberpress_discord_user_id );
