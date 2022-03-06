@@ -847,7 +847,7 @@ class Memberpress_Discord_Admin {
 		$active_memberships    = ets_memberpress_discord_get_active_memberships( $txn->user_id );
 		$complete_txn          = array();
 		$active_product_ids    = array();
-		if ( count( $active_memberships ) > 0 ) {
+		if ( is_countable($active_memberships) ) {
 			foreach ( $active_memberships as $active_membership ) {
 				array_push( $active_product_ids, $active_membership->product_id );
 			}
@@ -1013,27 +1013,12 @@ class Memberpress_Discord_Admin {
 		}
 	}
 
-	/*
-	Method to catch the admin BOT connect action
-	* @param NONE
-	* @return NONE
-	*/
-	public function ets_memberpress_discord_connect_bot() {
-		if ( isset( $_GET['action'] ) && 'mepr-discord-connectToBot' === $_GET['action'] ) {
-			if ( ! current_user_can( 'administrator' ) ) {
-				wp_send_json_error( 'You do not have sufficient rights', 403 );
-				exit();
-			}
-			$params                    = array(
-				'client_id'   => sanitize_text_field( trim( get_option( 'ets_memberpress_discord_client_id' ) ) ),
-				'permissions' => MEMBERPRESS_DISCORD_BOT_PERMISSIONS,
-				'scope'       => 'bot',
-				'guild_id'    => sanitize_text_field( trim( get_option( 'ets_memberpress_discord_server_id' ) ) ),
-			);
-			$discord_authorise_api_url = MEMBERPRESS_DISCORD_API_URL . 'oauth2/authorize?' . http_build_query( $params );
-
-			wp_redirect( $discord_authorise_api_url, 302, get_site_url() );
-			exit;
-		}
-	}
+	// /*
+	// Method to catch the admin BOT connect action
+	// * @param NONE
+	// * @return NONE
+	// */
+	// public function ets_memberpress_discord_connect_bot() {
+		
+	// }
 }
