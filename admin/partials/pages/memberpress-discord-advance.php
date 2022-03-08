@@ -142,9 +142,10 @@ $current_url = ets_memberpress_discord_get_current_screen_url();
 		if ( $memberpress_member_kick_out == true ) {
 			echo 'checked="checked"'; }
 		?>
-		 value="1">
+		 value="1"><br/>
+     <small><?php echo __( 'Members will be kicked out if this setting is checked.', 'memberpress-discord-add-on' ); ?></small>
 		</fieldset></td>
-		<small><?php echo __( 'Members will be kicked out if this setting is checked.', 'memberpress-discord-add-on' ); ?></small>
+		
 	  </tr>
 	  <tr>
 		<th scope="row"><?php echo __( 'Login with Discord on checkout Page', 'memberpress-discord-add-on' ); ?></th>

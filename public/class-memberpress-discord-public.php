@@ -552,37 +552,34 @@ class Memberpress_Discord_Public {
 			wp_send_json_error( 'You do not have sufficient rights', 403 );
 			exit();
 		}
-		$user_id                     = sanitize_text_field( trim( $_POST['user_id'] ) );
-		$memberpress_member_kick_out = sanitize_text_field( trim( get_option( 'ets_memberpress_member_kick_out' ) ) );
-		$ets_memberpress_discord_role_mapping               = json_decode( get_option( 'ets_memberpress_discord_role_mapping' ), true );
-		$previous_default_role                              = get_user_meta( $user_id, '_ets_memberpress_discord_default_role_id', true );
+		$user_id                              = sanitize_text_field( trim( $_POST['user_id'] ) );
+		$memberpress_member_kick_out          = sanitize_text_field( trim( get_option( 'ets_memberpress_member_kick_out' ) ) );
+		$ets_memberpress_discord_role_mapping = json_decode( get_option( 'ets_memberpress_discord_role_mapping' ), true );
+		$previous_default_role                = get_user_meta( $user_id, '_ets_memberpress_discord_default_role_id', true );
 		if ( $user_id ) {
 			if ( $memberpress_member_kick_out == true ) {
 				$this->memberpress_delete_member_from_guild( $user_id, false );
-			}
-
-			// check for roles assigned, and delete them
-			$active_memberships = ets_memberpress_discord_get_active_memberships( $user_id );
-			if ( is_array( $active_memberships ) && count( $active_memberships ) != 0 ) {
-				foreach ( $active_memberships as $active_membership ) {
-					if ( is_array( $ets_memberpress_discord_role_mapping ) && array_key_exists( 'level_id_' . $active_membership->product_id, $ets_memberpress_discord_role_mapping ) ) {
-						  $mapped_role_id = sanitize_text_field( trim( $ets_memberpress_discord_role_mapping[ 'level_id_' . $active_membership->product_id ] ) );
-						if ( $mapped_role_id ) {
-							$this->admin_cls_instance->memberpress_delete_discord_role( $user_id, $mapped_role_id, true );
+			} else {
+				// check for roles assigned, and delete them
+				  $active_memberships = ets_memberpress_discord_get_active_memberships( $user_id );
+				if ( is_array( $active_memberships ) && count( $active_memberships ) != 0 ) {
+					foreach ( $active_memberships as $active_membership ) {
+						if ( is_array( $ets_memberpress_discord_role_mapping ) && array_key_exists( 'level_id_' . $active_membership->product_id, $ets_memberpress_discord_role_mapping ) ) {
+							  $mapped_role_id = sanitize_text_field( trim( $ets_memberpress_discord_role_mapping[ 'level_id_' . $active_membership->product_id ] ) );
+							if ( $mapped_role_id ) {
+								$this->admin_cls_instance->memberpress_delete_discord_role( $user_id, $mapped_role_id, false );
+							}
 						}
 					}
 				}
 
 				// check for default role and delete it.
 				if ( isset( $previous_default_role ) && $previous_default_role != '' && $previous_default_role != 'none' ) {
-					$this->admin_cls_instance->memberpress_delete_discord_role( $user_id, $previous_default_role, true );
+					$this->admin_cls_instance->memberpress_delete_discord_role( $user_id, $previous_default_role, false );
 				}
-				// delete all user_meta keys
-				ets_memberpress_discord_remove_usermeta($user_id);
 			}
-
-			
-			
+			// delete all user_meta keys
+			ets_memberpress_discord_remove_usermeta( $user_id );
 
 		}
 		$event_res = array(

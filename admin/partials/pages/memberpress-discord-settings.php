@@ -6,6 +6,7 @@ $ets_memberpress_discord_redirect_url = sanitize_text_field( trim( get_option( '
 $ets_discord_roles                    = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_role_mapping' ) ) );
 $ets_memberpress_discord_server_id    = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_server_id' ) ) );
 $current_url = ets_memberpress_discord_get_current_screen_url();
+
 $ets_memberpress_discord_connected_bot_name =  sanitize_text_field( trim( get_option( 'ets_memberpress_discord_connected_bot_name' ) ) );
 if ( empty( $ets_memberpress_discord_redirect_url ) ) {
 	$acc_url                              = sanitize_text_field( trim( get_site_url() . '/account' ) );
@@ -37,6 +38,10 @@ if ( empty( $ets_memberpress_discord_redirect_url ) ) {
             ?>
 		<label><?php echo __( 'Bot Token', 'memberpress-discord-add-on' ); ?> :</label>
 		<input type="password" class="ets-input" name="ets_memberpress_discord_bot_token" value="<?php if ( isset( $discord_bot_token ) ) { echo esc_attr( $discord_bot_token ); } ?>" required placeholder="<?php echo __( 'Discord Bot Token', 'memberpress-discord-add-on' ); ?>">
+	</div>
+  <div class="ets-input-group">
+  <label><?php echo __( 'Bot Auth Redirect URL', 'memberpress-discord-add-on' ); ?> :</label>
+		<input type="text" readonly="true" class="ets-input" name="ets_memberpress_discord_bot_auth_redirect" value="<?php echo get_admin_url('', 'admin.php').'?page=memberpress-discord&via=memberpress-discord-bot'; ?>" required placeholder="<?php echo __( 'Bot Auth Redirect URL', 'memberpress-discord-add-on' ); ?>">
 	</div>
 	<div class="ets-input-group">
 		<label><?php echo __( 'Server Id', 'memberpress-discord-add-on' ); ?> :</label>

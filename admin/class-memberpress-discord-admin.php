@@ -115,18 +115,21 @@ class Memberpress_Discord_Admin {
 			wp_send_json_error( 'You do not have sufficient rights', 403 );
 			exit();
 		}
-		$ets_memberpress_discord_client_id = isset( $_POST['ets_memberpress_discord_client_id'] ) ? sanitize_text_field( trim( $_POST['ets_memberpress_discord_client_id'] ) ) : '';
-
-		$discord_client_secret = isset( $_POST['ets_memberpress_discord_client_secret'] ) ? sanitize_text_field( trim( $_POST['ets_memberpress_discord_client_secret'] ) ) : '';
-
-		$discord_bot_token = isset( $_POST['ets_memberpress_discord_bot_token'] ) ? sanitize_text_field( trim( $_POST['ets_memberpress_discord_bot_token'] ) ) : '';
-
-		$ets_memberpress_discord_redirect_url = isset( $_POST['ets_memberpress_discord_redirect_url'] ) ? sanitize_text_field( trim( $_POST['ets_memberpress_discord_redirect_url'] ) ) : '';
-
-		$ets_memberpress_discord_server_id = isset( $_POST['ets_memberpress_discord_server_id'] ) ? sanitize_text_field( trim( $_POST['ets_memberpress_discord_server_id'] ) ) : '';
 
 		if ( isset( $_POST['submit'] ) && ! isset( $_POST['ets_memberpress_discord_role_mapping'] ) ) {
 			if ( isset( $_POST['ets_discord_save_settings'] ) && wp_verify_nonce( $_POST['ets_discord_save_settings'], 'save_discord_settings' ) ) {
+				$ets_memberpress_discord_client_id = isset( $_POST['ets_memberpress_discord_client_id'] ) ? sanitize_text_field( trim( $_POST['ets_memberpress_discord_client_id'] ) ) : '';
+
+				$discord_client_secret = isset( $_POST['ets_memberpress_discord_client_secret'] ) ? sanitize_text_field( trim( $_POST['ets_memberpress_discord_client_secret'] ) ) : '';
+
+				$discord_bot_token = isset( $_POST['ets_memberpress_discord_bot_token'] ) ? sanitize_text_field( trim( $_POST['ets_memberpress_discord_bot_token'] ) ) : '';
+
+				$ets_memberpress_discord_redirect_url = isset( $_POST['ets_memberpress_discord_redirect_url'] ) ? sanitize_text_field( trim( $_POST['ets_memberpress_discord_redirect_url'] ) ) : '';
+
+				$ets_memberpress_discord_server_id = isset( $_POST['ets_memberpress_discord_server_id'] ) ? sanitize_text_field( trim( $_POST['ets_memberpress_discord_server_id'] ) ) : '';
+
+				$ets_memberpress_discord_bot_auth_redirect = isset( $_POST['ets_memberpress_discord_bot_auth_redirect'] ) ? sanitize_text_field( trim( $_POST['ets_memberpress_discord_bot_auth_redirect'] ) ) : '';
+
 				if ( $ets_memberpress_discord_client_id ) {
 					update_option( 'ets_memberpress_discord_client_id', $ets_memberpress_discord_client_id );
 				}
@@ -148,7 +151,9 @@ class Memberpress_Discord_Admin {
 				if ( $ets_memberpress_discord_server_id ) {
 					update_option( 'ets_memberpress_discord_server_id', $ets_memberpress_discord_server_id );
 				}
-        ets_memberpress_discord_update_bot_name_option();
+				update_option( 'ets_memberpress_discord_bot_auth_redirect', $ets_memberpress_discord_bot_auth_redirect );
+
+				ets_memberpress_discord_update_bot_name_option();
 				$message = 'Your settings are saved successfully.';
 				if ( isset( $_POST['current_url'] ) ) {
 					// This will delete Stale DM channels.
@@ -191,7 +196,7 @@ class Memberpress_Discord_Admin {
 
 				$message = 'Your mappings are saved successfully.';
 				if ( isset( $_POST['current_url'] ) ) {
-					$pre_location = sanitize_text_field( $_POST['current_url'] )  . '&save_settings_msg=' . $message . '#mepr_role_mapping';
+					$pre_location = sanitize_text_field( $_POST['current_url'] ) . '&save_settings_msg=' . $message . '#mepr_role_mapping';
 					wp_safe_redirect( $pre_location );
 				}
 			}
@@ -660,8 +665,8 @@ class Memberpress_Discord_Admin {
 	 */
 	private function ets_memberpress_discord_set_member_roles( $user_id, $expired_membership = false, $cancelled_membership = false, $is_schedule = true ) {
 		$memberpress_discord                                = new Memberpress_Discord();
-    $plugin_admin = new Memberpress_Discord_Admin( $memberpress_discord->get_plugin_name(), $memberpress_discord->get_version() );
-		$plugin_public                                      = new Memberpress_Discord_Public( $memberpress_discord->get_plugin_name(), $memberpress_discord->get_version() , $plugin_admin );
+		$plugin_admin                                       = new Memberpress_Discord_Admin( $memberpress_discord->get_plugin_name(), $memberpress_discord->get_version() );
+		$plugin_public                                      = new Memberpress_Discord_Public( $memberpress_discord->get_plugin_name(), $memberpress_discord->get_version(), $plugin_admin );
 		$allow_none_member                                  = sanitize_text_field( trim( get_option( 'ets_memberpress_allow_none_member' ) ) );
 		$default_role                                       = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_default_role_id' ) ) );
 		$ets_memberpress_discord_role_mapping               = json_decode( get_option( 'ets_memberpress_discord_role_mapping' ), true );
@@ -798,7 +803,7 @@ class Memberpress_Discord_Admin {
 	 */
 	public function ets_memberpress_discord_as_handler_memberpress_complete_transaction( $user_id, $complete_txn ) {
 		$memberpress_discord                     = new Memberpress_Discord();
-    $plugin_admin = new Memberpress_Discord_Admin( $memberpress_discord->get_plugin_name(), $memberpress_discord->get_version() );
+		$plugin_admin                            = new Memberpress_Discord_Admin( $memberpress_discord->get_plugin_name(), $memberpress_discord->get_version() );
 		$plugin_public                           = new Memberpress_Discord_Public( $memberpress_discord->get_plugin_name(), $memberpress_discord->get_version(), $plugin_admin );
 		$ets_memberpress_discord_role_mapping    = json_decode( get_option( 'ets_memberpress_discord_role_mapping' ), true );
 		$default_role                            = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_default_role_id' ) ) );
@@ -849,7 +854,7 @@ class Memberpress_Discord_Admin {
 		$active_memberships    = ets_memberpress_discord_get_active_memberships( $txn->user_id );
 		$complete_txn          = array();
 		$active_product_ids    = array();
-		if ( is_array($active_memberships) && count( $active_memberships ) > 0 ) {
+		if ( is_array( $active_memberships ) && count( $active_memberships ) > 0 ) {
 			foreach ( $active_memberships as $active_membership ) {
 				array_push( $active_product_ids, $active_membership->product_id );
 			}
@@ -1027,11 +1032,13 @@ class Memberpress_Discord_Admin {
 				exit();
 			}
 			$params                    = array(
-				'client_id'   => sanitize_text_field( trim( get_option( 'ets_memberpress_discord_client_id' ) ) ),
-				'permissions' => MEMBERPRESS_DISCORD_BOT_PERMISSIONS,
-				'scope'       => 'bot',
-				'guild_id'    => sanitize_text_field( trim( get_option( 'ets_memberpress_discord_server_id' ) ) ),
-        'disable_guild_select' => 'true'
+				'client_id'            => sanitize_text_field( trim( get_option( 'ets_memberpress_discord_client_id' ) ) ),
+				'permissions'          => MEMBERPRESS_DISCORD_BOT_PERMISSIONS,
+				'response_type' => 'code',
+				'scope'                => 'bot',
+				'guild_id'             => sanitize_text_field( trim( get_option( 'ets_memberpress_discord_server_id' ) ) ),
+				'disable_guild_select' => 'true',
+				'redirect_uri'         => sanitize_text_field( trim( get_option( 'ets_memberpress_discord_bot_auth_redirect ' ) ) ),
 			);
 			$discord_authorise_api_url = MEMBERPRESS_DISCORD_API_URL . 'oauth2/authorize?' . http_build_query( $params );
 
