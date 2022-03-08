@@ -115,9 +115,23 @@ class Memberpress_Discord_Public {
 		$ets_memberpress_connecttodiscord_btn = '';
 		if ( ets_memberpress_discord_check_saved_settings_status() ) {
 			if ( $access_token ) {
+				$discord_user_name = sanitize_text_field( trim( get_user_meta( $user_id, '_ets_memberpress_discord_username', true ) ) );
 				$ets_memberpress_connecttodiscord_btn .= '<div><label class="ets-connection-lbl">' . esc_html__( 'Discord connection', 'memberpress-discord-add-on' ) . '</label>';
 				$ets_memberpress_connecttodiscord_btn .= '<a href="#" class="ets-btn btn-disconnect"  data-user-id="' . esc_attr( $user_id ) . '">' . esc_html__( 'Disconnect From Discord ', 'memberpress-discord-add-on' ) . '<i class="fab fa-discord"></i></a>';
 				$ets_memberpress_connecttodiscord_btn .= '<span class="ets-spinner"></span>';
+				if ( $mapped_role_names ) {
+					$ets_memberpress_connecttodiscord_btn .= '<p class="ets_assigned_role">';
+					$ets_memberpress_connecttodiscord_btn .= esc_html__( 'Following Roles was assigned to you in Discord: ', 'memberpress-discord-add-on' );
+					foreach ( $mapped_role_names as $mapped_role_name ) {
+						$ets_memberpress_connecttodiscord_btn .= esc_html( $mapped_role_name ) . ', ';
+					}
+					if ( $default_role_name ) {
+						$ets_memberpress_connecttodiscord_btn .= esc_html( $default_role_name );
+					}
+					$ets_memberpress_connecttodiscord_btn .= '</p><p class="ets_assigned_role">';
+					$ets_memberpress_connecttodiscord_btn .= esc_html__( 'Connected account: '.$discord_user_name, 'memberpress-discord-add-on' );
+					$ets_memberpress_connecttodiscord_btn .= '</p></div>';
+				}
 			} elseif ( current_user_can( 'memberpress_authorized' ) && $mapped_role_names || $allow_none_member == 'yes' ) {
 				$ets_memberpress_connecttodiscord_btn .= '<div><label class="ets-connection-lbl">' . esc_html__( 'Discord connection', 'memberpress-discord-add-on' ) . '</label>';
 				$ets_memberpress_connecttodiscord_btn .= '<a href="?action=memberpress-discord-login" class="btn-connect ets-btn" >' . esc_html__( 'Connect To Discord', 'memberpress-discord-add-on' ) . '<i class="fab fa-discord"></i></a>';
@@ -308,14 +322,16 @@ class Memberpress_Discord_Public {
 			// this should be catch by Action schedule failed action.
 			throw new Exception( 'Failed in function ets_as_handler_add_member_to_guild' );
 		}
-		foreach ( $discord_roles as $key => $discord_role ) {
-			$assigned_role = array(
-				'role_id'    => $discord_role,
-				'product_id' => $active_memberships[ $key ]['product_id'],
-			);
-			update_user_meta( $user_id, '_ets_memberpress_discord_role_id_for_' . $active_memberships[ $key ]['txn_number'], $assigned_role );
-			if ( $discord_role && $discord_role != 'none' && isset( $user_id ) ) {
-				$this->put_discord_role_api( $user_id, $discord_role );
+		if( is_array($discord_roles) ) {
+			foreach ( $discord_roles as $key => $discord_role ) {
+				$assigned_role = array(
+					'role_id'    => $discord_role,
+					'product_id' => $active_memberships[ $key ]['product_id'],
+				);
+				update_user_meta( $user_id, '_ets_memberpress_discord_role_id_for_' . $active_memberships[ $key ]['txn_number'], $assigned_role );
+				if ( $discord_role && $discord_role != 'none' && isset( $user_id ) ) {
+					$this->put_discord_role_api( $user_id, $discord_role );
+				}
 			}
 		}
 
