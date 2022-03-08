@@ -311,6 +311,7 @@ function array_search_by_key_and_value( $array, $key, $value ) {
 
 /**
  * Get the bot name using API call
+ *
  * @return NONE
  */
 function ets_memberpress_discord_update_bot_name_option() {
@@ -334,4 +335,12 @@ function ets_memberpress_discord_update_bot_name_option() {
 			delete_option( 'ets_memberpress_discord_connected_bot_name' );
 		}
 	}
+}
+
+function ets_memberpress_discord_remove_usermeta( $user_id ) {
+	global $wpdb;
+	$usermeta_table      = $wpdb->prefix . 'usermeta';
+	$usermeta_sql        = 'DELETE FROM ' . $usermeta_table . " WHERE `user_id` = %d AND  `meta_key` LIKE '_ets_memberpress_discord%'; ";
+	$delete_usermeta_sql = $wpdb->prepare( $usermeta_sql, $user_id );
+	$wpdb->query( $delete_usermeta_sql );
 }

@@ -36,7 +36,7 @@ class Memberpress_Discord_Public {
 	 * @access   private
 	 * @var      string    $version    The current version of this plugin.
 	 */
-	private $admin_cls_instace;
+	private $admin_cls_instance;
 
 	/**
 	 * Initialize the class and set its properties.
@@ -47,9 +47,9 @@ class Memberpress_Discord_Public {
 	 */
 	public function __construct( $plugin_name, $version, $plugin_admin ) {
 
-		$this->plugin_name = $plugin_name;
-		$this->version     = $version;
-		$this->admin_cls_instace     = $plugin_admin;
+		$this->plugin_name        = $plugin_name;
+		$this->version            = $version;
+		$this->admin_cls_instance = $plugin_admin;
 
 	}
 
@@ -115,7 +115,7 @@ class Memberpress_Discord_Public {
 		$ets_memberpress_connecttodiscord_btn = '';
 		if ( ets_memberpress_discord_check_saved_settings_status() ) {
 			if ( $access_token ) {
-				$discord_user_name = sanitize_text_field( trim( get_user_meta( $user_id, '_ets_memberpress_discord_username', true ) ) );
+				$discord_user_name                     = sanitize_text_field( trim( get_user_meta( $user_id, '_ets_memberpress_discord_username', true ) ) );
 				$ets_memberpress_connecttodiscord_btn .= '<div><label class="ets-connection-lbl">' . esc_html__( 'Discord connection', 'memberpress-discord-add-on' ) . '</label>';
 				$ets_memberpress_connecttodiscord_btn .= '<a href="#" class="ets-btn btn-disconnect"  data-user-id="' . esc_attr( $user_id ) . '">' . esc_html__( 'Disconnect From Discord ', 'memberpress-discord-add-on' ) . '<i class="fab fa-discord"></i></a>';
 				$ets_memberpress_connecttodiscord_btn .= '<span class="ets-spinner"></span>';
@@ -129,7 +129,7 @@ class Memberpress_Discord_Public {
 						$ets_memberpress_connecttodiscord_btn .= esc_html( $default_role_name );
 					}
 					$ets_memberpress_connecttodiscord_btn .= '</p><p class="ets_assigned_role">';
-					$ets_memberpress_connecttodiscord_btn .= esc_html__( 'Connected account: '.$discord_user_name, 'memberpress-discord-add-on' );
+					$ets_memberpress_connecttodiscord_btn .= esc_html__( 'Connected account: ' . $discord_user_name, 'memberpress-discord-add-on' );
 					$ets_memberpress_connecttodiscord_btn .= '</p></div>';
 				}
 			} elseif ( current_user_can( 'memberpress_authorized' ) && $mapped_role_names || $allow_none_member == 'yes' ) {
@@ -193,9 +193,9 @@ class Memberpress_Discord_Public {
 					if ( is_array( $res_body ) ) {
 						if ( array_key_exists( 'access_token', $res_body ) ) {
 							$access_token = sanitize_text_field( trim( $res_body['access_token'] ) );
-							$user_body = $this->get_discord_current_user( $access_token );
+							$user_body    = $this->get_discord_current_user( $access_token );
 
-							$this->memberpress_catch_discord_auth_callback( $res_body, $user_body , $user_id );
+							$this->memberpress_catch_discord_auth_callback( $res_body, $user_body, $user_id );
 
 							if ( is_array( $user_body ) && array_key_exists( 'id', $user_body ) ) {
 								$_ets_memberpress_discord_user_id = sanitize_text_field( trim( $user_body['id'] ) );
@@ -203,7 +203,7 @@ class Memberpress_Discord_Public {
 									foreach ( $active_memberships as $active_membership ) {
 										$_ets_memberpress_discord_role_id = get_user_meta( $user_id, '_ets_memberpress_discord_role_id_for_' . $active_membership['txn_number'], true );
 										if ( ! empty( $_ets_memberpress_discord_role_id ) && $_ets_memberpress_discord_role_id['role_id'] != 'none' ) {
-											$this->admin_cls_instace->memberpress_delete_discord_role( $user_id, $_ets_memberpress_discord_role_id['role_id'] );
+											$this->admin_cls_instance->memberpress_delete_discord_role( $user_id, $_ets_memberpress_discord_role_id['role_id'] );
 										}
 									}
 								}
@@ -233,7 +233,7 @@ class Memberpress_Discord_Public {
 								$user_id = wp_create_user( $discord_user_email, $password, $discord_user_email );
 								wp_new_user_notification( $user_id, null, $password );
 							}
-							$this->memberpress_catch_discord_auth_callback( $res_body, $user_body , $user_id );
+							$this->memberpress_catch_discord_auth_callback( $res_body, $user_body, $user_id );
 							$credentials = array(
 								'user_login'    => $discord_user_email,
 								'user_password' => $password,
@@ -322,7 +322,7 @@ class Memberpress_Discord_Public {
 			// this should be catch by Action schedule failed action.
 			throw new Exception( 'Failed in function ets_as_handler_add_member_to_guild' );
 		}
-		if( is_array($discord_roles) ) {
+		if ( is_array( $discord_roles ) ) {
 			foreach ( $discord_roles as $key => $discord_role ) {
 				$assigned_role = array(
 					'role_id'    => $discord_role,
@@ -554,12 +554,36 @@ class Memberpress_Discord_Public {
 		}
 		$user_id                     = sanitize_text_field( trim( $_POST['user_id'] ) );
 		$memberpress_member_kick_out = sanitize_text_field( trim( get_option( 'ets_memberpress_member_kick_out' ) ) );
+		$ets_memberpress_discord_role_mapping               = json_decode( get_option( 'ets_memberpress_discord_role_mapping' ), true );
+		$previous_default_role                              = get_user_meta( $user_id, '_ets_memberpress_discord_default_role_id', true );
 		if ( $user_id ) {
 			if ( $memberpress_member_kick_out == true ) {
 				$this->memberpress_delete_member_from_guild( $user_id, false );
 			}
-			delete_user_meta( $user_id, '_ets_memberpress_discord_access_token' );
-			delete_user_meta( $user_id, '_ets_memberpress_discord_refresh_token' );
+
+			// check for roles assigned, and delete them
+			$active_memberships = ets_memberpress_discord_get_active_memberships( $user_id );
+			if ( is_array( $active_memberships ) && count( $active_memberships ) != 0 ) {
+				foreach ( $active_memberships as $active_membership ) {
+					if ( is_array( $ets_memberpress_discord_role_mapping ) && array_key_exists( 'level_id_' . $active_membership->product_id, $ets_memberpress_discord_role_mapping ) ) {
+						  $mapped_role_id = sanitize_text_field( trim( $ets_memberpress_discord_role_mapping[ 'level_id_' . $active_membership->product_id ] ) );
+						if ( $mapped_role_id ) {
+							$this->admin_cls_instance->memberpress_delete_discord_role( $user_id, $mapped_role_id, true );
+						}
+					}
+				}
+
+				// check for default role and delete it.
+				if ( isset( $previous_default_role ) && $previous_default_role != '' && $previous_default_role != 'none' ) {
+					$this->admin_cls_instance->memberpress_delete_discord_role( $user_id, $previous_default_role, true );
+				}
+				// delete all user_meta keys
+				ets_memberpress_discord_remove_usermeta($user_id);
+			}
+
+			
+			
+
 		}
 		$event_res = array(
 			'status'  => 1,
@@ -705,7 +729,7 @@ class Memberpress_Discord_Public {
 	*
 	* @param ARRAY $res_body
 	*/
-	private function memberpress_catch_discord_auth_callback( $res_body, $user_body , $user_id ) {
+	private function memberpress_catch_discord_auth_callback( $res_body, $user_body, $user_id ) {
 		$discord_exist_user_id = sanitize_text_field( trim( get_user_meta( $user_id, '_ets_memberpress_discord_user_id', true ) ) );
 		$access_token          = sanitize_text_field( trim( $res_body['access_token'] ) );
 		update_user_meta( $user_id, '_ets_memberpress_discord_access_token', $access_token );
@@ -732,7 +756,7 @@ class Memberpress_Discord_Public {
 			if ( $discord_exist_user_id == $_ets_memberpress_discord_user_id ) {
 				$_ets_memberpress_discord_role_id = sanitize_text_field( trim( get_user_meta( $user_id, '_ets_memberpress_discord_role_id', true ) ) );
 				if ( ! empty( $_ets_memberpress_discord_role_id ) && $_ets_memberpress_discord_role_id != 'none' ) {
-					$this->admin_cls_instace->memberpress_delete_discord_role( $user_id, $_ets_memberpress_discord_role_id );
+					$this->admin_cls_instance->memberpress_delete_discord_role( $user_id, $_ets_memberpress_discord_role_id );
 				}
 			}
 			update_user_meta( $user_id, '_ets_memberpress_discord_user_id', $_ets_memberpress_discord_user_id );
