@@ -20,6 +20,15 @@ if ( isset( $_GET['save_settings_msg'] ) ) {
 	</div>
 	<?php
 }
+$log_api_res                                  = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_log_api_response' ) ) );
+if (  $log_api_res ) {
+	?>
+	<div class="notice notice-success support-success-msg">
+		<p><?php echo __( 'MemberPress - Discord logging is currently enabled. Since logs may contain sensitive information, please ensure that you only leave it enabled for as long as it is needed for troubleshooting. If you currently have a support ticket open, please do not disable logging until the Support Team has reviewed your logs.', 'memberpress-discord-add-on' ); ?></p>
+	</div>
+	<?php
+}
+
 ?>
 <h1><?php echo __( 'Memberpress Discord Add On Settings', 'memberpress-discord-add-on' ); ?></h1>
 		<div id="outer" class="skltbs-theme-light" data-skeletabs='{ "startIndex": 1 }'>
