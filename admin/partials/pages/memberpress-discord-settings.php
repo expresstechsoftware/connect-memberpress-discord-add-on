@@ -42,9 +42,10 @@ if ( empty( $ets_memberpress_discord_redirect_url ) ) {
   <div class="ets-input-group">
   <label><?php echo __( 'Bot Auth Redirect URL', 'memberpress-discord-add-on' ); ?> :</label>
 		<input type="text" readonly="true" class="ets-input" name="ets_memberpress_discord_bot_auth_redirect" value="<?php echo get_admin_url('', 'admin.php').'?page=memberpress-discord&via=memberpress-discord-bot'; ?>" required placeholder="<?php echo __( 'Bot Auth Redirect URL', 'memberpress-discord-add-on' ); ?>">
+    <p class="description msg-green"><b><?php echo __("Copy this URL and paste inside your https://discord.com/developers/applications -> 0Auth2 -> Redirects", "memberpress-discord-add-on"); ?></b></p>
 	</div>
 	<div class="ets-input-group">
-		<label><?php echo __( 'Server Id', 'memberpress-discord-add-on' ); ?> :</label>
+		<label><?php echo __( 'Server ID', 'memberpress-discord-add-on' ); ?> :</label>
 		<input type="text" class="ets-input" name="ets_memberpress_discord_server_id" placeholder="<?php echo __( 'Discord Server Id', 'memberpress-discord-add-on' ); ?>" value="<?php if ( isset( $ets_memberpress_discord_server_id ) ) { echo esc_attr( $ets_memberpress_discord_server_id ); } ?>" required>
 	</div>
 	<?php if ( empty( $ets_memberpress_discord_client_id ) || empty( $discord_client_secret ) || empty( $discord_bot_token ) || empty( $ets_memberpress_discord_redirect_url ) || empty( $ets_memberpress_discord_server_id ) ) { ?>
