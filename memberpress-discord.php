@@ -9,7 +9,7 @@
  * @package           Memberpress_Discord
  *
  * @wordpress-plugin
- * Plugin Name:       MemberPress Discord Add On
+ * Plugin Name:       ExpressTech's MemberPress Discord Add On
  * Plugin URI:        https://www.expresstechsoftwares.com/memberpress-discord-add-on/
  * Description:       Allow memberpress users to connect their site to discord and allow them to be part of your discord community, site admin can allow discord roles based on the membership a member have and can sell private content in role specific discord channels.
  * Version:           1.0.0
@@ -17,7 +17,7 @@
  * Author URI:        https://www.expresstechsoftwares.com
  * License:           GPL-2.0+
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
- * Text Domain:       memberpress-discord-add-on
+ * Text Domain:       expresstechsoftwares-memberpress-discord-add-on
  * Domain Path:       /languages
  */
 

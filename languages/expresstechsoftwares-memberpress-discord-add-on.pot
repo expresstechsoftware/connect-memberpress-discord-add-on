@@ -2,7 +2,7 @@
 # This file is distributed under the same license as the http://www.gnu.org/licenses/gpl-2.0.html.
 msgid ""
 msgstr ""
-"Project-Id-Version: MemberPress Discord 1.0.0\n"
+"Project-Id-Version: ExpressTech's MemberPress Discord Add On 1.0.0\n"
 "Report-Msgid-Bugs-To: "
 "POT-Creation-Date: 2021-07-22 2:00:21+00:00\n"
 "MIME-Version: 1.0\n"
@@ -11,7 +11,7 @@ msgstr ""
 "PO-Revision-Date: 2019-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Ravi Soni <contact@expresstechsoftwares.com>\n"
 "Language-Team: en-us <contact@expresstechsoftwares.com>\n"
-"X-Generator:WCFM MemberPress Discord 1.0.0\n"
+"X-Generator:ExpressTech's MemberPress Discord Add On 1.0.0\n"
 msgid "Discord connection"
 msgstr "Discord connection"
 
