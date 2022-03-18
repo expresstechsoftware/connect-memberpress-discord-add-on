@@ -892,8 +892,8 @@ class Memberpress_Discord_Admin {
 	public function ets_memberpress_discord_members_list_add_column( $columns ) {
 		wp_enqueue_style( $this->plugin_name );
 		wp_enqueue_script( $this->plugin_name );
-		$columns['col_memberpress_discord']     = __( 'Discord', 'memberpress-discord-add-on' );
-		$columns['col_memberpress_joined_date'] = __( 'Joined Date', 'memberpress-discord-add-on' );
+		$columns['col_memberpress_discord']     = __( 'Discord', 'expresstechsoftwares-memberpress-discord-add-on' );
+		$columns['col_memberpress_joined_date'] = __( 'Joined Date', 'expresstechsoftwares-memberpress-discord-add-on' );
 		return $columns;
 	}
 
@@ -915,11 +915,11 @@ class Memberpress_Discord_Admin {
 				if ( $access_token ) {
 					$discord_username = sanitize_text_field( trim( get_user_meta( $rec->ID, '_ets_memberpress_discord_username', true ) ) );
 					echo '<p class="' . esc_attr( $rec->ID ) . ' ets-save-success">Success</p><a class="button button-primary ets-memberpress-run-api" data-uid="' . esc_attr( $rec->ID ) . '" href="#">';
-					echo __( 'Run API', 'memberpress-discord-add-on' );
+					echo __( 'Run API', 'expresstechsoftwares-memberpress-discord-add-on' );
 					echo '</a><span class="' . esc_attr( $rec->ID ) . ' spinner"></span>';
 					echo esc_html( $discord_username );
 				} else {
-					echo __( 'Not Connected', 'memberpress-discord-add-on' );
+					echo __( 'Not Connected', 'expresstechsoftwares-memberpress-discord-add-on' );
 				}
 				?>
 			  </td>
@@ -957,7 +957,7 @@ class Memberpress_Discord_Admin {
 
 		$event_res = array(
 			'status'  => 1,
-			'message' => __( 'success', 'memberpress-discord-add-on' ),
+			'message' => __( 'success', 'expresstechsoftwares-memberpress-discord-add-on' ),
 		);
 		return wp_send_json( $event_res );
 	}

@@ -1,114 +1,78 @@
-=== Plugin Name ===
-Contributors: (this should be a list of wordpress.org userid's)
-Donate link: https://www.expresstechsoftwares.com
-Tags: comments, spam
-Requires at least: 3.0.1
-Tested up to: 3.4
-Stable tag: 4.3
-License: GPLv2 or later
-License URI: http://www.gnu.org/licenses/gpl-2.0.html
+=== ExpressTech's MemberPress Discord Add On ===
+Contributors: expresstechsoftware, webbdeveloper
+Tags: Discord, Talk, Video Chat, Hang Out, Friends, Meberships, discord role management
+Requires at least: 4.7
+Donate link: https://paypal.me/supportets
+Author URI: https://www.expresstechsoftwares.com
+Author: ExpressTech Software Solutions Pvt. Ltd.
+Tested up to: 5.9
+Requires PHP: 7.0
+Stable tag: 1.0
+License: GPLv2
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Here is a short description of the plugin.  This should be no more than 150 characters.  No markup here.
-
+This add-on enables connecting your MemberPress enabled website to your discord server. Now you can add/remove MemberPress members directly to your discord server roles, assign roles according to your member levels, unassign roles when they expire, change role when they change membership.
+ 
 == Description ==
+= This ExpressTech's MemberPress Discord AddOn enables connecting your MemberPress members to connect with your discord online community, with the server roles assigned to members as per their membership level. =
 
-This is the long description.  No limit, and you can use Markdown (as well as in the following sections).
+Very simple setup and intutive User interface to Manage Member Role inside Discord.
+- Please always contact support if you are facing issues in setup or see any bug.
+- If you did like the plugin, kindly support us in doing free excellent work our PayPal email is: business@expresstechsoftwares.com
 
-For backwards compatibility, if this section is missing, the full length of the short description will be used, and
-Markdown parsed.
 
-A few notes about the sections above:
+This plugin provides the following features: 
+1) Allow any member to connect their discord account with their MemberPress membership account. 
+2) Members will be assigned roles in discord as per their membership level.
+3) Members roles can be changed/remove from the admin of the site.
+4) Members roles will be updated when membership expires.
+5) Members roles will be updated when membership cancelled.
+6) Admin can decide what default role to be given to all members upon connecting their discord to their membership account.
+7) Admin can decide if membership should stay in their discord server when membership expires or cancelled.
+8) Admin can decide what default role to be assigned when membership cancelled or expire.
+9) Admin can change role by changing the membership by editng user insider WP Manage user.
+10) Send a Direct message to discord members when their membership has expired. (Only work when allow none member is set to YES and Direct Message advanced setting is set ENABLED)
+11) Send a Direct message to discord members when their membership is cancelled. (Only work when allow none member is set to YES and Direct Message advanced setting is set ENABLED)
+12) Send membership expiration warnings Direct Message when membership is about to expire (Default 7 days before)
+13) Short code [mepr_discord_button] can be used on any page to display connect/disconnect button.
+14) Using the shortcode [mepr_discord_button] on any page, anyone can join the website discord server by authentication via member discord account. New members will get `default` role if selected in the setting.
+15) Button styling feature under the plugin settings.
 
-*   "Contributors" is a comma separated list of wp.org/wp-plugins.org usernames
-*   "Tags" is a comma separated list of tags that apply to the plugin
-*   "Requires at least" is the lowest version that the plugin will work on
-*   "Tested up to" is the highest version that you've *successfully used to test the plugin*. Note that it might work on
-higher versions... this is just the highest one you've verified.
-*   Stable tag should indicate the Subversion "tag" of the latest stable version, or "trunk," if you use `/trunk/` for
-stable.
-
-    Note that the `readme.txt` of the stable tag is the one that is considered the defining one for the plugin, so
-if the `/trunk/readme.txt` file says that the stable tag is `4.3`, then it is `/tags/4.3/readme.txt` that'll be used
-for displaying information about the plugin.  In this situation, the only thing considered from the trunk `readme.txt`
-is the stable tag pointer.  Thus, if you develop in trunk, you can update the trunk `readme.txt` to reflect changes in
-your in-development version, without having that information incorrectly disclosed about the current stable version
-that lacks those changes -- as long as the trunk's `readme.txt` points to the correct stable tag.
-
-    If no stable tag is provided, it is assumed that trunk is stable, but you should specify "trunk" if that's where
-you put the stable version, in order to eliminate any doubt.
+[View all Screenshots](https://www.expresstechsoftwares.com/pmpro-official-discord-add-on/)
 
 == Installation ==
 
-This section describes how to install the plugin and get it working.
+= Download, Install and Activate! =
+1. Go to Plugins > Add New to find and install PMPRO discord Addon.
+2. Or, download the latest version of the plugin, then go to Plugins > Add New and click the "Upload Plugin" button to upload your .zip file.
+3. Activate the plugin.
 
-e.g.
+= Complete the Initial Plugin Setup =
+Go to MemberPress > Discord Settings in the WordPress admin to begin setup. 
 
-1. Upload `memberpress-discord.php` to the `/wp-content/plugins/` directory
-1. Activate the plugin through the 'Plugins' menu in WordPress
-1. Place `<?php do_action('plugin_name_hook'); ?>` in your templates
+= More Installation and Setup Documentation =
+* [Installation Docs](https://www.expresstechsoftwares.com/step-by-step-documentation-guide-on-how-to-connect-memberpress-and-discord-server-using-discord-addon)
+
 
 == Frequently Asked Questions ==
-
-= A question that someone might have =
-
-An answer to that question.
-
-= What about foo bar? =
-
-Answer to foo bar dilemma.
+= I need help installing, configuring, or customizing the plugin. =
+Please visit [our support site at https://www.expresstechsoftwares.com/step-by-step-documentation-guide-on-how-to-connect-memberpress-and-discord-server-using-discord-addon) for more documentation and our support forums.
+= I'm getting an error in error Log 'Missing Access'
+Please make sure your bot role has the highest priority among all other roles in your discord server roles settings.
+= Role Settings is not appearing.
+1. Clear browser cache, to uninstall and install again.
+2. Try the disabling cache
+3. Try Disabling other plugins, there may be any conflict with another plugin.
+= Members are not being added spontaneously.
+1. Due to the nature of Discord API, we have to use schedules to precisely control API calls, This is the reason actions are delayed. 
+= Member roles are not being assigned spontaneously.
+1. Due to the nature of Discord API, we have to use schedules to precisely control API calls, This is the reason actions are delayed. 
+= Some members are not getting their role and there is no error in the log.
+1. Sometimes discord API behaves weirdly, It is suggested to TRY again OR use another discord account.
 
 == Screenshots ==
-
-1. This screen shot description corresponds to screenshot-1.(png|jpg|jpeg|gif). Note that the screenshot is taken from
-the /assets directory or the directory that contains the stable readme.txt (tags or trunk). Screenshots in the /assets
-directory take precedence. For example, `/assets/screenshot-1.png` would win over `/tags/4.3/screenshot-1.png`
-(or jpg, jpeg, gif).
-2. This is the second screen shot
-
-== Changelog ==
-
-= 1.0 =
-* A change since the previous version.
-* Another change.
-
-= 0.5 =
-* List versions from most recent at top to oldest at bottom.
-
-== Upgrade Notice ==
-
-= 1.0 =
-Upgrade notices describe the reason a user should upgrade.  No more than 300 characters.
-
-= 0.5 =
-This version fixes a security related bug.  Upgrade immediately.
-
-== Arbitrary section ==
-
-You may provide arbitrary sections, in the same format as the ones above.  This may be of use for extremely complicated
-plugins where more information needs to be conveyed that doesn't fit into the categories of "description" or
-"installation."  Arbitrary sections will be shown below the built-in sections outlined above.
-
-== A brief Markdown Example ==
-
-Ordered list:
-
-1. Some feature
-1. Another feature
-1. Something else about the plugin
-
-Unordered list:
-
-* something
-* something else
-* third thing
-
-Here's a link to [WordPress](http://wordpress.org/ "Your favorite software") and one to [Markdown's Syntax Documentation][markdown syntax].
-Titles are optional, naturally.
-
-[markdown syntax]: http://daringfireball.net/projects/markdown/syntax
-            "Markdown is what the parser uses to process much of the readme file"
-
-Markdown uses email style notation for blockquotes and I've been told:
-> Asterisks for *emphasis*. Double it up  for **strong**.
-
-`<?php code(); // goes in backticks ?>`
+1. Install and activate the plugin and view the discord settings page inside MemberPress
+2. Map Discord roles and MemberPress levels.
+3. Advanced settings.
+4. Connect Button Appearance.
+5. Spot the Connect to Discord on Members profile page.

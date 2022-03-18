@@ -10,7 +10,7 @@
 // If uninstall not called from WordPress, then exit.
 if ( defined( 'WP_UNINSTALL_PLUGIN' )
 		&& $_REQUEST['plugin'] == 'memberpress-discord/memberpress-discord.php'
-		&& $_REQUEST['slug'] == 'memberpress-discord'
+		&& $_REQUEST['slug'] == 'expresstechsoftwares-memberpress-discord-add-on'
 	&& wp_verify_nonce( $_REQUEST['_ajax_nonce'], 'updates' )
   ) {
 	global $wpdb;
