@@ -10,7 +10,7 @@ if ( $currentUser ) {
 		<input type="hidden" name="action" value="memberpress_discord_send_support_mail">
 	  <div class="ets-container">
 		<div class="top-logo-title">
-		  <img src="<?php echo MEMBERPRESS_DISCORD_PLUGIN_DIR_URL  . 'admin/images/ets-logo.png'; ?>" class="img-fluid company-logo" alt="">
+		  <img src="<?php echo ETS_MEMBERPRESS_DISCORD_PLUGIN_DIR_URL  . 'admin/images/ets-logo.png'; ?>" class="img-fluid company-logo" alt="">
 		  <h1><?php echo __( 'ExpressTech Softwares Solutions Pvt. Ltd.', 'expresstechsoftwares-memberpress-discord-add-on' ); ?></h1>
 		  <p><?php echo __( 'ExpressTech Software Solution Pvt. Ltd. is the leading Enterprise WordPress development company.', 'expresstechsoftwares-memberpress-discord-add-on' ); ?><br>
 		  <?php echo __( 'Contact us for any WordPress Related development projects.', 'expresstechsoftwares-memberpress-discord-add-on' ); ?></p>
