@@ -666,7 +666,7 @@ class Memberpress_Discord_Public {
 			$member_discord_login                 = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_login_with_discord' ) ) );
 			$btn_color                            = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_btn_color' ) ) );
 			$btn_text                             = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_loggedout_btn_text' ) ) );
-			echo '<style>.memberpress-btn-connect{background-color: ' . $btn_color . ';}</style>';
+			echo '<style>.memberpress-btn-connect{background-color: ' . esc_html( $btn_color ) . ';}</style>';
 			if ( $member_discord_login ) {
 				$curr_level_id     = $membership_id;
 				$mapped_role_name  = '';
@@ -683,7 +683,7 @@ class Memberpress_Discord_Public {
 					}
 				}
 				$current_url = ets_memberpress_discord_get_current_screen_url();
-				echo '<a href="?action=memberpress-discord-login&fromcheckout=1&url=' . $current_url . '#mepr_jump" class="memberpress-btn-connect ets-btn" >' . esc_html( $btn_text ) . '<i class="fab fa-discord"></i></a>';
+				echo '<a href="?action=memberpress-discord-login&fromcheckout=1&url=' . esc_html( $current_url ) . '#mepr_jump" class="memberpress-btn-connect ets-btn" >' . esc_html( $btn_text ) . '<i class="fab fa-discord"></i></a>';
 				$memberpress_connecttodiscord_btn = '';
 				if ( $mapped_role_name ) {
 					$memberpress_connecttodiscord_btn .= '<p class="ets_assigned_role">' . esc_html__( 'Following Roles will be assigned to you in Discord: ', 'expresstechsoftwares-memberpress-discord-add-on' );
@@ -693,7 +693,7 @@ class Memberpress_Discord_Public {
 					}
 					$memberpress_connecttodiscord_btn .= '</p>';
 
-					echo $memberpress_connecttodiscord_btn;
+					echo esc_html( $memberpress_connecttodiscord_btn );
 				}
 			}
 		}
@@ -714,7 +714,8 @@ class Memberpress_Discord_Public {
 			$discord_authorise_api_url = MEMBERPRESS_DISCORD_API_URL . 'oauth2/authorize?' . http_build_query( $params );
 			// cache the url param for 1 minute
 			if ( isset( $_GET['url'] ) ) {
-				setcookie( 'ets_memberpress_discord_page', $_GET['url'], time() + 60, '/' );
+				$redirect_url = sanitize_text_field( $_GET['url'] );
+				setcookie( 'ets_memberpress_discord_page', $redirect_url, time() + 60, '/' );
 			}
 			wp_redirect( $discord_authorise_api_url, 302, get_site_url() );
 			exit;
