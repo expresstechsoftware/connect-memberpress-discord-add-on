@@ -120,7 +120,7 @@ function ets_memberpress_discord_check_api_errors( $api_response ) {
  */
 function ets_memberpress_discord_as_get_action_data( $action_id ) {
 	global $wpdb;
-	$result = $wpdb->get_results( $wpdb->prepare( 'SELECT aa.hook, aa.status, aa.args, ag.slug AS as_group FROM ' . $wpdb->prefix . 'actionscheduler_actions as aa INNER JOIN ' . $wpdb->prefix . 'actionscheduler_groups as ag ON aa.group_id=ag.group_id WHERE `action_id`=%d AND ag.slug=%s', $action_id, MEMBERPRESS_DISCORD_AS_GROUP_NAME ), ARRAY_A );
+	$result = $wpdb->get_results( $wpdb->prepare( 'SELECT aa.hook, aa.status, aa.args, ag.slug AS as_group FROM ' . $wpdb->prefix . 'actionscheduler_actions as aa INNER JOIN ' . $wpdb->prefix . 'actionscheduler_groups as ag ON aa.group_id=ag.group_id WHERE `action_id`=%d AND ag.slug=%s', $action_id, ETS_MEMBERPRESS_DISCORD_AS_GROUP_NAME ), ARRAY_A );
 
 	if ( ! empty( $result ) ) {
 		return $result[0];
@@ -135,7 +135,7 @@ function ets_memberpress_discord_as_get_action_data( $action_id ) {
 
 function ets_memberpress_discord_get_highest_last_attempt_timestamp() {
 	global $wpdb;
-	$result = $wpdb->get_results( $wpdb->prepare( 'SELECT aa.last_attempt_gmt FROM ' . $wpdb->prefix . 'actionscheduler_actions as aa INNER JOIN ' . $wpdb->prefix . 'actionscheduler_groups as ag ON aa.group_id = ag.group_id WHERE ag.slug = %s ORDER BY aa.last_attempt_gmt DESC limit 1', MEMBERPRESS_DISCORD_AS_GROUP_NAME ), ARRAY_A );
+	$result = $wpdb->get_results( $wpdb->prepare( 'SELECT aa.last_attempt_gmt FROM ' . $wpdb->prefix . 'actionscheduler_actions as aa INNER JOIN ' . $wpdb->prefix . 'actionscheduler_groups as ag ON aa.group_id = ag.group_id WHERE ag.slug = %s ORDER BY aa.last_attempt_gmt DESC limit 1', ETS_MEMBERPRESS_DISCORD_AS_GROUP_NAME ), ARRAY_A );
 
 	if ( ! empty( $result ) ) {
 		return strtotime( $result['0']['last_attempt_gmt'] );
@@ -159,11 +159,11 @@ function ets_memberpress_discord_get_random_timestamp( $add_upon = '' ) {
 
 
 /**
- * Get pending jobs for group MEMBERPRESS_DISCORD_AS_GROUP_NAME
+ * Get pending jobs for group ETS_MEMBERPRESS_DISCORD_AS_GROUP_NAME
  */
 function ets_memberpress_discord_get_all_pending_actions() {
 	global $wpdb;
-	$result = $wpdb->get_results( $wpdb->prepare( 'SELECT aa.* FROM ' . $wpdb->prefix . 'actionscheduler_actions as aa INNER JOIN ' . $wpdb->prefix . 'actionscheduler_groups as ag ON aa.group_id = ag.group_id WHERE ag.slug = %s AND aa.status="pending" ', MEMBERPRESS_DISCORD_AS_GROUP_NAME ), ARRAY_A );
+	$result = $wpdb->get_results( $wpdb->prepare( 'SELECT aa.* FROM ' . $wpdb->prefix . 'actionscheduler_actions as aa INNER JOIN ' . $wpdb->prefix . 'actionscheduler_groups as ag ON aa.group_id = ag.group_id WHERE ag.slug = %s AND aa.status="pending" ', ETS_MEMBERPRESS_DISCORD_AS_GROUP_NAME ), ARRAY_A );
 
 	if ( ! empty( $result ) ) {
 		return $result['0'];
@@ -318,7 +318,7 @@ function ets_memberpress_discord_update_bot_name_option() {
 	$guild_id          = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_server_id' ) ) );
 	$discord_bot_token = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_bot_token' ) ) );
 	if ( $guild_id && $discord_bot_token ) {
-		$discod_current_user_api = MEMBERPRESS_DISCORD_API_URL . 'users/@me';
+		$discod_current_user_api = ETS_MEMBERPRESS_DISCORD_API_URL . 'users/@me';
 		$app_args                = array(
 			'method'  => 'GET',
 			'headers' => array(

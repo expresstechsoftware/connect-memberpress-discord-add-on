@@ -64,27 +64,27 @@ if (  $log_api_res ) {
 			</ul>
 			<div class="skltbs-panel-group">
 				<div id='mepr_general_settings' class="skltbs-panel">
-				<?php require_once MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . 'admin/partials/pages/memberpress-discord-settings.php'; ?>
+				<?php require_once ETS_MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . 'admin/partials/pages/memberpress-discord-settings.php'; ?>
 				</div>
 				<?php if ( ets_memberpress_discord_check_saved_settings_status() ) : ?>
 				<div id='mepr_role_mapping' class="skltbs-panel">
-					<?php require_once MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . 'admin/partials/pages/memberpress-discord-role-level-map.php'; ?>
+					<?php require_once ETS_MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . 'admin/partials/pages/memberpress-discord-role-level-map.php'; ?>
 				</div>
 				<?php endif; ?>
 				<div id='mepr_advance' class="skltbs-panel">
-				<?php require_once MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . 'admin/partials/pages/memberpress-discord-advance.php'; ?>
+				<?php require_once ETS_MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . 'admin/partials/pages/memberpress-discord-advance.php'; ?>
 				</div>
 				<div id='mepr_appearance' class="skltbs-panel">
-				<?php require_once MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . 'admin/partials/pages/memberpress-discord-appearance.php'; ?>
+				<?php require_once ETS_MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . 'admin/partials/pages/memberpress-discord-appearance.php'; ?>
 				</div>
 				<div id='mepr_logs' class="skltbs-panel">
-				<?php require_once MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . 'admin/partials/pages/memberpress-discord-error-log.php'; ?>
+				<?php require_once ETS_MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . 'admin/partials/pages/memberpress-discord-error-log.php'; ?>
 				</div>
 				<div id='mepr_docs' class="skltbs-panel">
-				<?php require_once MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . 'admin/partials/pages/memberpress-discord-documentation.php'; ?>
+				<?php require_once ETS_MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . 'admin/partials/pages/memberpress-discord-documentation.php'; ?>
 				</div>
 				<div id='mepr_support' class="skltbs-panel">
-				<?php require_once MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . 'admin/partials/pages/memberpress-discord-get-support.php'; ?>
+				<?php require_once ETS_MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . 'admin/partials/pages/memberpress-discord-get-support.php'; ?>
 				</div>
 			</div>
 		</div>

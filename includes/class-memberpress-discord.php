@@ -46,8 +46,8 @@ class Memberpress_Discord {
 	 * @since    1.0.0
 	 */
 	public function __construct() {
-		if ( defined( 'MEMBERPRESS_DISCORD_VERSION' ) ) {
-			$this->version = MEMBERPRESS_DISCORD_VERSION;
+		if ( defined( 'ETS_MEMBERPRESS_DISCORD_VERSION' ) ) {
+			$this->version = ETS_MEMBERPRESS_DISCORD_VERSION;
 		} else {
 			$this->version = '1.0.0';
 		}
@@ -79,35 +79,35 @@ class Memberpress_Discord {
 		/**
 		 * The class responsible for defining all methods that help to schedule actions.
 		 */
-		require_once MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . 'includes/libraries/action-scheduler/action-scheduler.php';
+		require_once ETS_MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . 'includes/libraries/action-scheduler/action-scheduler.php';
 
 		/**
 			 * Define common functions.
 			 */
-		require_once MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . 'includes/functions.php';
+		require_once ETS_MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . 'includes/functions.php';
 
 		/**
 		 * The class responsible for orchestrating the actions and filters of the
 		 * core plugin.
 		 */
-		require_once MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . 'includes/class-memberpress-discord-loader.php';
+		require_once ETS_MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . 'includes/class-memberpress-discord-loader.php';
 
 		/**
 		 * The class responsible for defining internationalization functionality
 		 * of the plugin.
 		 */
-		require_once MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . 'includes/class-memberpress-discord-i18n.php';
+		require_once ETS_MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . 'includes/class-memberpress-discord-i18n.php';
 
 		/**
 		 * The class responsible for defining all actions that occur in the admin area.
 		 */
-		require_once MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . 'admin/class-memberpress-discord-admin.php';
+		require_once ETS_MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . 'admin/class-memberpress-discord-admin.php';
 
 		/**
 		 * The class responsible for defining all actions that occur in the public-facing
 		 * side of the site.
 		 */
-		require_once MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . 'public/class-memberpress-discord-public.php';
+		require_once ETS_MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . 'public/class-memberpress-discord-public.php';
 
 		$this->loader = new Memberpress_Discord_Loader();
 
@@ -225,7 +225,7 @@ class Memberpress_Discord {
 			$retry_failed_api  = sanitize_text_field( trim( get_option( 'ets_memberpress_retry_failed_api' ) ) );
 			$hook_failed_count = ets_memberpress_discord_count_of_hooks_failures( $hook );
 			$retry_api_count   = absint( sanitize_text_field( trim( get_option( 'ets_memberpress_retry_api_count' ) ) ) );
-			if ( $hook_failed_count < $retry_api_count && $retry_failed_api == true && $action_data['as_group'] == MEMBERPRESS_DISCORD_AS_GROUP_NAME && $action_data['status'] = 'failed' ) {
+			if ( $hook_failed_count < $retry_api_count && $retry_failed_api == true && $action_data['as_group'] == ETS_MEMBERPRESS_DISCORD_AS_GROUP_NAME && $action_data['status'] = 'failed' ) {
 				as_schedule_single_action( ets_memberpress_discord_get_random_timestamp( ets_memberpress_discord_get_highest_last_attempt_timestamp() ), $hook, array_values( $args ), 'ets-memberpress-discord' );
 			}
 		}
@@ -300,7 +300,7 @@ class Memberpress_Discord {
 			$message = ets_memberpress_discord_get_formatted_dm( $user_id, $active_membership, $ets_memberpress_discord_cancel_message );
 		}
 
-		$creat_dm_url = MEMBERPRESS_DISCORD_API_URL . '/channels/' . $dm_channel_id . '/messages';
+		$creat_dm_url = ETS_MEMBERPRESS_DISCORD_API_URL . '/channels/' . $dm_channel_id . '/messages';
 		$dm_args      = array(
 			'method'  => 'POST',
 			'headers' => array(
@@ -332,7 +332,7 @@ class Memberpress_Discord {
 	public function ets_memberpress_discord_create_member_dm_channel( $user_id ) {
 		$discord_user_id       = sanitize_text_field( trim( get_user_meta( $user_id, '_ets_memberpress_discord_user_id', true ) ) );
 		$discord_bot_token     = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_bot_token' ) ) );
-		$create_channel_dm_url = MEMBERPRESS_DISCORD_API_URL . '/users/@me/channels';
+		$create_channel_dm_url = ETS_MEMBERPRESS_DISCORD_API_URL . '/users/@me/channels';
 		$dm_channel_args       = array(
 			'method'  => 'POST',
 			'headers' => array(
