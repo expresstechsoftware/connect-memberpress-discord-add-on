@@ -94,7 +94,7 @@ register_deactivation_hook( __FILE__, 'deactivate_memberpress_discord' );
  * The core plugin class that is used to define internationalization,
  * admin-specific hooks, and public-facing site hooks.
  */
-require MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . 'includes/class-memberpress-discord.php';
+require ETS_MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . 'includes/class-memberpress-discord.php';
 
 /**
  * Begins execution of the plugin.
