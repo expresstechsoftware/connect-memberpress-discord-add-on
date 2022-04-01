@@ -242,7 +242,7 @@ class ETS_Memberpress_Discord_Public {
 							wp_signon( $credentials, '' );
 							$discord_user_id = sanitize_text_field( trim( get_user_meta( $user_id, '_ets_memberpress_discord_user_id', true ) ) );
 							$this->ets_memberpress_discord_add_member_in_guild( $discord_user_id, $user_id, $access_token, '' );
-							if ( $_COOKIE['ets_memberpress_discord_page'] ) {
+							if ( isset( $_COOKIE['ets_memberpress_discord_page'] ) ) {
 								wp_safe_redirect( urldecode_deep( $_COOKIE['ets_memberpress_discord_page'] ) );
 								exit();
 							}
