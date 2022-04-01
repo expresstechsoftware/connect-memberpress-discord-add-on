@@ -682,8 +682,8 @@ class ETS_Memberpress_Discord_Public {
 						}
 					}
 				}
-				$current_url = ets_memberpress_discord_get_current_screen_url();
-				echo wp_kses( '<a href="?action=memberpress-discord-login&fromcheckout=1&url=' . esc_url( $current_url ) . '#mepr_jump" class="memberpress-btn-connect ets-btn" >' . esc_html( $btn_text ) . '<i class="fab fa-discord"></i></a>', array( 'a' => array( 'href' => array(), 'class' => array('memberpress-btn-connect', 'ets-btn') ), 'i' => array( 'class'=> array( 'fab', 'fa-discord' ) ) ) );
+				$current_url = get_site_url() . '?action=memberpress-discord-login&fromcheckout=1&url=' . ets_memberpress_discord_get_current_screen_url();
+				echo wp_kses( '<a href="' . esc_url( $current_url ) . '" class="memberpress-btn-connect ets-btn" >' . esc_html( $btn_text ) . '<i class="fab fa-discord"></i></a>', array( 'a' => array( 'href' => array( $current_url ), 'class' => array( 'memberpress-btn-connect', 'ets-btn' ) ), 'i' => array( 'class' => array( 'fab', 'fa-discord' ) ) ) );
 				$memberpress_connecttodiscord_btn = '';
 				if ( $mapped_role_name ) {
 					$memberpress_connecttodiscord_btn .= '<p class="ets_assigned_role">' . esc_html__( 'Following Roles will be assigned to you in Discord: ', 'connect-memberpress-discord-add-on' );
