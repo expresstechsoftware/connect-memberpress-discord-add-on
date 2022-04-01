@@ -6,11 +6,11 @@
  * @link       https://www.expresstechsoftwares.com
  * @since      1.0.0
  *
- * @package    Memberpress_Discord
- * @subpackage Memberpress_Discord/includes
+ * @package    ETS_Memberpress_Discord
+ * @subpackage ETS_Memberpress_Discord/includes
  */
 
-class Memberpress_Discord_Loader {
+class ETS_Memberpress_Discord_Loader {
 
 	/**
 	 * The array of actions registered with WordPress.

@@ -2,11 +2,11 @@
 /**
  * The admin-specific functionality of the plugin.
  *
- * @package    Memberpress_Discord
- * @subpackage Memberpress_Discord/admin
+ * @package    ETS_Memberpress_Discord
+ * @subpackage ETS_Memberpress_Discord/admin
  * @author     ExpressTech Softwares Solutions Pvt Ltd <contact@expresstechsoftwares.com>
  */
-class Memberpress_Discord_Admin {
+class ETS_Memberpress_Discord_Admin {
 
 	/**
 	 * The ID of this plugin.
@@ -69,7 +69,7 @@ class Memberpress_Discord_Admin {
 		wp_register_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/memberpress-discord-admin.js', array( 'jquery' ), $this->version, false );
 		$script_params = array(
 			'admin_ajax'                    => admin_url( 'admin-ajax.php' ),
-			'permissions_const'             => MEMBERPRESS_DISCORD_BOT_PERMISSIONS,
+			'permissions_const'             => ETS_MEMBERPRESS_DISCORD_BOT_PERMISSIONS,
 			'is_admin'                      => is_admin(),
 			'ets_memberpress_discord_nonce' => wp_create_nonce( 'ets-memberpress-discord-ajax-nonce' ),
 		);
@@ -102,7 +102,7 @@ class Memberpress_Discord_Admin {
 		wp_enqueue_script( 'jquery-ui-droppable' );
 		wp_enqueue_script( 'wp-color-picker' );
 		wp_enqueue_style( 'wp-color-picker' );
-		require_once MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . 'admin/partials/memberpress-discord-admin-display.php';
+		require_once ETS_MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . 'admin/partials/memberpress-discord-admin-display.php';
 	}
 
 	/**
@@ -524,7 +524,7 @@ class Memberpress_Discord_Admin {
 		$server_id         = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_server_id' ) ) );
 		$discord_bot_token = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_bot_token' ) ) );
 		if ( $server_id && $discord_bot_token ) {
-			$discod_server_roles_api = MEMBERPRESS_DISCORD_API_URL . 'guilds/' . $server_id . '/roles';
+			$discod_server_roles_api = ETS_MEMBERPRESS_DISCORD_API_URL . 'guilds/' . $server_id . '/roles';
 			$guild_args              = array(
 				'method'  => 'GET',
 				'headers' => array(
@@ -586,7 +586,7 @@ class Memberpress_Discord_Admin {
 		}
 
 		if ( $status == 'none' && $access_token ) {
-			as_schedule_single_action( ets_memberpress_discord_get_random_timestamp( ets_memberpress_discord_get_highest_last_attempt_timestamp() ), 'ets_memberpress_discord_as_handle_memberpress_expiry', array( $expired_txn->user_id, $expired_membership ), MEMBERPRESS_DISCORD_AS_GROUP_NAME );
+			as_schedule_single_action( ets_memberpress_discord_get_random_timestamp( ets_memberpress_discord_get_highest_last_attempt_timestamp() ), 'ets_memberpress_discord_as_handle_memberpress_expiry', array( $expired_txn->user_id, $expired_membership ), ETS_MEMBERPRESS_DISCORD_AS_GROUP_NAME );
 		}
 	}
 
@@ -610,7 +610,7 @@ class Memberpress_Discord_Admin {
 				);
 		}
 		if ( $cancelled_membership && $access_token ) {
-			as_schedule_single_action( ets_memberpress_discord_get_random_timestamp( ets_memberpress_discord_get_highest_last_attempt_timestamp() ), 'ets_memberpress_discord_as_handle_memberpress_cancelled', array( $user->ID, $cancelled_membership ), MEMBERPRESS_DISCORD_AS_GROUP_NAME );
+			as_schedule_single_action( ets_memberpress_discord_get_random_timestamp( ets_memberpress_discord_get_highest_last_attempt_timestamp() ), 'ets_memberpress_discord_as_handle_memberpress_cancelled', array( $user->ID, $cancelled_membership ), ETS_MEMBERPRESS_DISCORD_AS_GROUP_NAME );
 		}
 	}
 
@@ -632,7 +632,7 @@ class Memberpress_Discord_Admin {
 				);
 		}
 		if ( $deleted_membership && $access_token ) {
-			as_schedule_single_action( ets_memberpress_discord_get_random_timestamp( ets_memberpress_discord_get_highest_last_attempt_timestamp() ), 'ets_memberpress_discord_as_handle_memberpress_cancelled', array( $deleted_txn->user_id, $deleted_membership ), MEMBERPRESS_DISCORD_AS_GROUP_NAME );
+			as_schedule_single_action( ets_memberpress_discord_get_random_timestamp( ets_memberpress_discord_get_highest_last_attempt_timestamp() ), 'ets_memberpress_discord_as_handle_memberpress_cancelled', array( $deleted_txn->user_id, $deleted_membership ), ETS_MEMBERPRESS_DISCORD_AS_GROUP_NAME );
 		}
 	}
 
@@ -664,9 +664,9 @@ class Memberpress_Discord_Admin {
 	 * @param BOOL  $is_schedule
 	 */
 	private function ets_memberpress_discord_set_member_roles( $user_id, $expired_membership = false, $cancelled_membership = false, $is_schedule = true ) {
-		$memberpress_discord                                = new Memberpress_Discord();
-		$plugin_admin                                       = new Memberpress_Discord_Admin( $memberpress_discord->get_plugin_name(), $memberpress_discord->get_version() );
-		$plugin_public                                      = new Memberpress_Discord_Public( $memberpress_discord->get_plugin_name(), $memberpress_discord->get_version(), $plugin_admin );
+		$memberpress_discord                                = new ETS_Memberpress_Discord();
+		$plugin_admin                                       = new ETS_Memberpress_Discord_Admin( $memberpress_discord->get_plugin_name(), $memberpress_discord->get_version() );
+		$plugin_public                                      = new ETS_Memberpress_Discord_Public( $memberpress_discord->get_plugin_name(), $memberpress_discord->get_version(), $plugin_admin );
 		$allow_none_member                                  = sanitize_text_field( trim( get_option( 'ets_memberpress_allow_none_member' ) ) );
 		$default_role                                       = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_default_role_id' ) ) );
 		$ets_memberpress_discord_role_mapping               = json_decode( get_option( 'ets_memberpress_discord_role_mapping' ), true );
@@ -732,12 +732,12 @@ class Memberpress_Discord_Admin {
 
 			// Send DM about expiry, but only when allow_none_member setting is yes
 			if ( $ets_memberpress_discord_send_membership_expired_dm == true && $expired_membership !== false && $allow_none_member = 'yes' ) {
-				as_schedule_single_action( ets_memberpress_discord_get_random_timestamp( ets_memberpress_discord_get_highest_last_attempt_timestamp() ), 'ets_memberpress_discord_as_send_dm', array( $user_id, $expired_membership, 'expired' ), MEMBERPRESS_DISCORD_AS_GROUP_NAME );
+				as_schedule_single_action( ets_memberpress_discord_get_random_timestamp( ets_memberpress_discord_get_highest_last_attempt_timestamp() ), 'ets_memberpress_discord_as_send_dm', array( $user_id, $expired_membership, 'expired' ), ETS_MEMBERPRESS_DISCORD_AS_GROUP_NAME );
 			}
 
 			// Send DM about cancel, but only when allow_none_member setting is yes
 			if ( $ets_memberpress_discord_send_membership_cancel_dm == true && $cancelled_membership !== false && $allow_none_member = 'yes' ) {
-				as_schedule_single_action( ets_memberpress_discord_get_random_timestamp( ets_memberpress_discord_get_highest_last_attempt_timestamp() ), 'ets_memberpress_discord_as_send_dm', array( $user_id, $cancelled_membership, 'cancel' ), MEMBERPRESS_DISCORD_AS_GROUP_NAME );
+				as_schedule_single_action( ets_memberpress_discord_get_random_timestamp( ets_memberpress_discord_get_highest_last_attempt_timestamp() ), 'ets_memberpress_discord_as_send_dm', array( $user_id, $cancelled_membership, 'cancel' ), ETS_MEMBERPRESS_DISCORD_AS_GROUP_NAME );
 			}
 		}
 	}
@@ -752,7 +752,7 @@ class Memberpress_Discord_Admin {
 	 */
 	public function memberpress_delete_discord_role( $user_id, $ets_role_id, $is_schedule = true ) {
 		if ( $is_schedule ) {
-			as_schedule_single_action( ets_memberpress_discord_get_random_timestamp( ets_memberpress_discord_get_highest_last_attempt_timestamp() ), 'ets_memberpress_discord_as_schedule_delete_role', array( $user_id, $ets_role_id, $is_schedule ), MEMBERPRESS_DISCORD_AS_GROUP_NAME );
+			as_schedule_single_action( ets_memberpress_discord_get_random_timestamp( ets_memberpress_discord_get_highest_last_attempt_timestamp() ), 'ets_memberpress_discord_as_schedule_delete_role', array( $user_id, $ets_role_id, $is_schedule ), ETS_MEMBERPRESS_DISCORD_AS_GROUP_NAME );
 		} else {
 			$this->ets_memberpress_discord_as_handler_delete_memberrole( $user_id, $ets_role_id, $is_schedule );
 		}
@@ -770,7 +770,7 @@ class Memberpress_Discord_Admin {
 		$server_id                        = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_server_id' ) ) );
 		$_ets_memberpress_discord_user_id = sanitize_text_field( trim( get_user_meta( $user_id, '_ets_memberpress_discord_user_id', true ) ) );
 		$discord_bot_token                = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_bot_token' ) ) );
-		$discord_delete_role_api_url      = MEMBERPRESS_DISCORD_API_URL . 'guilds/' . $server_id . '/members/' . $_ets_memberpress_discord_user_id . '/roles/' . $ets_role_id;
+		$discord_delete_role_api_url      = ETS_MEMBERPRESS_DISCORD_API_URL . 'guilds/' . $server_id . '/members/' . $_ets_memberpress_discord_user_id . '/roles/' . $ets_role_id;
 		if ( $_ets_memberpress_discord_user_id ) {
 			$param = array(
 				'method'  => 'DELETE',
@@ -802,9 +802,9 @@ class Memberpress_Discord_Admin {
 	 * @param INT $complete_txn
 	 */
 	public function ets_memberpress_discord_as_handler_memberpress_complete_transaction( $user_id, $complete_txn ) {
-		$memberpress_discord                     = new Memberpress_Discord();
-		$plugin_admin                            = new Memberpress_Discord_Admin( $memberpress_discord->get_plugin_name(), $memberpress_discord->get_version() );
-		$plugin_public                           = new Memberpress_Discord_Public( $memberpress_discord->get_plugin_name(), $memberpress_discord->get_version(), $plugin_admin );
+		$memberpress_discord                     = new ETS_Memberpress_Discord();
+		$plugin_admin                            = new ETS_Memberpress_Discord_Admin( $memberpress_discord->get_plugin_name(), $memberpress_discord->get_version() );
+		$plugin_public                           = new ETS_Memberpress_Discord_Public( $memberpress_discord->get_plugin_name(), $memberpress_discord->get_version(), $plugin_admin );
 		$ets_memberpress_discord_role_mapping    = json_decode( get_option( 'ets_memberpress_discord_role_mapping' ), true );
 		$default_role                            = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_default_role_id' ) ) );
 		$previous_default_role                   = get_user_meta( $user_id, '_ets_memberpress_discord_default_role_id', true );
@@ -821,7 +821,7 @@ class Memberpress_Discord_Admin {
 				update_user_meta( $user_id, '_ets_memberpress_discord_role_id_for_' . $complete_txn['txn_number'], $assigned_role );
 				// Send welcome message.
 				if ( true == $ets_memberpress_discord_send_welcome_dm && $complete_txn ) {
-					as_schedule_single_action( ets_memberpress_discord_get_random_timestamp( ets_memberpress_discord_get_highest_last_attempt_timestamp() ), 'ets_memberpress_discord_as_send_dm', array( $user_id, $complete_txn, 'welcome' ), MEMBERPRESS_DISCORD_AS_GROUP_NAME );
+					as_schedule_single_action( ets_memberpress_discord_get_random_timestamp( ets_memberpress_discord_get_highest_last_attempt_timestamp() ), 'ets_memberpress_discord_as_send_dm', array( $user_id, $complete_txn, 'welcome' ), ETS_MEMBERPRESS_DISCORD_AS_GROUP_NAME );
 				}
 			}
 		}
@@ -874,12 +874,12 @@ class Memberpress_Discord_Admin {
 					$this->memberpress_delete_discord_role( $txn->user_id, $pre_membership_on_txn['role_id'], true );
 					delete_user_meta( $txn->user_id, '_ets_memberpress_discord_role_id_for_' . $txn->trans_num, true );
 				}
-				as_schedule_single_action( ets_memberpress_discord_get_random_timestamp( ets_memberpress_discord_get_highest_last_attempt_timestamp() ), 'ets_memberpress_discord_as_handle_memberpress_complete_transaction', array( $txn->user_id, $complete_txn ), MEMBERPRESS_DISCORD_AS_GROUP_NAME );
+				as_schedule_single_action( ets_memberpress_discord_get_random_timestamp( ets_memberpress_discord_get_highest_last_attempt_timestamp() ), 'ets_memberpress_discord_as_handle_memberpress_complete_transaction', array( $txn->user_id, $complete_txn ), ETS_MEMBERPRESS_DISCORD_AS_GROUP_NAME );
 			} else {
 				$this->ets_memberpress_discord_set_member_roles( $txn->user_id, false, false, false );
 			}
 		} elseif ( $complete_txn && $access_token && $new_status == 'complete' ) {
-			as_schedule_single_action( ets_memberpress_discord_get_random_timestamp( ets_memberpress_discord_get_highest_last_attempt_timestamp() ), 'ets_memberpress_discord_as_handle_memberpress_complete_transaction', array( $txn->user_id, $complete_txn ), MEMBERPRESS_DISCORD_AS_GROUP_NAME );
+			as_schedule_single_action( ets_memberpress_discord_get_random_timestamp( ets_memberpress_discord_get_highest_last_attempt_timestamp() ), 'ets_memberpress_discord_as_handle_memberpress_complete_transaction', array( $txn->user_id, $complete_txn ), ETS_MEMBERPRESS_DISCORD_AS_GROUP_NAME );
 		}
 	}
 
@@ -984,7 +984,7 @@ class Memberpress_Discord_Admin {
 				);
 
 				if ( ! empty( $access_token ) && $sub_expire_membership ) {
-					as_schedule_single_action( ets_memberpress_discord_get_random_timestamp( ets_memberpress_discord_get_highest_last_attempt_timestamp() ), 'ets_memberpress_discord_as_send_dm', array( $transaction->user_id, $sub_expire_membership, 'warning' ), MEMBERPRESS_DISCORD_AS_GROUP_NAME );
+					as_schedule_single_action( ets_memberpress_discord_get_random_timestamp( ets_memberpress_discord_get_highest_last_attempt_timestamp() ), 'ets_memberpress_discord_as_send_dm', array( $transaction->user_id, $sub_expire_membership, 'warning' ), ETS_MEMBERPRESS_DISCORD_AS_GROUP_NAME );
 				}
 			}
 		}
@@ -1014,7 +1014,7 @@ class Memberpress_Discord_Admin {
 						);
 				}
 				if ( $cancelled_membership && $access_token ) {
-					as_schedule_single_action( ets_memberpress_discord_get_random_timestamp( ets_memberpress_discord_get_highest_last_attempt_timestamp() ), 'ets_memberpress_discord_as_handle_memberpress_cancelled', array( $user_id, $cancelled_membership ), MEMBERPRESS_DISCORD_AS_GROUP_NAME );
+					as_schedule_single_action( ets_memberpress_discord_get_random_timestamp( ets_memberpress_discord_get_highest_last_attempt_timestamp() ), 'ets_memberpress_discord_as_handle_memberpress_cancelled', array( $user_id, $cancelled_membership ), ETS_MEMBERPRESS_DISCORD_AS_GROUP_NAME );
 				}
 			}
 		}
@@ -1033,14 +1033,14 @@ class Memberpress_Discord_Admin {
 			}
 			$params                    = array(
 				'client_id'            => sanitize_text_field( trim( get_option( 'ets_memberpress_discord_client_id' ) ) ),
-				'permissions'          => MEMBERPRESS_DISCORD_BOT_PERMISSIONS,
+				'permissions'          => ETS_MEMBERPRESS_DISCORD_BOT_PERMISSIONS,
 				'response_type' => 'code',
 				'scope'                => 'bot',
 				'guild_id'             => sanitize_text_field( trim( get_option( 'ets_memberpress_discord_server_id' ) ) ),
 				'disable_guild_select' => 'true',
 				'redirect_uri'         => sanitize_text_field( trim( get_option( 'ets_memberpress_discord_bot_auth_redirect ' ) ) ),
 			);
-			$discord_authorise_api_url = MEMBERPRESS_DISCORD_API_URL . 'oauth2/authorize?' . http_build_query( $params );
+			$discord_authorise_api_url = ETS_MEMBERPRESS_DISCORD_API_URL . 'oauth2/authorize?' . http_build_query( $params );
 
 			wp_redirect( $discord_authorise_api_url, 302, get_site_url() );
 			exit;

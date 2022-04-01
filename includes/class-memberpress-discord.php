@@ -6,11 +6,11 @@
  * @link       https://www.expresstechsoftwares.com
  * @since      1.0.0
  *
- * @package    Memberpress_Discord
- * @subpackage Memberpress_Discord/includes
+ * @package    ETS_Memberpress_Discord
+ * @subpackage ETS_Memberpress_Discord/includes
  */
 
-class Memberpress_Discord {
+class ETS_Memberpress_Discord {
 
 	/**
 	 * The loader that's responsible for maintaining and registering all hooks that power
@@ -18,7 +18,7 @@ class Memberpress_Discord {
 	 *
 	 * @since    1.0.0
 	 * @access   protected
-	 * @var      Memberpress_Discord_Loader    $loader    Maintains and registers all hooks for the plugin.
+	 * @var      ETS_Memberpress_Discord_Loader    $loader    Maintains and registers all hooks for the plugin.
 	 */
 	protected $loader;
 
@@ -46,8 +46,8 @@ class Memberpress_Discord {
 	 * @since    1.0.0
 	 */
 	public function __construct() {
-		if ( defined( 'MEMBERPRESS_DISCORD_VERSION' ) ) {
-			$this->version = MEMBERPRESS_DISCORD_VERSION;
+		if ( defined( 'ETS_MEMBERPRESS_DISCORD_VERSION' ) ) {
+			$this->version = ETS_MEMBERPRESS_DISCORD_VERSION;
 		} else {
 			$this->version = '1.0.0';
 		}
@@ -63,10 +63,10 @@ class Memberpress_Discord {
 	/**
 	 * Load the required dependencies for this plugin.
 	 *
-	 * - Memberpress_Discord_Loader. Orchestrates the hooks of the plugin.
-	 * - Memberpress_Discord_i18n. Defines internationalization functionality.
-	 * - Memberpress_Discord_Admin. Defines all hooks for the admin area.
-	 * - Memberpress_Discord_Public. Defines all hooks for the public side of the site.
+	 * - ETS_Memberpress_Discord_Loader. Orchestrates the hooks of the plugin.
+	 * - ETS_Memberpress_Discord_i18n. Defines internationalization functionality.
+	 * - ETS_Memberpress_Discord_Admin. Defines all hooks for the admin area.
+	 * - ETS_Memberpress_Discord_Public. Defines all hooks for the public side of the site.
 	 *
 	 * Create an instance of the loader which will be used to register the hooks
 	 * with WordPress.
@@ -79,44 +79,44 @@ class Memberpress_Discord {
 		/**
 		 * The class responsible for defining all methods that help to schedule actions.
 		 */
-		require_once MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . 'includes/libraries/action-scheduler/action-scheduler.php';
+		require_once ETS_MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . 'includes/libraries/action-scheduler/action-scheduler.php';
 
 		/**
 			 * Define common functions.
 			 */
-		require_once MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . 'includes/functions.php';
+		require_once ETS_MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . 'includes/functions.php';
 
 		/**
 		 * The class responsible for orchestrating the actions and filters of the
 		 * core plugin.
 		 */
-		require_once MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . 'includes/class-memberpress-discord-loader.php';
+		require_once ETS_MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . 'includes/class-memberpress-discord-loader.php';
 
 		/**
 		 * The class responsible for defining internationalization functionality
 		 * of the plugin.
 		 */
-		require_once MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . 'includes/class-memberpress-discord-i18n.php';
+		require_once ETS_MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . 'includes/class-memberpress-discord-i18n.php';
 
 		/**
 		 * The class responsible for defining all actions that occur in the admin area.
 		 */
-		require_once MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . 'admin/class-memberpress-discord-admin.php';
+		require_once ETS_MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . 'admin/class-memberpress-discord-admin.php';
 
 		/**
 		 * The class responsible for defining all actions that occur in the public-facing
 		 * side of the site.
 		 */
-		require_once MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . 'public/class-memberpress-discord-public.php';
+		require_once ETS_MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . 'public/class-memberpress-discord-public.php';
 
-		$this->loader = new Memberpress_Discord_Loader();
+		$this->loader = new ETS_Memberpress_Discord_Loader();
 
 	}
 
 	/**
 	 * Define the locale for this plugin for internationalization.
 	 *
-	 * Uses the Memberpress_Discord_i18n class in order to set the domain and to register the hook
+	 * Uses the ETS_Memberpress_Discord_i18n class in order to set the domain and to register the hook
 	 * with WordPress.
 	 *
 	 * @since    1.0.0
@@ -124,7 +124,7 @@ class Memberpress_Discord {
 	 */
 	private function set_locale() {
 
-		$plugin_i18n = new Memberpress_Discord_i18n();
+		$plugin_i18n = new ETS_Memberpress_Discord_i18n();
 
 		$this->loader->add_action( 'plugins_loaded', $plugin_i18n, 'load_plugin_textdomain' );
 
@@ -139,7 +139,7 @@ class Memberpress_Discord {
 	 */
 	private function define_admin_hooks() {
 
-		$plugin_admin = new Memberpress_Discord_Admin( $this->get_plugin_name(), $this->get_version() );
+		$plugin_admin = new ETS_Memberpress_Discord_Admin( $this->get_plugin_name(), $this->get_version() );
 
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
@@ -177,9 +177,9 @@ class Memberpress_Discord {
 	 * @access   private
 	 */
 	private function define_public_hooks() {
-    $plugin_admin = new Memberpress_Discord_Admin( $this->get_plugin_name(), $this->get_version() );
+    $plugin_admin = new ETS_Memberpress_Discord_Admin( $this->get_plugin_name(), $this->get_version() );
 
-		$plugin_public = new Memberpress_Discord_Public( $this->get_plugin_name(), $this->get_version(), $plugin_admin );
+		$plugin_public = new ETS_Memberpress_Discord_Public( $this->get_plugin_name(), $this->get_version(), $plugin_admin );
 
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
@@ -225,7 +225,7 @@ class Memberpress_Discord {
 			$retry_failed_api  = sanitize_text_field( trim( get_option( 'ets_memberpress_retry_failed_api' ) ) );
 			$hook_failed_count = ets_memberpress_discord_count_of_hooks_failures( $hook );
 			$retry_api_count   = absint( sanitize_text_field( trim( get_option( 'ets_memberpress_retry_api_count' ) ) ) );
-			if ( $hook_failed_count < $retry_api_count && $retry_failed_api == true && $action_data['as_group'] == MEMBERPRESS_DISCORD_AS_GROUP_NAME && $action_data['status'] = 'failed' ) {
+			if ( $hook_failed_count < $retry_api_count && $retry_failed_api == true && $action_data['as_group'] == ETS_MEMBERPRESS_DISCORD_AS_GROUP_NAME && $action_data['status'] = 'failed' ) {
 				as_schedule_single_action( ets_memberpress_discord_get_random_timestamp( ets_memberpress_discord_get_highest_last_attempt_timestamp() ), $hook, array_values( $args ), 'ets-memberpress-discord' );
 			}
 		}
@@ -300,7 +300,7 @@ class Memberpress_Discord {
 			$message = ets_memberpress_discord_get_formatted_dm( $user_id, $active_membership, $ets_memberpress_discord_cancel_message );
 		}
 
-		$creat_dm_url = MEMBERPRESS_DISCORD_API_URL . '/channels/' . $dm_channel_id . '/messages';
+		$creat_dm_url = ETS_MEMBERPRESS_DISCORD_API_URL . '/channels/' . $dm_channel_id . '/messages';
 		$dm_args      = array(
 			'method'  => 'POST',
 			'headers' => array(
@@ -332,7 +332,7 @@ class Memberpress_Discord {
 	public function ets_memberpress_discord_create_member_dm_channel( $user_id ) {
 		$discord_user_id       = sanitize_text_field( trim( get_user_meta( $user_id, '_ets_memberpress_discord_user_id', true ) ) );
 		$discord_bot_token     = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_bot_token' ) ) );
-		$create_channel_dm_url = MEMBERPRESS_DISCORD_API_URL . '/users/@me/channels';
+		$create_channel_dm_url = ETS_MEMBERPRESS_DISCORD_API_URL . '/users/@me/channels';
 		$dm_channel_args       = array(
 			'method'  => 'POST',
 			'headers' => array(
@@ -388,7 +388,7 @@ class Memberpress_Discord {
 	 * The reference to the class that orchestrates the hooks with the plugin.
 	 *
 	 * @since     1.0.0
-	 * @return    Memberpress_Discord_Loader    Orchestrates the hooks of the plugin.
+	 * @return    ETS_Memberpress_Discord_Loader    Orchestrates the hooks of the plugin.
 	 */
 	public function get_loader() {
 		return $this->loader;

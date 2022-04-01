@@ -4,7 +4,7 @@
  * @link       https://www.expresstechsoftwares.com
  * @since      1.0.0
  *
- * @package    Memberpress_Discord
+ * @package    ETS_Memberpress_Discord
  */
 
 // If uninstall not called from WordPress, then exit.

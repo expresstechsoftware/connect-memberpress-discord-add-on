@@ -1,7 +1,7 @@
 <div class="error-log">
 <?php
 	$uuid     = get_option( 'ets_memberpress_discord_uuid_file_name' );
-	$filename = $uuid . Memberpress_Discord_Admin::$log_file_name;
+	$filename = $uuid . ETS_Memberpress_Discord_Admin::$log_file_name;
 	$handle   = fopen( WP_CONTENT_DIR . '/' . $filename, 'a+' );
   if( $handle ){
     while ( ! feof( $handle ) ) {

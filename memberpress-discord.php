@@ -6,7 +6,7 @@
  *
  * @link              https://www.expresstechsoftwares.com
  * @since             1.0.0
- * @package           Memberpress_Discord
+ * @package           ETS_Memberpress_Discord
  *
  * @wordpress-plugin
  * Plugin Name:       Connect MemberPress To Discord Add On
@@ -29,37 +29,37 @@ if ( ! defined( 'WPINC' ) ) {
 /**
  * Currently plugin version.
  */
-define( 'MEMBERPRESS_DISCORD_VERSION', '1.0.0' );
+define( 'ETS_MEMBERPRESS_DISCORD_VERSION', '1.0.0' );
 
 /**
  * Discord API URL
  */
-define( 'MEMBERPRESS_DISCORD_API_URL', 'https://discord.com/api/v6/' );
+define( 'ETS_MEMBERPRESS_DISCORD_API_URL', 'https://discord.com/api/v6/' );
 
 /**
  * Discord BOT Permissions
  */
-define( 'MEMBERPRESS_DISCORD_BOT_PERMISSIONS', 8 );
+define( 'ETS_MEMBERPRESS_DISCORD_BOT_PERMISSIONS', 8 );
 
 /**
  * Discord API call scopes
  */
-define( 'MEMBERPRESS_DISCORD_OAUTH_SCOPES', 'identify email guilds guilds.join' );
+define( 'ETS_MEMBERPRESS_DISCORD_OAUTH_SCOPES', 'identify email guilds guilds.join' );
 
 /**
  * Define group name for action scheduler actions
  */
-define( 'MEMBERPRESS_DISCORD_AS_GROUP_NAME', 'ets-memberpress-discord' );
+define( 'ETS_MEMBERPRESS_DISCORD_AS_GROUP_NAME', 'ets-memberpress-discord' );
 
 /**
  * Define plugin directory path
  */
-define( 'MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH', plugin_dir_path( __FILE__ ) );
+define( 'ETS_MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH', plugin_dir_path( __FILE__ ) );
 
 /**
  * Define plugin directory URL
  */
-define( 'MEMBERPRESS_DISCORD_PLUGIN_DIR_URL', plugin_dir_url( __FILE__ ) );
+define( 'ETS_MEMBERPRESS_DISCORD_PLUGIN_DIR_URL', plugin_dir_url( __FILE__ ) );
 
 /**
  * Follwing response codes not cosider for re-try API calls.
@@ -75,16 +75,16 @@ define( 'ETS_MEMBERPRESS_DISCORD_DONOT_RETRY_HTTP_CODES', array( 400, 401, 403, 
  * The code that runs during plugin activation.
  */
 function activate_memberpress_discord() {
-	require_once MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . 'includes/class-memberpress-discord-activator.php';
-	Memberpress_Discord_Activator::activate();
+	require_once ETS_MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . 'includes/class-memberpress-discord-activator.php';
+	ETS_Memberpress_Discord_Activator::activate();
 }
 
 /**
  * The code that runs during plugin deactivation.
  */
 function deactivate_memberpress_discord() {
-	require_once MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . 'includes/class-memberpress-discord-deactivator.php';
-	Memberpress_Discord_Deactivator::deactivate();
+	require_once ETS_MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . 'includes/class-memberpress-discord-deactivator.php';
+	ETS_Memberpress_Discord_Deactivator::deactivate();
 }
 
 register_activation_hook( __FILE__, 'activate_memberpress_discord' );
@@ -94,7 +94,7 @@ register_deactivation_hook( __FILE__, 'deactivate_memberpress_discord' );
  * The core plugin class that is used to define internationalization,
  * admin-specific hooks, and public-facing site hooks.
  */
-require MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . 'includes/class-memberpress-discord.php';
+require ETS_MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . 'includes/class-memberpress-discord.php';
 
 /**
  * Begins execution of the plugin.
@@ -103,7 +103,7 @@ require MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . 'includes/class-memberpress-discor
  */
 function run_memberpress_discord() {
 
-	$plugin = new Memberpress_Discord();
+	$plugin = new ETS_Memberpress_Discord();
 	$plugin->run();
 
 }
