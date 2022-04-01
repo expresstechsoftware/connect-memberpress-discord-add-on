@@ -1,4 +1,4 @@
-=== Connect MemberPress To Discord Add On ===
+=== Connect MemberPress To Discord ===
 Contributors: expresstechsoftware
 Tags: Discord, Talk, Video Chat, Hang Out, Friends, Meberships, discord role management
 Requires at least: 4.7
