@@ -20,10 +20,10 @@
 		<input type="button" class="ets-submit ets-bg-green" value="Refresh" onClick="window.location.reload()">
 	</div>
 	<div class="form-group">
-		<a href="<?php echo esc_attr( content_url('/') . $filename ); ?>" class="ets-submit ets-bg-download" download><?php echo __( 'Download', 'expresstechsoftwares-memberpress-discord-add-on' ); ?></a>
+		<a href="<?php echo esc_attr( content_url('/') . $filename ); ?>" class="ets-submit ets-bg-download" download><?php echo __( 'Download', 'connect-memberpress-discord-add-on' ); ?></a>
 	</div>
   <div class="form-group">
-		<a href="<?php echo get_site_url(); ?>/wp-admin/tools.php?page=action-scheduler&status=pending&s=memberpress" class="ets-submit ets-bg-greent"><?php echo __( 'Action Queue', 'expresstechsoftwares-memberpress-discord-add-on' ); ?></a>
+		<a href="<?php echo get_site_url(); ?>/wp-admin/tools.php?page=action-scheduler&status=pending&s=memberpress" class="ets-submit ets-bg-greent"><?php echo __( 'Action Queue', 'connect-memberpress-discord-add-on' ); ?></a>
 	</div>
   
 </div>

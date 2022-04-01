@@ -24,41 +24,41 @@ $log_api_res                                  = sanitize_text_field( trim( get_o
 if (  $log_api_res ) {
 	?>
 	<div class="notice notice-success support-success-msg">
-		<p><?php echo __( 'MemberPress - Discord logging is currently enabled. Since logs may contain sensitive information, please ensure that you only leave it enabled for as long as it is needed for troubleshooting. If you currently have a support ticket open, please do not disable logging until the Support Team has reviewed your logs.', 'expresstechsoftwares-memberpress-discord-add-on' ); ?></p>
+		<p><?php echo __( 'MemberPress - Discord logging is currently enabled. Since logs may contain sensitive information, please ensure that you only leave it enabled for as long as it is needed for troubleshooting. If you currently have a support ticket open, please do not disable logging until the Support Team has reviewed your logs.', 'connect-memberpress-discord-add-on' ); ?></p>
 	</div>
 	<?php
 }
 
 ?>
-<h1><?php echo __( 'Memberpress Discord Add On Settings', 'expresstechsoftwares-memberpress-discord-add-on' ); ?></h1>
+<h1><?php echo __( 'Memberpress Discord Add On Settings', 'connect-memberpress-discord-add-on' ); ?></h1>
 		<div id="outer" class="skltbs-theme-light" data-skeletabs='{ "startIndex": 1 }'>
 			<ul class="skltbs-tab-group">
 				<li class="skltbs-tab-item">
-				<button class="skltbs-tab" data-identity="mepr_settings" ><?php echo __( 'Application details', 'expresstechsoftwares-memberpress-discord-add-on' ); ?><span class="initialtab spinner"></span></button>
+				<button class="skltbs-tab" data-identity="mepr_settings" ><?php echo __( 'Application details', 'connect-memberpress-discord-add-on' ); ?><span class="initialtab spinner"></span></button>
 				</li>
 				<?php if ( ets_memberpress_discord_check_saved_settings_status() ) : ?>
 				<li class="skltbs-tab-item">
-				<button class="skltbs-tab" data-identity="level-mapping" ><?php echo __( 'Role Mappings', 'expresstechsoftwares-memberpress-discord-add-on' ); ?></button>
+				<button class="skltbs-tab" data-identity="level-mapping" ><?php echo __( 'Role Mappings', 'connect-memberpress-discord-add-on' ); ?></button>
 				</li>
 				<?php endif; ?>	
 				<li class="skltbs-tab-item">
-				<button class="skltbs-tab" data-identity="advanced" data-toggle="tab" data-event="ets_advanced"><?php echo __( 'Advanced', 'expresstechsoftwares-memberpress-discord-add-on' ); ?>	
+				<button class="skltbs-tab" data-identity="advanced" data-toggle="tab" data-event="ets_advanced"><?php echo __( 'Advanced', 'connect-memberpress-discord-add-on' ); ?>	
 				</button>
 				</li>
 				<li class="skltbs-tab-item">
-				<button class="skltbs-tab" data-identity="appearance" data-toggle="tab" data-event="ets_appearance"><?php echo __( 'Appearance', 'expresstechsoftwares-memberpress-discord-add-on' ); ?>	
+				<button class="skltbs-tab" data-identity="appearance" data-toggle="tab" data-event="ets_appearance"><?php echo __( 'Appearance', 'connect-memberpress-discord-add-on' ); ?>	
 				</button>
 				</li>
 				<li class="skltbs-tab-item">
-				<button class="skltbs-tab" data-identity="logs" data-toggle="tab" data-event="ets_logs"><?php echo __( 'Logs', 'expresstechsoftwares-memberpress-discord-add-on' ); ?>	
+				<button class="skltbs-tab" data-identity="logs" data-toggle="tab" data-event="ets_logs"><?php echo __( 'Logs', 'connect-memberpress-discord-add-on' ); ?>	
 				</button>
 				</li>
 				<li class="skltbs-tab-item">
-				<button class="skltbs-tab" data-identity="docs" data-toggle="tab" data-event="ets_docs"><?php echo __( 'Documentation', 'expresstechsoftwares-memberpress-discord-add-on' ); ?>	
+				<button class="skltbs-tab" data-identity="docs" data-toggle="tab" data-event="ets_docs"><?php echo __( 'Documentation', 'connect-memberpress-discord-add-on' ); ?>	
 				</button>
 				</li>
 				<li class="skltbs-tab-item">
-				<button class="skltbs-tab" data-identity="support" data-toggle="tab" data-event="ets_about_us"><?php echo __( 'Support', 'expresstechsoftwares-memberpress-discord-add-on' ); ?>	
+				<button class="skltbs-tab" data-identity="support" data-toggle="tab" data-event="ets_about_us"><?php echo __( 'Support', 'connect-memberpress-discord-add-on' ); ?>	
 				</button>
 				</li>
 			</ul>

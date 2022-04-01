@@ -51,7 +51,7 @@ class Memberpress_Discord {
 		} else {
 			$this->version = '1.0.0';
 		}
-		$this->plugin_name = 'expresstechsoftwares-memberpress-discord-add-on';
+		$this->plugin_name = 'connect-memberpress-discord-add-on';
 
 		$this->load_dependencies();
 		$this->set_locale();

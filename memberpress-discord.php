@@ -9,7 +9,7 @@
  * @package           Memberpress_Discord
  *
  * @wordpress-plugin
- * Plugin Name:       ExpressTech's MemberPress Discord Add On
+ * Plugin Name:       Connect MemberPress To Discord Add On
  * Plugin URI:        https://www.expresstechsoftwares.com/memberpress-discord-add-on/
  * Description:       Allow memberpress users to connect their site to discord and allow them to be part of your discord community, site admin can allow discord roles based on the membership a member have and can sell private content in role specific discord channels.
  * Version:           1.0.0
@@ -17,7 +17,7 @@
  * Author URI:        https://www.expresstechsoftwares.com
  * License:           GPL-2.0+
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
- * Text Domain:       expresstechsoftwares-memberpress-discord-add-on
+ * Text Domain:       connect-memberpress-discord-add-on
  * Domain Path:       /languages
  */
 
@@ -44,7 +44,7 @@ define( 'MEMBERPRESS_DISCORD_BOT_PERMISSIONS', 8 );
 /**
  * Discord API call scopes
  */
-define( 'MEMBERPRESS_DISCORD_OAUTH_SCOPES', 'identify email connections guilds guilds.join gdm.join rpc rpc.notifications.read rpc.voice.read rpc.voice.write rpc.activities.write bot webhook.incoming applications.builds.upload applications.builds.read applications.commands applications.store.update applications.entitlements activities.read activities.write relationships.read' );
+define( 'MEMBERPRESS_DISCORD_OAUTH_SCOPES', 'identify email guilds guilds.join' );
 
 /**
  * Define group name for action scheduler actions
