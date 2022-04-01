@@ -1,5 +1,5 @@
-=== ExpressTech's MemberPress Discord Add On ===
-Contributors: expresstechsoftware, webbdeveloper
+=== Connect MemberPress To Discord Add On ===
+Contributors: expresstechsoftware
 Tags: Discord, Talk, Video Chat, Hang Out, Friends, Meberships, discord role management
 Requires at least: 4.7
 Donate link: https://paypal.me/supportets
