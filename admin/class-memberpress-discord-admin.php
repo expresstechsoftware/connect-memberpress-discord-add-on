@@ -191,7 +191,7 @@ class ETS_Memberpress_Discord_Admin {
 				}
 
 				if ( $allow_none_member ) {
-					update_option( 'ets_memberpress_allow_none_member', $allow_none_member );
+					update_option( 'ets_memberpress_discord_allow_none_member', $allow_none_member );
 				}
 
 				$message = 'Your mappings are saved successfully.';
@@ -203,7 +203,7 @@ class ETS_Memberpress_Discord_Admin {
 			if ( isset( $_POST['flush'] ) ) {
 				delete_option( 'ets_memberpress_discord_role_mapping' );
 				delete_option( 'ets_memberpress_discord_default_role_id' );
-				delete_option( 'ets_memberpress_allow_none_member' );
+				delete_option( 'ets_memberpress_discord_allow_none_member' );
 				$message = ' Your settings flushed successfully.';
 				if ( isset( $_POST['current_url'] ) ) {
 					$pre_location = sanitize_text_field( $_POST['current_url'] ) . '&save_settings_msg=' . $message . '#mepr_role_mapping';
@@ -228,7 +228,7 @@ class ETS_Memberpress_Discord_Admin {
 
 		$set_job_q_batch_size = isset( $_POST['set_job_q_batch_size'] ) ? sanitize_textarea_field( trim( $_POST['set_job_q_batch_size'] ) ) : '';
 
-		$retry_api_count = isset( $_POST['ets_memberpress_retry_api_count'] ) ? sanitize_textarea_field( trim( $_POST['ets_memberpress_retry_api_count'] ) ) : '';
+		$retry_api_count = isset( $_POST['ets_memberpress_discord_retry_api_count'] ) ? sanitize_textarea_field( trim( $_POST['ets_memberpress_discord_retry_api_count'] ) ) : '';
 
 		$ets_memberpress_discord_send_expiration_warning_dm = isset( $_POST['ets_memberpress_discord_send_expiration_warning_dm'] ) ? sanitize_textarea_field( trim( $_POST['ets_memberpress_discord_send_expiration_warning_dm'] ) ) : false;
 
@@ -261,15 +261,15 @@ class ETS_Memberpress_Discord_Admin {
 				}
 
 				if ( isset( $_POST['retry_failed_api'] ) ) {
-					update_option( 'ets_memberpress_retry_failed_api', true );
+					update_option( 'ets_memberpress_discord_retry_failed_api', true );
 				} else {
-					update_option( 'ets_memberpress_retry_failed_api', false );
+					update_option( 'ets_memberpress_discord_retry_failed_api', false );
 				}
 
 				if ( isset( $_POST['memberpress_member_kick_out'] ) ) {
-					update_option( 'ets_memberpress_member_kick_out', true );
+					update_option( 'ets_memberpress_discord_member_kick_out', true );
 				} else {
-					update_option( 'ets_memberpress_member_kick_out', false );
+					update_option( 'ets_memberpress_discord_member_kick_out', false );
 				}
 
 				if ( isset( $_POST['memberpress_member_discord_login'] ) ) {
@@ -342,11 +342,11 @@ class ETS_Memberpress_Discord_Admin {
 					}
 				}
 
-				if ( isset( $_POST['ets_memberpress_retry_api_count'] ) ) {
+				if ( isset( $_POST['ets_memberpress_discord_retry_api_count'] ) ) {
 					if ( $retry_api_count < 1 ) {
-						update_option( 'ets_memberpress_retry_api_count', 1 );
+						update_option( 'ets_memberpress_discord_retry_api_count', 1 );
 					} else {
-						update_option( 'ets_memberpress_retry_api_count', $retry_api_count );
+						update_option( 'ets_memberpress_discord_retry_api_count', $retry_api_count );
 					}
 				}
 				$message = 'Your settings are saved successfully.';
@@ -371,10 +371,10 @@ class ETS_Memberpress_Discord_Admin {
 		}
 
 		$ets_memberpress_btn_color            = isset( $_POST['ets_memberpress_btn_color'] ) && $_POST['ets_memberpress_btn_color'] !== '' ? sanitize_text_field( trim( $_POST['ets_memberpress_btn_color'] ) ) : '#77a02e';
-		$ets_memberpress_btn_disconnect_color = isset( $_POST['ets_memberpress_btn_disconnect_color'] ) && $_POST['ets_memberpress_btn_disconnect_color'] != '' ? sanitize_text_field( trim( $_POST['ets_memberpress_btn_disconnect_color'] ) ) : '#ff0000';
+		$ets_memberpress_discord_btn_disconnect_color = isset( $_POST['ets_memberpress_discord_btn_disconnect_color'] ) && $_POST['ets_memberpress_discord_btn_disconnect_color'] != '' ? sanitize_text_field( trim( $_POST['ets_memberpress_discord_btn_disconnect_color'] ) ) : '#ff0000';
 		$ets_memberpress_loggedin_btn_text    = isset( $_POST['ets_memberpress_loggedin_btn_text'] ) && $_POST['ets_memberpress_loggedin_btn_text'] != '' ? sanitize_text_field( trim( $_POST['ets_memberpress_loggedin_btn_text'] ) ) : 'Connect To Discord';
 		$ets_memberpress_loggedout_btn_text   = isset( $_POST['ets_memberpress_loggedout_btn_text'] ) && $_POST['ets_memberpress_loggedout_btn_text'] != '' ? sanitize_text_field( trim( $_POST['ets_memberpress_loggedout_btn_text'] ) ) : 'Login With Discord';
-		$ets_memberpress_disconnect_btn_text  = $_POST['ets_memberpress_disconnect_btn_text'] ? sanitize_text_field( trim( $_POST['ets_memberpress_disconnect_btn_text'] ) ) : 'Disconnect From Discord';
+		$ets_memberpress_discord_disconnect_btn_text  = $_POST['ets_memberpress_discord_disconnect_btn_text'] ? sanitize_text_field( trim( $_POST['ets_memberpress_discord_disconnect_btn_text'] ) ) : 'Disconnect From Discord';
 
 		if ( isset( $_POST['apr_submit'] ) ) {
 
@@ -382,8 +382,8 @@ class ETS_Memberpress_Discord_Admin {
 				if ( $ets_memberpress_btn_color ) {
 					update_option( 'ets_memberpress_discord_btn_color', $ets_memberpress_btn_color );
 				}
-				if ( $ets_memberpress_btn_disconnect_color ) {
-					update_option( 'ets_memberpress_btn_disconnect_color', $ets_memberpress_btn_disconnect_color );
+				if ( $ets_memberpress_discord_btn_disconnect_color ) {
+					update_option( 'ets_memberpress_discord_btn_disconnect_color', $ets_memberpress_discord_btn_disconnect_color );
 				}
 				if ( $ets_memberpress_loggedout_btn_text ) {
 					update_option( 'ets_memberpress_discord_loggedout_btn_text', $ets_memberpress_loggedout_btn_text );
@@ -391,8 +391,8 @@ class ETS_Memberpress_Discord_Admin {
 				if ( $ets_memberpress_loggedin_btn_text ) {
 					update_option( 'ets_memberpress_discord_loggedin_btn_text', $ets_memberpress_loggedin_btn_text );
 				}
-				if ( $ets_memberpress_disconnect_btn_text ) {
-					update_option( 'ets_memberpress_disconnect_btn_text', $ets_memberpress_disconnect_btn_text );
+				if ( $ets_memberpress_discord_disconnect_btn_text ) {
+					update_option( 'ets_memberpress_discord_disconnect_btn_text', $ets_memberpress_discord_disconnect_btn_text );
 				}
 				$message = 'Your settings are saved successfully.';
 				if ( isset( $_POST['current_url'] ) ) {
@@ -667,7 +667,7 @@ class ETS_Memberpress_Discord_Admin {
 		$memberpress_discord                                = new ETS_Memberpress_Discord();
 		$plugin_admin                                       = new ETS_Memberpress_Discord_Admin( $memberpress_discord->get_plugin_name(), $memberpress_discord->get_version() );
 		$plugin_public                                      = new ETS_Memberpress_Discord_Public( $memberpress_discord->get_plugin_name(), $memberpress_discord->get_version(), $plugin_admin );
-		$allow_none_member                                  = sanitize_text_field( trim( get_option( 'ets_memberpress_allow_none_member' ) ) );
+		$allow_none_member                                  = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_allow_none_member' ) ) );
 		$default_role                                       = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_default_role_id' ) ) );
 		$ets_memberpress_discord_role_mapping               = json_decode( get_option( 'ets_memberpress_discord_role_mapping' ), true );
 		$active_memberships                                 = ets_memberpress_discord_get_active_memberships( $user_id );

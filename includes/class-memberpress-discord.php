@@ -222,9 +222,9 @@ class ETS_Memberpress_Discord {
 		if ( $action_data !== false ) {
 			$hook              = $action_data['hook'];
 			$args              = json_decode( $action_data['args'] );
-			$retry_failed_api  = sanitize_text_field( trim( get_option( 'ets_memberpress_retry_failed_api' ) ) );
+			$retry_failed_api  = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_retry_failed_api' ) ) );
 			$hook_failed_count = ets_memberpress_discord_count_of_hooks_failures( $hook );
-			$retry_api_count   = absint( sanitize_text_field( trim( get_option( 'ets_memberpress_retry_api_count' ) ) ) );
+			$retry_api_count   = absint( sanitize_text_field( trim( get_option( 'ets_memberpress_discord_retry_api_count' ) ) ) );
 			if ( $hook_failed_count < $retry_api_count && $retry_failed_api == true && $action_data['as_group'] == ETS_MEMBERPRESS_DISCORD_AS_GROUP_NAME && $action_data['status'] = 'failed' ) {
 				as_schedule_single_action( ets_memberpress_discord_get_random_timestamp( ets_memberpress_discord_get_highest_last_attempt_timestamp() ), $hook, array_values( $args ), 'ets-memberpress-discord' );
 			}

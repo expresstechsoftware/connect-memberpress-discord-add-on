@@ -1,9 +1,9 @@
 <?php
 $btn_color                          = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_btn_color' ) ) );
-$ets_memberpress_btn_disconnect_color                          = sanitize_text_field( trim( get_option( 'ets_memberpress_btn_disconnect_color' ) ) );
+$ets_memberpress_discord_btn_disconnect_color                          = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_btn_disconnect_color' ) ) );
 $btn_text                        	= sanitize_text_field( trim( get_option( 'ets_memberpress_discord_loggedout_btn_text' ) ) );
 $loggedin_btn_text                  = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_loggedin_btn_text' ) ) );
-$ets_memberpress_disconnect_btn_text                  = sanitize_text_field( trim( get_option( 'ets_memberpress_disconnect_btn_text' ) ) );
+$ets_memberpress_discord_disconnect_btn_text                  = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_disconnect_btn_text' ) ) );
 $current_screen = ets_memberpress_discord_get_current_screen_url();
 ?>
 <form method="post" action="<?php echo get_site_url().'/wp-admin/admin-post.php' ?>">
@@ -21,7 +21,7 @@ $current_screen = ets_memberpress_discord_get_current_screen_url();
   <tr>
 		<th scope="row"><?php echo __( 'Disconnect Button color', 'connect-memberpress-discord-add-on' ); ?></th>
 		<td> <fieldset>
-		<input name="ets_memberpress_btn_disconnect_color" type="text" id="ets_memberpress_btn_disconnect_color" value="<?php if ( $ets_memberpress_btn_disconnect_color ) {echo $ets_memberpress_btn_disconnect_color; }?>" data-default-color="#ff0000">
+		<input name="ets_memberpress_discord_btn_disconnect_color" type="text" id="ets_memberpress_discord_btn_disconnect_color" value="<?php if ( $ets_memberpress_discord_btn_disconnect_color ) {echo $ets_memberpress_discord_btn_disconnect_color; }?>" data-default-color="#ff0000">
 		</fieldset></td> 
 	</tr>
 	<tr>
@@ -39,7 +39,7 @@ $current_screen = ets_memberpress_discord_get_current_screen_url();
   <tr>
 		<th scope="row"><?php echo __( 'Text on the Disconnect Button', 'connect-memberpress-discord-add-on' ); ?></th>
 		<td> <fieldset>
-		<input name="ets_memberpress_disconnect_btn_text" type="text" id="ets_memberpress_disconnect_btn_text" value="<?php if ( $ets_memberpress_disconnect_btn_text ) { echo $ets_memberpress_disconnect_btn_text; } ?>">
+		<input name="ets_memberpress_discord_disconnect_btn_text" type="text" id="ets_memberpress_discord_disconnect_btn_text" value="<?php if ( $ets_memberpress_discord_disconnect_btn_text ) { echo $ets_memberpress_discord_disconnect_btn_text; } ?>">
 		</fieldset></td> 
 	</tr>	
 	</tbody>

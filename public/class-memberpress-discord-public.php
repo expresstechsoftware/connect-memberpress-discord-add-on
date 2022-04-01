@@ -92,7 +92,7 @@ class ETS_Memberpress_Discord_Public {
 		wp_enqueue_script( $this->plugin_name . 'public_js' );
 		$user_id                              = sanitize_text_field( trim( get_current_user_id() ) );
 		$access_token                         = sanitize_text_field( trim( get_user_meta( $user_id, '_ets_memberpress_discord_access_token', true ) ) );
-		$allow_none_member                    = sanitize_text_field( trim( get_option( 'ets_memberpress_allow_none_member' ) ) );
+		$allow_none_member                    = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_allow_none_member' ) ) );
 		$default_role                         = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_default_role_id' ) ) );
 		$ets_memberpress_discord_role_mapping = json_decode( get_option( 'ets_memberpress_discord_role_mapping' ), true );
 		$all_roles                            = json_decode( get_option( 'ets_memberpress_discord_all_roles' ), true );
@@ -263,7 +263,7 @@ class ETS_Memberpress_Discord_Public {
 	 * @return NONE
 	 */
 	public function ets_memberpress_discord_add_member_in_guild( $_ets_memberpress_discord_user_id, $user_id, $access_token, $active_memberships ) {
-		$allow_none_member = sanitize_text_field( trim( get_option( 'ets_memberpress_allow_none_member' ) ) );
+		$allow_none_member = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_allow_none_member' ) ) );
 		if ( ! empty( $active_memberships ) || 'yes' === $allow_none_member ) {
 			// It is possible that we may exhaust API rate limit while adding members to guild, so handling off the job to queue.
 			as_schedule_single_action( ets_memberpress_discord_get_random_timestamp( ets_memberpress_discord_get_highest_last_attempt_timestamp() ), 'ets_memberpress_discord_as_handle_add_member_to_guild', array( $_ets_memberpress_discord_user_id, $user_id, $access_token, $active_memberships ), ETS_MEMBERPRESS_DISCORD_AS_GROUP_NAME );
@@ -476,7 +476,7 @@ class ETS_Memberpress_Discord_Public {
 
 		// stop users who having the direct URL of discord Oauth.
 		// We must check IF NONE members is set to NO and user having no active membership.
-		$allow_none_member = sanitize_text_field( trim( get_option( 'ets_memberpress_allow_none_member' ) ) );
+		$allow_none_member = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_allow_none_member' ) ) );
 		if ( empty( $active_memberships ) && 'no' === $allow_none_member ) {
 			return;
 		}
@@ -553,7 +553,7 @@ class ETS_Memberpress_Discord_Public {
 			exit();
 		}
 		$user_id                              = sanitize_text_field( trim( $_POST['user_id'] ) );
-		$memberpress_member_kick_out          = sanitize_text_field( trim( get_option( 'ets_memberpress_member_kick_out' ) ) );
+		$memberpress_member_kick_out          = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_member_kick_out' ) ) );
 		$ets_memberpress_discord_role_mapping = json_decode( get_option( 'ets_memberpress_discord_role_mapping' ), true );
 		$previous_default_role                = get_user_meta( $user_id, '_ets_memberpress_discord_default_role_id', true );
 		if ( $user_id ) {

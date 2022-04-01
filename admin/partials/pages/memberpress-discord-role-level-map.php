@@ -2,7 +2,7 @@
 $user_id             = sanitize_text_field( trim( get_current_user_id() ) );
 $mpr_memberships        = get_posts( array('post_type' => 'memberpressproduct', 'post_status' => 'publish') );
 $default_role        = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_default_role_id' ) ) );
-$allow_none_member = sanitize_text_field( trim( get_option( 'ets_memberpress_allow_none_member' ) ) );
+$allow_none_member = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_allow_none_member' ) ) );
 $ets_discord_roles = sanitize_text_field( get_option( 'ets_memberpress_discord_role_mapping' ) );
 $current_url = ets_memberpress_discord_get_current_screen_url();
 ?>
