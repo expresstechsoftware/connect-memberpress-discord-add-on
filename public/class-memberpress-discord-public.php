@@ -667,7 +667,7 @@ class ETS_Memberpress_Discord_Public {
 			$btn_color                            = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_btn_color' ) ) );
 			$btn_text                             = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_loggedout_btn_text' ) ) );
 			if ( $member_discord_login ) {
-        echo wp_kses( '<style>.memberpress-btn-connect{background-color: ' . esc_attr( $btn_color ) . ';}</style>', array( 'style'=> array()  ) );
+				echo wp_kses( '<style>.memberpress-btn-connect{background-color: ' . esc_attr( $btn_color ) . ';}</style>', array( 'style' => array() ) );
 				$curr_level_id     = $membership_id;
 				$mapped_role_name  = '';
 				$default_role_name = '';
@@ -683,7 +683,21 @@ class ETS_Memberpress_Discord_Public {
 					}
 				}
 				$current_url = get_site_url() . '?action=memberpress-discord-login&fromcheckout=1&url=' . ets_memberpress_discord_get_current_screen_url();
-				echo wp_kses( '<a href="' . esc_url( $current_url ) . '" class="memberpress-btn-connect ets-btn" >' . esc_html( $btn_text ) . '<i class="fab fa-discord"></i></a>', array( 'a' => array( 'href' => array( $current_url ), 'class' => array( 'memberpress-btn-connect', 'ets-btn' ) ), 'i' => array( 'class' => array( 'fab', 'fa-discord' ) ) ) );
+				echo wp_kses(
+					'<a href="' . sanitize_url( $current_url ) . '" class="memberpress-btn-connect ets-btn" >' . esc_html( $btn_text ) . '<i class="fab fa-discord"></i></a>',
+					array(
+						'a' => array(
+							'href'  => array( $current_url ),
+							'class' => array( 'memberpress-btn-connect', 'ets-btn' ),
+						),
+						'i' => array(
+							'class' => array(
+								'fab',
+								'fa-discord',
+							),
+						),
+					)
+				);
 				$memberpress_connecttodiscord_btn = '';
 				if ( $mapped_role_name ) {
 					$memberpress_connecttodiscord_btn .= '<p class="ets_assigned_role">' . esc_html__( 'Following Roles will be assigned to you in Discord: ', 'connect-memberpress-discord-add-on' );
@@ -693,7 +707,7 @@ class ETS_Memberpress_Discord_Public {
 					}
 					$memberpress_connecttodiscord_btn .= '</p>';
 
-					echo wp_kses( $memberpress_connecttodiscord_btn, array( 'p' => array( 'class'=> array( 'ets_assigned_role' ) ) ) );
+					echo wp_kses( $memberpress_connecttodiscord_btn, array( 'p' => array( 'class' => array( 'ets_assigned_role' ) ) ) );
 				}
 			}
 		}
@@ -714,7 +728,7 @@ class ETS_Memberpress_Discord_Public {
 			$discord_authorise_api_url = ETS_MEMBERPRESS_DISCORD_API_URL . 'oauth2/authorize?' . http_build_query( $params );
 			// cache the url param for 1 minute
 			if ( isset( $_GET['url'] ) ) {
-				setcookie( 'ets_memberpress_discord_page', esc_url( $_GET['url'] ), time() + 60, '/' );
+				setcookie( 'ets_memberpress_discord_page', sanitize_url( $_GET['url'] ), time() + 60, '/' );
 			}
 			wp_redirect( $discord_authorise_api_url, 302, get_site_url() );
 			exit;
