@@ -38,7 +38,6 @@ This plugin provides the following features:
 14) Using the shortcode [mepr_discord_button] on any page, anyone can join the website discord server by authentication via member discord account. New members will get `default` role if selected in the setting.
 15) Button styling feature under the plugin settings.
 
-[View all Screenshots](https://www.expresstechsoftwares.com/pmpro-official-discord-add-on/)
 
 == Installation ==
 
@@ -76,3 +75,4 @@ Please make sure your bot role has the highest priority among all other roles in
 3. Advanced settings.
 4. Connect Button Appearance.
 5. Spot the Connect to Discord on Members profile page.
+6. Role Management Gif
