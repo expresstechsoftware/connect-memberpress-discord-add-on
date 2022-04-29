@@ -76,11 +76,7 @@ define( 'ETS_MEMBERPRESS_DISCORD_DONOT_RETRY_HTTP_CODES', array( 400, 401, 403, 
  */
 function activate_memberpress_discord() {
 	require_once ETS_MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . 'includes/class-memberpress-discord-activator.php';
-<<<<<<< HEAD
-	Memberpress_Discord_Activator::activate();
-=======
 	ETS_Memberpress_Discord_Activator::activate();
->>>>>>> main
 }
 
 /**
@@ -88,11 +84,7 @@ function activate_memberpress_discord() {
  */
 function deactivate_memberpress_discord() {
 	require_once ETS_MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . 'includes/class-memberpress-discord-deactivator.php';
-<<<<<<< HEAD
-	Memberpress_Discord_Deactivator::deactivate();
-=======
 	ETS_Memberpress_Discord_Deactivator::deactivate();
->>>>>>> main
 }
 
 register_activation_hook( __FILE__, 'activate_memberpress_discord' );
