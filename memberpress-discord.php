@@ -34,7 +34,7 @@ define( 'ETS_MEMBERPRESS_DISCORD_VERSION', '1.0.0' );
 /**
  * Discord API URL
  */
-define( 'ETS_MEMBERPRESS_DISCORD_API_URL', 'https://discord.com/api/v6/' );
+define( 'ETS_MEMBERPRESS_DISCORD_API_URL', 'https://discord.com/api/v10/' );
 
 /**
  * Discord BOT Permissions
