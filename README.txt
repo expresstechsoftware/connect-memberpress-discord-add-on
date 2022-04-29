@@ -1,5 +1,5 @@
-=== ExpressTech's MemberPress Discord Add On ===
-Contributors: expresstechsoftware, webbdeveloper
+=== Connect MemberPress To Discord ===
+Contributors: expresstechsoftware
 Tags: Discord, Talk, Video Chat, Hang Out, Friends, Meberships, discord role management
 Requires at least: 4.7
 Donate link: https://paypal.me/supportets
@@ -33,12 +33,10 @@ This plugin provides the following features:
 9) Admin can change role by changing the membership by editng user insider WP Manage user.
 10) Send a Direct message to discord members when their membership has expired. (Only work when allow none member is set to YES and Direct Message advanced setting is set ENABLED)
 11) Send a Direct message to discord members when their membership is cancelled. (Only work when allow none member is set to YES and Direct Message advanced setting is set ENABLED)
-12) Send membership expiration warnings Direct Message when membership is about to expire (Default 7 days before)
-13) Short code [mepr_discord_button] can be used on any page to display connect/disconnect button.
-14) Using the shortcode [mepr_discord_button] on any page, anyone can join the website discord server by authentication via member discord account. New members will get `default` role if selected in the setting.
-15) Button styling feature under the plugin settings.
+12) Short code [mepr_discord_button] can be used on any page to display connect/disconnect button.
+13) Using the shortcode [mepr_discord_button] on any page, anyone can join the website discord server by authentication via member discord account. New members will get `default` role if selected in the setting.
+14) Button styling feature under the plugin settings.
 
-[View all Screenshots](https://www.expresstechsoftwares.com/pmpro-official-discord-add-on/)
 
 == Installation ==
 
@@ -76,3 +74,4 @@ Please make sure your bot role has the highest priority among all other roles in
 3. Advanced settings.
 4. Connect Button Appearance.
 5. Spot the Connect to Discord on Members profile page.
+6. Role Management Gif

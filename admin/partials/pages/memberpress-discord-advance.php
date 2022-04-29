@@ -1,11 +1,11 @@
 <?php
 $upon_failed_payment                          = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_payment_failed' ) ) );
 $log_api_res                                  = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_log_api_response' ) ) );
-$retry_failed_api                             = sanitize_text_field( trim( get_option( 'ets_memberpress_retry_failed_api' ) ) );
+$retry_failed_api                             = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_retry_failed_api' ) ) );
 $set_job_cnrc                                 = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_job_queue_concurrency' ) ) );
 $set_job_q_batch_size                         = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_job_queue_batch_size' ) ) );
-$retry_api_count                              = sanitize_text_field( trim( get_option( 'ets_memberpress_retry_api_count' ) ) );
-$memberpress_member_kick_out                  = sanitize_text_field( trim( get_option( 'ets_memberpress_member_kick_out' ) ) );
+$retry_api_count                              = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_retry_api_count' ) ) );
+$memberpress_member_kick_out                  = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_member_kick_out' ) ) );
 $memberpress_member_discord_login                   = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_login_with_discord' ) ) );
 $ets_memberpress_discord_send_expiration_warning_dm = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_send_expiration_warning_dm' ) ) );
 $ets_memberpress_discord_expiration_warning_message = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_expiration_warning_message' ) ) );
@@ -163,7 +163,7 @@ $current_url = ets_memberpress_discord_get_current_screen_url();
 	<tr>
 		<th scope="row"><?php echo __( 'How many times a failed API call should get re-try', 'expresstechsoftwares-memberpress-discord-add-on' ); ?></th>
 		<td> <fieldset>
-		<input name="ets_memberpress_retry_api_count" type="number" min="1" id="ets_memberpress_retry_api_count" value="<?php if ( isset( $retry_api_count ) ) { echo esc_attr( $retry_api_count ); } else { echo 1; } ?>">
+		<input name="ets_memberpress_discord_retry_api_count" type="number" min="1" id="ets_memberpress_discord_retry_api_count" value="<?php if ( isset( $retry_api_count ) ) { echo esc_attr( $retry_api_count ); } else { echo 1; } ?>">
 		</fieldset></td>
 	  </tr> 
 	  <tr>

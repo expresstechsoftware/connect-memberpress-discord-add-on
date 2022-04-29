@@ -5,11 +5,11 @@
  * @link       https://www.expresstechsoftwares.com
  * @since      1.0.0
  *
- * @package    Memberpress_Discord
- * @subpackage Memberpress_Discord/public
+ * @package    ETS_Memberpress_Discord
+ * @subpackage ETS_Memberpress_Discord/public
  */
 
-class Memberpress_Discord_Public {
+class ETS_Memberpress_Discord_Public {
 
 	/**
 	 * The ID of this plugin.
@@ -92,7 +92,7 @@ class Memberpress_Discord_Public {
 		wp_enqueue_script( $this->plugin_name . 'public_js' );
 		$user_id                              = sanitize_text_field( trim( get_current_user_id() ) );
 		$access_token                         = sanitize_text_field( trim( get_user_meta( $user_id, '_ets_memberpress_discord_access_token', true ) ) );
-		$allow_none_member                    = sanitize_text_field( trim( get_option( 'ets_memberpress_allow_none_member' ) ) );
+		$allow_none_member                    = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_allow_none_member' ) ) );
 		$default_role                         = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_default_role_id' ) ) );
 		$ets_memberpress_discord_role_mapping = json_decode( get_option( 'ets_memberpress_discord_role_mapping' ), true );
 		$all_roles                            = json_decode( get_option( 'ets_memberpress_discord_all_roles' ), true );
@@ -116,12 +116,12 @@ class Memberpress_Discord_Public {
 		if ( ets_memberpress_discord_check_saved_settings_status() ) {
 			if ( $access_token ) {
 				$discord_user_name                     = sanitize_text_field( trim( get_user_meta( $user_id, '_ets_memberpress_discord_username', true ) ) );
-				$ets_memberpress_connecttodiscord_btn .= '<div><label class="ets-connection-lbl">' . esc_html__( 'Discord connection', 'expresstechsoftwares-memberpress-discord-add-on' ) . '</label>';
-				$ets_memberpress_connecttodiscord_btn .= '<a href="#" class="ets-btn btn-disconnect"  data-user-id="' . esc_attr( $user_id ) . '">' . esc_html__( 'Disconnect From Discord ', 'expresstechsoftwares-memberpress-discord-add-on' ) . '<i class="fab fa-discord"></i></a>';
+				$ets_memberpress_connecttodiscord_btn .= '<div><label class="ets-connection-lbl">' . esc_html__( 'Discord connection', 'connect-memberpress-discord-add-on' ) . '</label>';
+				$ets_memberpress_connecttodiscord_btn .= '<a href="#" class="ets-btn btn-disconnect"  data-user-id="' . esc_attr( $user_id ) . '">' . esc_html__( 'Disconnect From Discord ', 'connect-memberpress-discord-add-on' ) . '<i class="fab fa-discord"></i></a>';
 				$ets_memberpress_connecttodiscord_btn .= '<span class="ets-spinner"></span>';
 				if ( $mapped_role_names || $default_role_name ) {
 					$ets_memberpress_connecttodiscord_btn .= '<p class="ets_assigned_role">';
-					$ets_memberpress_connecttodiscord_btn .= esc_html__( 'Following Roles was assigned to you in Discord: ', 'expresstechsoftwares-memberpress-discord-add-on' );
+					$ets_memberpress_connecttodiscord_btn .= esc_html__( 'Following Roles was assigned to you in Discord: ', 'connect-memberpress-discord-add-on' );
 					foreach ( $mapped_role_names as $mapped_role_name ) {
 						$ets_memberpress_connecttodiscord_btn .= esc_html( $mapped_role_name ) . ', ';
 					}
@@ -129,15 +129,15 @@ class Memberpress_Discord_Public {
 						$ets_memberpress_connecttodiscord_btn .= esc_html( $default_role_name );
 					}
 					$ets_memberpress_connecttodiscord_btn .= '</p><p class="ets_assigned_role">';
-					$ets_memberpress_connecttodiscord_btn .= esc_html__( 'Connected account: ' . $discord_user_name, 'expresstechsoftwares-memberpress-discord-add-on' );
+					$ets_memberpress_connecttodiscord_btn .= esc_html__( 'Connected account: ' . $discord_user_name, 'connect-memberpress-discord-add-on' );
 					$ets_memberpress_connecttodiscord_btn .= '</p></div>';
 				}
 			} elseif ( current_user_can( 'memberpress_authorized' ) && $mapped_role_names || $allow_none_member == 'yes' ) {
-				$ets_memberpress_connecttodiscord_btn .= '<div><label class="ets-connection-lbl">' . esc_html__( 'Discord connection', 'expresstechsoftwares-memberpress-discord-add-on' ) . '</label>';
-				$ets_memberpress_connecttodiscord_btn .= '<a href="?action=memberpress-discord-login" class="btn-connect ets-btn" >' . esc_html__( 'Connect To Discord', 'expresstechsoftwares-memberpress-discord-add-on' ) . '<i class="fab fa-discord"></i></a>';
+				$ets_memberpress_connecttodiscord_btn .= '<div><label class="ets-connection-lbl">' . esc_html__( 'Discord connection', 'connect-memberpress-discord-add-on' ) . '</label>';
+				$ets_memberpress_connecttodiscord_btn .= '<a href="?action=memberpress-discord-login" class="btn-connect ets-btn" >' . esc_html__( 'Connect To Discord', 'connect-memberpress-discord-add-on' ) . '<i class="fab fa-discord"></i></a>';
 				if ( $mapped_role_names || $default_role_name ) {
 					$ets_memberpress_connecttodiscord_btn .= '<p class="ets_assigned_role">';
-					$ets_memberpress_connecttodiscord_btn .= esc_html__( 'Following Roles will be assigned to you in Discord: ', 'expresstechsoftwares-memberpress-discord-add-on' );
+					$ets_memberpress_connecttodiscord_btn .= esc_html__( 'Following Roles will be assigned to you in Discord: ', 'connect-memberpress-discord-add-on' );
 					foreach ( $mapped_role_names as $mapped_role_name ) {
 						$ets_memberpress_connecttodiscord_btn .= esc_html( $mapped_role_name ) . ', ';
 					}
@@ -242,7 +242,7 @@ class Memberpress_Discord_Public {
 							wp_signon( $credentials, '' );
 							$discord_user_id = sanitize_text_field( trim( get_user_meta( $user_id, '_ets_memberpress_discord_user_id', true ) ) );
 							$this->ets_memberpress_discord_add_member_in_guild( $discord_user_id, $user_id, $access_token, '' );
-							if ( $_COOKIE['ets_memberpress_discord_page'] ) {
+							if ( isset( $_COOKIE['ets_memberpress_discord_page'] ) ) {
 								wp_safe_redirect( urldecode_deep( $_COOKIE['ets_memberpress_discord_page'] ) );
 								exit();
 							}
@@ -263,7 +263,7 @@ class Memberpress_Discord_Public {
 	 * @return NONE
 	 */
 	public function ets_memberpress_discord_add_member_in_guild( $_ets_memberpress_discord_user_id, $user_id, $access_token, $active_memberships ) {
-		$allow_none_member = sanitize_text_field( trim( get_option( 'ets_memberpress_allow_none_member' ) ) );
+		$allow_none_member = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_allow_none_member' ) ) );
 		if ( ! empty( $active_memberships ) || 'yes' === $allow_none_member ) {
 			// It is possible that we may exhaust API rate limit while adding members to guild, so handling off the job to queue.
 			as_schedule_single_action( ets_memberpress_discord_get_random_timestamp( ets_memberpress_discord_get_highest_last_attempt_timestamp() ), 'ets_memberpress_discord_as_handle_add_member_to_guild', array( $_ets_memberpress_discord_user_id, $user_id, $access_token, $active_memberships ), ETS_MEMBERPRESS_DISCORD_AS_GROUP_NAME );
@@ -476,7 +476,7 @@ class Memberpress_Discord_Public {
 
 		// stop users who having the direct URL of discord Oauth.
 		// We must check IF NONE members is set to NO and user having no active membership.
-		$allow_none_member = sanitize_text_field( trim( get_option( 'ets_memberpress_allow_none_member' ) ) );
+		$allow_none_member = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_allow_none_member' ) ) );
 		if ( empty( $active_memberships ) && 'no' === $allow_none_member ) {
 			return;
 		}
@@ -553,7 +553,7 @@ class Memberpress_Discord_Public {
 			exit();
 		}
 		$user_id                              = sanitize_text_field( trim( $_POST['user_id'] ) );
-		$memberpress_member_kick_out          = sanitize_text_field( trim( get_option( 'ets_memberpress_member_kick_out' ) ) );
+		$memberpress_member_kick_out          = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_member_kick_out' ) ) );
 		$ets_memberpress_discord_role_mapping = json_decode( get_option( 'ets_memberpress_discord_role_mapping' ), true );
 		$previous_default_role                = get_user_meta( $user_id, '_ets_memberpress_discord_default_role_id', true );
 		if ( $user_id ) {
@@ -666,8 +666,9 @@ class Memberpress_Discord_Public {
 			$member_discord_login                 = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_login_with_discord' ) ) );
 			$btn_color                            = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_btn_color' ) ) );
 			$btn_text                             = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_loggedout_btn_text' ) ) );
-			echo '<style>.memberpress-btn-connect{background-color: ' . esc_html( $btn_color ) . ';}</style>';
+			
 			if ( $member_discord_login ) {
+				echo wp_kses( '<style>.memberpress-btn-connect{background-color: ' . esc_attr( $btn_color ) . ';}</style>', array( 'style' => array() ) );
 				$curr_level_id     = $membership_id;
 				$mapped_role_name  = '';
 				$default_role_name = '';
@@ -682,18 +683,32 @@ class Memberpress_Discord_Public {
 						}
 					}
 				}
-				$current_url = ets_memberpress_discord_get_current_screen_url();
-				echo '<a href="?action=memberpress-discord-login&fromcheckout=1&url=' . esc_html( $current_url ) . '#mepr_jump" class="memberpress-btn-connect ets-btn" >' . esc_html( $btn_text ) . '<i class="fab fa-discord"></i></a>';
+				$current_url = get_site_url() . '?action=memberpress-discord-login&fromcheckout=1&url=' . ets_memberpress_discord_get_current_screen_url();
+				echo wp_kses(
+					'<a href="' . sanitize_url( $current_url ) . '" class="memberpress-btn-connect ets-btn" >' . esc_html( $btn_text ) . '<i class="fab fa-discord"></i></a>',
+					array(
+						'a' => array(
+							'href'  => array( $current_url ),
+							'class' => array( 'memberpress-btn-connect', 'ets-btn' ),
+						),
+						'i' => array(
+							'class' => array(
+								'fab',
+								'fa-discord',
+							),
+						),
+					)
+				);
 				$memberpress_connecttodiscord_btn = '';
 				if ( $mapped_role_name ) {
-					$memberpress_connecttodiscord_btn .= '<p class="ets_assigned_role">' . esc_html__( 'Following Roles will be assigned to you in Discord: ', 'expresstechsoftwares-memberpress-discord-add-on' );
+					$memberpress_connecttodiscord_btn .= '<p class="ets_assigned_role">' . esc_html__( 'Following Roles will be assigned to you in Discord: ', 'connect-memberpress-discord-add-on' );
 					$memberpress_connecttodiscord_btn .= esc_html( $mapped_role_name );
 					if ( $default_role_name ) {
 						$memberpress_connecttodiscord_btn .= ', ' . esc_html( $default_role_name );
 					}
 					$memberpress_connecttodiscord_btn .= '</p>';
 
-					echo esc_html( $memberpress_connecttodiscord_btn );
+					echo wp_kses( $memberpress_connecttodiscord_btn, array( 'p' => array( 'class' => array( 'ets_assigned_role' ) ) ) );
 				}
 			}
 		}
@@ -714,8 +729,7 @@ class Memberpress_Discord_Public {
 			$discord_authorise_api_url = ETS_MEMBERPRESS_DISCORD_API_URL . 'oauth2/authorize?' . http_build_query( $params );
 			// cache the url param for 1 minute
 			if ( isset( $_GET['url'] ) ) {
-				$redirect_url = sanitize_text_field( $_GET['url'] );
-				setcookie( 'ets_memberpress_discord_page', $redirect_url, time() + 60, '/' );
+				setcookie( 'ets_memberpress_discord_page', sanitize_url( $_GET['url'] ), time() + 60, '/' );
 			}
 			wp_redirect( $discord_authorise_api_url, 302, get_site_url() );
 			exit;

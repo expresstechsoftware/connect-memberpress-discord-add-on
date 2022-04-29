@@ -6,10 +6,10 @@
  *
  * @link              https://www.expresstechsoftwares.com
  * @since             1.0.0
- * @package           Memberpress_Discord
+ * @package           ETS_Memberpress_Discord
  *
  * @wordpress-plugin
- * Plugin Name:       ExpressTech's MemberPress Discord Add On
+ * Plugin Name:       Connect MemberPress To Discord
  * Plugin URI:        https://www.expresstechsoftwares.com/memberpress-discord-add-on/
  * Description:       Allow memberpress users to connect their site to discord and allow them to be part of your discord community, site admin can allow discord roles based on the membership a member have and can sell private content in role specific discord channels.
  * Version:           1.0.0
@@ -17,7 +17,7 @@
  * Author URI:        https://www.expresstechsoftwares.com
  * License:           GPL-2.0+
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
- * Text Domain:       expresstechsoftwares-memberpress-discord-add-on
+ * Text Domain:       connect-memberpress-discord-add-on
  * Domain Path:       /languages
  */
 
@@ -34,7 +34,7 @@ define( 'ETS_MEMBERPRESS_DISCORD_VERSION', '1.0.0' );
 /**
  * Discord API URL
  */
-define( 'ETS_MEMBERPRESS_DISCORD_API_URL', 'https://discord.com/api/v6/' );
+define( 'ETS_MEMBERPRESS_DISCORD_API_URL', 'https://discord.com/api/v10/' );
 
 /**
  * Discord BOT Permissions
@@ -44,7 +44,7 @@ define( 'ETS_MEMBERPRESS_DISCORD_BOT_PERMISSIONS', 8 );
 /**
  * Discord API call scopes
  */
-define( 'ETS_MEMBERPRESS_DISCORD_OAUTH_SCOPES', 'identify email connections guilds guilds.join gdm.join rpc rpc.notifications.read rpc.voice.read rpc.voice.write rpc.activities.write bot webhook.incoming applications.builds.upload applications.builds.read applications.commands applications.store.update applications.entitlements activities.read activities.write relationships.read' );
+define( 'ETS_MEMBERPRESS_DISCORD_OAUTH_SCOPES', 'identify email guilds guilds.join' );
 
 /**
  * Define group name for action scheduler actions
@@ -76,7 +76,11 @@ define( 'ETS_MEMBERPRESS_DISCORD_DONOT_RETRY_HTTP_CODES', array( 400, 401, 403, 
  */
 function activate_memberpress_discord() {
 	require_once ETS_MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . 'includes/class-memberpress-discord-activator.php';
+<<<<<<< HEAD
 	Memberpress_Discord_Activator::activate();
+=======
+	ETS_Memberpress_Discord_Activator::activate();
+>>>>>>> main
 }
 
 /**
@@ -84,7 +88,11 @@ function activate_memberpress_discord() {
  */
 function deactivate_memberpress_discord() {
 	require_once ETS_MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . 'includes/class-memberpress-discord-deactivator.php';
+<<<<<<< HEAD
 	Memberpress_Discord_Deactivator::deactivate();
+=======
+	ETS_Memberpress_Discord_Deactivator::deactivate();
+>>>>>>> main
 }
 
 register_activation_hook( __FILE__, 'activate_memberpress_discord' );
@@ -103,7 +111,7 @@ require ETS_MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . 'includes/class-memberpress-di
  */
 function run_memberpress_discord() {
 
-	$plugin = new Memberpress_Discord();
+	$plugin = new ETS_Memberpress_Discord();
 	$plugin->run();
 
 }

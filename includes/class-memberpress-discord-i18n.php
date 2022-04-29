@@ -8,11 +8,11 @@
  * @link       https://www.expresstechsoftwares.com
  * @since      1.0.0
  *
- * @package    Memberpress_Discord
- * @subpackage Memberpress_Discord/includes
+ * @package    ETS_Memberpress_Discord
+ * @subpackage ETS_Memberpress_Discord/includes
  */
 
-class Memberpress_Discord_i18n {
+class ETS_Memberpress_Discord_i18n {
 
 
 	/**
@@ -23,7 +23,7 @@ class Memberpress_Discord_i18n {
 	public function load_plugin_textdomain() {
 
 		load_plugin_textdomain(
-			'expresstechsoftwares-memberpress-discord-add-on',
+			'connect-memberpress-discord-add-on',
 			false,
 			dirname( dirname( plugin_basename( __FILE__ ) ) ) . '/languages/'
 		);

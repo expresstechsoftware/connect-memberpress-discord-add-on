@@ -2,11 +2,11 @@
 /**
  * The admin-specific functionality of the plugin.
  *
- * @package    Memberpress_Discord
- * @subpackage Memberpress_Discord/admin
+ * @package    ETS_Memberpress_Discord
+ * @subpackage ETS_Memberpress_Discord/admin
  * @author     ExpressTech Softwares Solutions Pvt Ltd <contact@expresstechsoftwares.com>
  */
-class Memberpress_Discord_Admin {
+class ETS_Memberpress_Discord_Admin {
 
 	/**
 	 * The ID of this plugin.
@@ -191,7 +191,7 @@ class Memberpress_Discord_Admin {
 				}
 
 				if ( $allow_none_member ) {
-					update_option( 'ets_memberpress_allow_none_member', $allow_none_member );
+					update_option( 'ets_memberpress_discord_allow_none_member', $allow_none_member );
 				}
 
 				$message = 'Your mappings are saved successfully.';
@@ -203,7 +203,7 @@ class Memberpress_Discord_Admin {
 			if ( isset( $_POST['flush'] ) ) {
 				delete_option( 'ets_memberpress_discord_role_mapping' );
 				delete_option( 'ets_memberpress_discord_default_role_id' );
-				delete_option( 'ets_memberpress_allow_none_member' );
+				delete_option( 'ets_memberpress_discord_allow_none_member' );
 				$message = ' Your settings flushed successfully.';
 				if ( isset( $_POST['current_url'] ) ) {
 					$pre_location = sanitize_text_field( $_POST['current_url'] ) . '&save_settings_msg=' . $message . '#mepr_role_mapping';
@@ -228,7 +228,7 @@ class Memberpress_Discord_Admin {
 
 		$set_job_q_batch_size = isset( $_POST['set_job_q_batch_size'] ) ? sanitize_textarea_field( trim( $_POST['set_job_q_batch_size'] ) ) : '';
 
-		$retry_api_count = isset( $_POST['ets_memberpress_retry_api_count'] ) ? sanitize_textarea_field( trim( $_POST['ets_memberpress_retry_api_count'] ) ) : '';
+		$retry_api_count = isset( $_POST['ets_memberpress_discord_retry_api_count'] ) ? sanitize_textarea_field( trim( $_POST['ets_memberpress_discord_retry_api_count'] ) ) : '';
 
 		$ets_memberpress_discord_send_expiration_warning_dm = isset( $_POST['ets_memberpress_discord_send_expiration_warning_dm'] ) ? sanitize_textarea_field( trim( $_POST['ets_memberpress_discord_send_expiration_warning_dm'] ) ) : false;
 
@@ -261,15 +261,15 @@ class Memberpress_Discord_Admin {
 				}
 
 				if ( isset( $_POST['retry_failed_api'] ) ) {
-					update_option( 'ets_memberpress_retry_failed_api', true );
+					update_option( 'ets_memberpress_discord_retry_failed_api', true );
 				} else {
-					update_option( 'ets_memberpress_retry_failed_api', false );
+					update_option( 'ets_memberpress_discord_retry_failed_api', false );
 				}
 
 				if ( isset( $_POST['memberpress_member_kick_out'] ) ) {
-					update_option( 'ets_memberpress_member_kick_out', true );
+					update_option( 'ets_memberpress_discord_member_kick_out', true );
 				} else {
-					update_option( 'ets_memberpress_member_kick_out', false );
+					update_option( 'ets_memberpress_discord_member_kick_out', false );
 				}
 
 				if ( isset( $_POST['memberpress_member_discord_login'] ) ) {
@@ -342,11 +342,11 @@ class Memberpress_Discord_Admin {
 					}
 				}
 
-				if ( isset( $_POST['ets_memberpress_retry_api_count'] ) ) {
+				if ( isset( $_POST['ets_memberpress_discord_retry_api_count'] ) ) {
 					if ( $retry_api_count < 1 ) {
-						update_option( 'ets_memberpress_retry_api_count', 1 );
+						update_option( 'ets_memberpress_discord_retry_api_count', 1 );
 					} else {
-						update_option( 'ets_memberpress_retry_api_count', $retry_api_count );
+						update_option( 'ets_memberpress_discord_retry_api_count', $retry_api_count );
 					}
 				}
 				$message = 'Your settings are saved successfully.';
@@ -371,10 +371,10 @@ class Memberpress_Discord_Admin {
 		}
 
 		$ets_memberpress_btn_color            = isset( $_POST['ets_memberpress_btn_color'] ) && $_POST['ets_memberpress_btn_color'] !== '' ? sanitize_text_field( trim( $_POST['ets_memberpress_btn_color'] ) ) : '#77a02e';
-		$ets_memberpress_btn_disconnect_color = isset( $_POST['ets_memberpress_btn_disconnect_color'] ) && $_POST['ets_memberpress_btn_disconnect_color'] != '' ? sanitize_text_field( trim( $_POST['ets_memberpress_btn_disconnect_color'] ) ) : '#ff0000';
+		$ets_memberpress_discord_btn_disconnect_color = isset( $_POST['ets_memberpress_discord_btn_disconnect_color'] ) && $_POST['ets_memberpress_discord_btn_disconnect_color'] != '' ? sanitize_text_field( trim( $_POST['ets_memberpress_discord_btn_disconnect_color'] ) ) : '#ff0000';
 		$ets_memberpress_loggedin_btn_text    = isset( $_POST['ets_memberpress_loggedin_btn_text'] ) && $_POST['ets_memberpress_loggedin_btn_text'] != '' ? sanitize_text_field( trim( $_POST['ets_memberpress_loggedin_btn_text'] ) ) : 'Connect To Discord';
 		$ets_memberpress_loggedout_btn_text   = isset( $_POST['ets_memberpress_loggedout_btn_text'] ) && $_POST['ets_memberpress_loggedout_btn_text'] != '' ? sanitize_text_field( trim( $_POST['ets_memberpress_loggedout_btn_text'] ) ) : 'Login With Discord';
-		$ets_memberpress_disconnect_btn_text  = $_POST['ets_memberpress_disconnect_btn_text'] ? sanitize_text_field( trim( $_POST['ets_memberpress_disconnect_btn_text'] ) ) : 'Disconnect From Discord';
+		$ets_memberpress_discord_disconnect_btn_text  = $_POST['ets_memberpress_discord_disconnect_btn_text'] ? sanitize_text_field( trim( $_POST['ets_memberpress_discord_disconnect_btn_text'] ) ) : 'Disconnect From Discord';
 
 		if ( isset( $_POST['apr_submit'] ) ) {
 
@@ -382,8 +382,8 @@ class Memberpress_Discord_Admin {
 				if ( $ets_memberpress_btn_color ) {
 					update_option( 'ets_memberpress_discord_btn_color', $ets_memberpress_btn_color );
 				}
-				if ( $ets_memberpress_btn_disconnect_color ) {
-					update_option( 'ets_memberpress_btn_disconnect_color', $ets_memberpress_btn_disconnect_color );
+				if ( $ets_memberpress_discord_btn_disconnect_color ) {
+					update_option( 'ets_memberpress_discord_btn_disconnect_color', $ets_memberpress_discord_btn_disconnect_color );
 				}
 				if ( $ets_memberpress_loggedout_btn_text ) {
 					update_option( 'ets_memberpress_discord_loggedout_btn_text', $ets_memberpress_loggedout_btn_text );
@@ -391,8 +391,8 @@ class Memberpress_Discord_Admin {
 				if ( $ets_memberpress_loggedin_btn_text ) {
 					update_option( 'ets_memberpress_discord_loggedin_btn_text', $ets_memberpress_loggedin_btn_text );
 				}
-				if ( $ets_memberpress_disconnect_btn_text ) {
-					update_option( 'ets_memberpress_disconnect_btn_text', $ets_memberpress_disconnect_btn_text );
+				if ( $ets_memberpress_discord_disconnect_btn_text ) {
+					update_option( 'ets_memberpress_discord_disconnect_btn_text', $ets_memberpress_discord_disconnect_btn_text );
 				}
 				$message = 'Your settings are saved successfully.';
 				if ( isset( $_POST['current_url'] ) ) {
@@ -664,10 +664,10 @@ class Memberpress_Discord_Admin {
 	 * @param BOOL  $is_schedule
 	 */
 	private function ets_memberpress_discord_set_member_roles( $user_id, $expired_membership = false, $cancelled_membership = false, $is_schedule = true ) {
-		$memberpress_discord                                = new Memberpress_Discord();
-		$plugin_admin                                       = new Memberpress_Discord_Admin( $memberpress_discord->get_plugin_name(), $memberpress_discord->get_version() );
-		$plugin_public                                      = new Memberpress_Discord_Public( $memberpress_discord->get_plugin_name(), $memberpress_discord->get_version(), $plugin_admin );
-		$allow_none_member                                  = sanitize_text_field( trim( get_option( 'ets_memberpress_allow_none_member' ) ) );
+		$memberpress_discord                                = new ETS_Memberpress_Discord();
+		$plugin_admin                                       = new ETS_Memberpress_Discord_Admin( $memberpress_discord->get_plugin_name(), $memberpress_discord->get_version() );
+		$plugin_public                                      = new ETS_Memberpress_Discord_Public( $memberpress_discord->get_plugin_name(), $memberpress_discord->get_version(), $plugin_admin );
+		$allow_none_member                                  = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_allow_none_member' ) ) );
 		$default_role                                       = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_default_role_id' ) ) );
 		$ets_memberpress_discord_role_mapping               = json_decode( get_option( 'ets_memberpress_discord_role_mapping' ), true );
 		$active_memberships                                 = ets_memberpress_discord_get_active_memberships( $user_id );
@@ -802,9 +802,9 @@ class Memberpress_Discord_Admin {
 	 * @param INT $complete_txn
 	 */
 	public function ets_memberpress_discord_as_handler_memberpress_complete_transaction( $user_id, $complete_txn ) {
-		$memberpress_discord                     = new Memberpress_Discord();
-		$plugin_admin                            = new Memberpress_Discord_Admin( $memberpress_discord->get_plugin_name(), $memberpress_discord->get_version() );
-		$plugin_public                           = new Memberpress_Discord_Public( $memberpress_discord->get_plugin_name(), $memberpress_discord->get_version(), $plugin_admin );
+		$memberpress_discord                     = new ETS_Memberpress_Discord();
+		$plugin_admin                            = new ETS_Memberpress_Discord_Admin( $memberpress_discord->get_plugin_name(), $memberpress_discord->get_version() );
+		$plugin_public                           = new ETS_Memberpress_Discord_Public( $memberpress_discord->get_plugin_name(), $memberpress_discord->get_version(), $plugin_admin );
 		$ets_memberpress_discord_role_mapping    = json_decode( get_option( 'ets_memberpress_discord_role_mapping' ), true );
 		$default_role                            = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_default_role_id' ) ) );
 		$previous_default_role                   = get_user_meta( $user_id, '_ets_memberpress_discord_default_role_id', true );
@@ -892,8 +892,8 @@ class Memberpress_Discord_Admin {
 	public function ets_memberpress_discord_members_list_add_column( $columns ) {
 		wp_enqueue_style( $this->plugin_name );
 		wp_enqueue_script( $this->plugin_name );
-		$columns['col_memberpress_discord']     = __( 'Discord', 'expresstechsoftwares-memberpress-discord-add-on' );
-		$columns['col_memberpress_joined_date'] = __( 'Joined Date', 'expresstechsoftwares-memberpress-discord-add-on' );
+		$columns['col_memberpress_discord']     = __( 'Discord', 'connect-memberpress-discord-add-on' );
+		$columns['col_memberpress_joined_date'] = __( 'Joined Date', 'connect-memberpress-discord-add-on' );
 		return $columns;
 	}
 
@@ -915,11 +915,11 @@ class Memberpress_Discord_Admin {
 				if ( $access_token ) {
 					$discord_username = sanitize_text_field( trim( get_user_meta( $rec->ID, '_ets_memberpress_discord_username', true ) ) );
 					echo '<p class="' . esc_attr( $rec->ID ) . ' ets-save-success">Success</p><a class="button button-primary ets-memberpress-run-api" data-uid="' . esc_attr( $rec->ID ) . '" href="#">';
-					echo __( 'Run API', 'expresstechsoftwares-memberpress-discord-add-on' );
+					echo __( 'Run API', 'connect-memberpress-discord-add-on' );
 					echo '</a><span class="' . esc_attr( $rec->ID ) . ' spinner"></span>';
 					echo esc_html( $discord_username );
 				} else {
-					echo __( 'Not Connected', 'expresstechsoftwares-memberpress-discord-add-on' );
+					echo __( 'Not Connected', 'connect-memberpress-discord-add-on' );
 				}
 				?>
 			  </td>
@@ -957,7 +957,7 @@ class Memberpress_Discord_Admin {
 
 		$event_res = array(
 			'status'  => 1,
-			'message' => __( 'success', 'expresstechsoftwares-memberpress-discord-add-on' ),
+			'message' => __( 'success', 'connect-memberpress-discord-add-on' ),
 		);
 		return wp_send_json( $event_res );
 	}

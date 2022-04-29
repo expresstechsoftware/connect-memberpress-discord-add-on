@@ -69,7 +69,7 @@ function write_api_response_logs( $response_arr, $user_id, $backtrace_arr = arra
 	}
 	$log_api_response = get_option( 'ets_memberpress_discord_log_api_response' );
 	$uuid             = get_option( 'ets_memberpress_discord_uuid_file_name' );
-	$log_file_name    = $uuid . Memberpress_Discord_Admin::$log_file_name;
+	$log_file_name    = $uuid . ETS_Memberpress_Discord_Admin::$log_file_name;
 
 	if ( is_array( $response_arr ) && array_key_exists( 'code', $response_arr ) ) {
 		$error .= '==>File:' . $backtrace_arr['file'] . $user_details . '::Line:' . $backtrace_arr['line'] . '::Function:' . $backtrace_arr['function'] . '::' . $response_arr['code'] . ':' . $response_arr['message'];

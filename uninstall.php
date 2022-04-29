@@ -4,13 +4,13 @@
  * @link       https://www.expresstechsoftwares.com
  * @since      1.0.0
  *
- * @package    Memberpress_Discord
+ * @package    ETS_Memberpress_Discord
  */
 
 // If uninstall not called from WordPress, then exit.
 if ( defined( 'WP_UNINSTALL_PLUGIN' )
-		&& $_REQUEST['plugin'] == 'memberpress-discord/memberpress-discord.php'
-		&& $_REQUEST['slug'] == 'expresstechsoftwares-memberpress-discord-add-on'
+		&& $_REQUEST['plugin'] == 'connect-memberpress-discord-add-on/memberpress-discord.php'
+		&& $_REQUEST['slug'] == 'connect-memberpress-to-discord'
 	&& wp_verify_nonce( $_REQUEST['_ajax_nonce'], 'updates' )
   ) {
 	global $wpdb;

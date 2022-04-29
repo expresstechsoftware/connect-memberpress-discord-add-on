@@ -275,17 +275,11 @@
 			    }
 				makeDrag($('.makeMeDraggable'));
 
-				
-				// if (jQuery(this).find('.makeMeDraggable').data(role_id) == newClone.) {
-				//  	$(this).droppable("destroy");
-				// }
 				newClone.css({ 'width': '100%','margin-bottom': '0px', 'left': '0', 'position':'unset', 'order': '1' });
-				//$('.discord-roles').append($(newClone));
-				//(this).css({ 'width': '100%', 'left': '0', 'top': '0', 'margin-bottom': '0px', 'order': '2' });
 			}
 		}
 		$('#ets_memberpress_btn_color').wpColorPicker();
-		$('#ets_memberpress_btn_disconnect_color').wpColorPicker();
+		$('#ets_memberpress_discord_btn_disconnect_color').wpColorPicker();
 	});
 	/*Tab options*/
 	$.skeletabs.setDefaults({
