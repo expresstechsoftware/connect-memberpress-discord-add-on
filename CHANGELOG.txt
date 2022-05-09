@@ -1,0 +1,2 @@
+= 1.0.1 =
+- Fixed BUG: All memberships was not available under role mappings.
