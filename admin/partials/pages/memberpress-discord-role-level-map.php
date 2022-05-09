@@ -1,10 +1,16 @@
 <?php
-$user_id             = sanitize_text_field( trim( get_current_user_id() ) );
-$mpr_memberships        = get_posts( array('post_type' => 'memberpressproduct', 'post_status' => 'publish') );
-$default_role        = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_default_role_id' ) ) );
+$user_id           = sanitize_text_field( trim( get_current_user_id() ) );
+$mpr_memberships   = get_posts(
+	array(
+		'post_type'   => 'memberpressproduct',
+		'post_status' => 'publish',
+		'numberposts' => '-1',
+	)
+);
+$default_role      = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_default_role_id' ) ) );
 $allow_none_member = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_allow_none_member' ) ) );
 $ets_discord_roles = sanitize_text_field( get_option( 'ets_memberpress_discord_role_mapping' ) );
-$current_url = ets_memberpress_discord_get_current_screen_url();
+$current_url       = ets_memberpress_discord_get_current_screen_url();
 ?>
 <div class="notice notice-warning ets-notice">
 	<p><i class='fas fa-info'></i> <?php echo __( 'Drag and Drop the Discord Roles over to the MemberPress Levels', 'connect-memberpress-discord-add-on' ); ?></p>
@@ -34,8 +40,8 @@ $current_url = ets_memberpress_discord_get_current_screen_url();
 		</div>
 	</div>
 </div>
-<form method="post" action="<?php echo esc_attr( get_site_url() ) . '/wp-admin/admin-post.php' ?>">
-	<input type="hidden" name="action" value="memberpress_discord_role_mapping">
+<form method="post" action="<?php echo esc_attr( get_site_url() ) . '/wp-admin/admin-post.php'; ?>">
+	<input type="hidden" name="action" value="memberpress_discord_role_mapping" />
   <input type="hidden" name="current_url" value="<?php echo esc_html( $current_url ); ?> " />
 	<table class="form-table" role="presentation">
 	<tbody>
@@ -43,7 +49,7 @@ $current_url = ets_memberpress_discord_get_current_screen_url();
 			<th scope="row"><label for="defaultRole"><?php echo __( 'Default Role', 'connect-memberpress-discord-add-on' ); ?></label></th>
 			<td>
 				<?php wp_nonce_field( 'discord_role_mappings_nonce', 'ets_memberpress_discord_role_mappings_nonce' ); ?>
-				<input type="hidden" id="selected_default_role" value="<?php echo esc_attr( $default_role ); ?>">
+				<input type="hidden" id="selected_default_role" value="<?php echo esc_attr( $default_role ); ?>" />
 				<select id="defaultRole" name="defaultRole">
 					<option value="none"><?php echo __( '-None-', 'connect-memberpress-discord-add-on' ); ?></option>
 				</select>

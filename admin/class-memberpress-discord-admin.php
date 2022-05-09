@@ -370,10 +370,10 @@ class ETS_Memberpress_Discord_Admin {
 			exit();
 		}
 
-		$ets_memberpress_btn_color            = isset( $_POST['ets_memberpress_btn_color'] ) && $_POST['ets_memberpress_btn_color'] !== '' ? sanitize_text_field( trim( $_POST['ets_memberpress_btn_color'] ) ) : '#77a02e';
+		$ets_memberpress_btn_color                    = isset( $_POST['ets_memberpress_btn_color'] ) && $_POST['ets_memberpress_btn_color'] !== '' ? sanitize_text_field( trim( $_POST['ets_memberpress_btn_color'] ) ) : '#77a02e';
 		$ets_memberpress_discord_btn_disconnect_color = isset( $_POST['ets_memberpress_discord_btn_disconnect_color'] ) && $_POST['ets_memberpress_discord_btn_disconnect_color'] != '' ? sanitize_text_field( trim( $_POST['ets_memberpress_discord_btn_disconnect_color'] ) ) : '#ff0000';
-		$ets_memberpress_loggedin_btn_text    = isset( $_POST['ets_memberpress_loggedin_btn_text'] ) && $_POST['ets_memberpress_loggedin_btn_text'] != '' ? sanitize_text_field( trim( $_POST['ets_memberpress_loggedin_btn_text'] ) ) : 'Connect To Discord';
-		$ets_memberpress_loggedout_btn_text   = isset( $_POST['ets_memberpress_loggedout_btn_text'] ) && $_POST['ets_memberpress_loggedout_btn_text'] != '' ? sanitize_text_field( trim( $_POST['ets_memberpress_loggedout_btn_text'] ) ) : 'Login With Discord';
+		$ets_memberpress_loggedin_btn_text            = isset( $_POST['ets_memberpress_loggedin_btn_text'] ) && $_POST['ets_memberpress_loggedin_btn_text'] != '' ? sanitize_text_field( trim( $_POST['ets_memberpress_loggedin_btn_text'] ) ) : 'Connect To Discord';
+		$ets_memberpress_loggedout_btn_text           = isset( $_POST['ets_memberpress_loggedout_btn_text'] ) && $_POST['ets_memberpress_loggedout_btn_text'] != '' ? sanitize_text_field( trim( $_POST['ets_memberpress_loggedout_btn_text'] ) ) : 'Login With Discord';
 		$ets_memberpress_discord_disconnect_btn_text  = $_POST['ets_memberpress_discord_disconnect_btn_text'] ? sanitize_text_field( trim( $_POST['ets_memberpress_discord_disconnect_btn_text'] ) ) : 'Disconnect From Discord';
 
 		if ( isset( $_POST['apr_submit'] ) ) {
@@ -472,7 +472,7 @@ class ETS_Memberpress_Discord_Admin {
 				$to        = 'contact@expresstechsoftwares.com';
 				$content   = 'Name: ' . $etsUserName . '<br>';
 				$content  .= 'Contact Email: ' . $etsUserEmail . '<br>';
-				$content  .= 'Message: ' . $message;
+				$content  .= 'MemberPress Support Message: ' . $message;
 				$headers   = array();
 				$blogemail = get_bloginfo( 'admin_email' );
 				$headers[] = 'From: ' . get_bloginfo( 'name' ) . ' <' . $blogemail . '>' . "\r\n";
@@ -1034,7 +1034,7 @@ class ETS_Memberpress_Discord_Admin {
 			$params                    = array(
 				'client_id'            => sanitize_text_field( trim( get_option( 'ets_memberpress_discord_client_id' ) ) ),
 				'permissions'          => ETS_MEMBERPRESS_DISCORD_BOT_PERMISSIONS,
-				'response_type' => 'code',
+				'response_type'        => 'code',
 				'scope'                => 'bot',
 				'guild_id'             => sanitize_text_field( trim( get_option( 'ets_memberpress_discord_server_id' ) ) ),
 				'disable_guild_select' => 'true',
