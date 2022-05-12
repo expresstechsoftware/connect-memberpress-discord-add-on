@@ -193,7 +193,8 @@ class ETS_Memberpress_Discord {
 		$this->loader->add_action( 'ets_memberpress_discord_as_send_welcome_dm', $this, 'ets_memberpress_discord_handler_send_dm', 10, 3 );
 		$this->loader->add_action( 'ets_memberpress_discord_as_schedule_member_put_role', $plugin_public, 'ets_memberpress_discord_as_handler_put_memberrole', 10, 3 );
 		$this->loader->add_action( 'mepr-account-home-before-name', $plugin_public, 'ets_memberpress_discord_login_with_discord_button' );
-    $this->loader->add_action( 'mepr-checkout-before-name', $plugin_public, 'ets_memberpress_discord_login_with_discord_button' );
+		$this->loader->add_action( 'mepr-checkout-before-name', $plugin_public, 'ets_memberpress_discord_login_with_discord_button' );
+        	$this->loader->add_action( 'mepr-event-create', $plugin_public, 'ets_memberpress_discord_listen_to_mepr_events' , 99, 1 );
 	}
 
 	/**

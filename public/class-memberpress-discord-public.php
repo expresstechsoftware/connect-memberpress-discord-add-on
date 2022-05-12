@@ -775,4 +775,33 @@ class ETS_Memberpress_Discord_Public {
 		}
 
 	}
+	public function ets_memberpress_discord_listen_to_mepr_events ( $event ) {
+		$obj = $event->get_data();
+
+		if(!($obj instanceof MeprTransaction) && !($obj instanceof MeprSubscription)) {
+				return; // nothing here to do if we're not dealing with a txn or sub
+		}
+
+		$member = $obj->user();
+		$access_token = sanitize_text_field( trim( get_user_meta( $member->ID, '_ets_memberpress_discord_access_token', true ) ) );
+                
+		if ( $access_token ){
+                    
+			$ets_memberpress_discord_role_mapping = json_decode( get_option( 'ets_memberpress_discord_role_mapping' ), true );                       
+			
+			if ( is_array( $ets_memberpress_discord_role_mapping ) && array_key_exists( 'level_id_' . $obj->product_id, $ets_memberpress_discord_role_mapping ) ) {
+				$mapped_role_id = $ets_memberpress_discord_role_mapping[ 'level_id_' . $obj->product_id ];
+                                
+				if( $member->is_active_on_membership( $obj ) ) {
+                            
+					$this->put_discord_role_api( $member->ID, $mapped_role_id );
+				} else {
+					$this->admin_cls_instance->memberpress_delete_discord_role( $member->ID, $mapped_role_id );
+                                    
+				}                               
+
+			}
+			                                          
+		}
+        }
 }
