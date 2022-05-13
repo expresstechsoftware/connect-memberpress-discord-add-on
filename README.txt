@@ -7,7 +7,7 @@ Author URI: https://www.expresstechsoftwares.com
 Author: ExpressTech Software Solutions Pvt. Ltd.
 Tested up to: 5.9
 Requires PHP: 7.0
-Stable tag: 1.0.1
+Stable tag: 1.0.2
 License: GPLv2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -36,7 +36,7 @@ This plugin provides the following features:
 12) Short code [mepr_discord_button] can be used on any page to display connect/disconnect button.
 13) Using the shortcode [mepr_discord_button] on any page, anyone can join the website discord server by authentication via member discord account. New members will get `default` role if selected in the setting.
 14) Button styling feature under the plugin settings.
-
+15) Downgrade will remove old discord roles.
 
 == Installation ==
 
