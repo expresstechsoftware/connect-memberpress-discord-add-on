@@ -122,7 +122,7 @@ class ETS_Memberpress_Discord_Public {
 				$disconnect_btn_bg_color = 'style="background-color:' . esc_attr( $ets_memberpress_discord_btn_disconnect_color ) . '"'; 
 				$discord_user_name                     = sanitize_text_field( trim( get_user_meta( $user_id, '_ets_memberpress_discord_username', true ) ) );
 				$ets_memberpress_connecttodiscord_btn .= '<div><label class="ets-connection-lbl">' . esc_html__( 'Discord connection', 'connect-memberpress-discord-add-on' ) . '</label>';
-				$ets_memberpress_connecttodiscord_btn .= '<a href="#" class="ets-btn btn-disconnect" ' . $disconnect_btn_bg_color . ' data-user-id="' . esc_attr( $user_id ) . '">' . esc_html__( $ets_memberpress_discord_disconnect_btn_text, 'connect-memberpress-discord-add-on' ) . '<i class="fab fa-discord"></i></a>';
+				$ets_memberpress_connecttodiscord_btn .= '<a href="#" class="ets-btn btn-disconnect" ' . $disconnect_btn_bg_color . ' data-user-id="' . esc_attr( $user_id ) . '">' . esc_html__( $ets_memberpress_discord_disconnect_btn_text, 'connect-memberpress-discord-add-on' ) . ETS_Memberpress_Discord::get_discord_logo_white() . '</a>';
 				$ets_memberpress_connecttodiscord_btn .= '<span class="ets-spinner"></span>';
 				if ( $mapped_role_names || $default_role_name ) {
 					$ets_memberpress_connecttodiscord_btn .= '<p class="ets_assigned_role">';
@@ -140,7 +140,7 @@ class ETS_Memberpress_Discord_Public {
 			} elseif ( current_user_can( 'memberpress_authorized' ) && $mapped_role_names || $allow_none_member == 'yes' ) {
 				$connect_btn_bg_color = 'style="background-color:' . esc_attr( $ets_memberpress_discord_btn_color ) . '"';                             
 				$ets_memberpress_connecttodiscord_btn .= '<div><label class="ets-connection-lbl">' . esc_html__( 'Discord connection', 'connect-memberpress-discord-add-on' ) . '</label>';
-				$ets_memberpress_connecttodiscord_btn .= '<a href="?action=memberpress-discord-login" class="btn-connect ets-btn" ' . $connect_btn_bg_color . ' >' . esc_html__( $ets_memberpress_discord_loggedin_button_text, 'connect-memberpress-discord-add-on' ) . '<i class="fab fa-discord"></i></a>';
+				$ets_memberpress_connecttodiscord_btn .= '<a href="?action=memberpress-discord-login" class="btn-connect ets-btn" ' . $connect_btn_bg_color . ' >' . esc_html__( $ets_memberpress_discord_loggedin_button_text, 'connect-memberpress-discord-add-on' ) . ETS_Memberpress_Discord::get_discord_logo_white() . '</a>';
 				if ( $mapped_role_names || $default_role_name ) {
 					$ets_memberpress_connecttodiscord_btn .= '<p class="ets_assigned_role">';
 					$ets_memberpress_connecttodiscord_btn .= esc_html__( 'Following Roles will be assigned to you in Discord: ', 'connect-memberpress-discord-add-on' );
@@ -691,17 +691,14 @@ class ETS_Memberpress_Discord_Public {
 				}
 				$current_url = get_site_url() . '?action=memberpress-discord-login&fromcheckout=1&url=' . ets_memberpress_discord_get_current_screen_url();
 				echo wp_kses(
-					'<a href="' . sanitize_url( $current_url ) . '" class="memberpress-btn-connect ets-btn" >' . esc_html( $btn_text ) . '<i class="fab fa-discord"></i></a>',
+					'<a href="' . sanitize_url( $current_url ) . '" class="memberpress-btn-connect ets-btn" >' . esc_html( $btn_text ) . ETS_Memberpress_Discord::get_discord_logo_white() . '</a>',
 					array(
 						'a' => array(
 							'href'  => array( $current_url ),
 							'class' => array( 'memberpress-btn-connect', 'ets-btn' ),
 						),
-						'i' => array(
-							'class' => array(
-								'fab',
-								'fa-discord',
-							),
+						'img' => array(
+							'src' => array(),
 						),
 					)
 				);

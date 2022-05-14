@@ -166,7 +166,7 @@ class ETS_Memberpress_Discord {
 		$this->loader->add_action( 'ets_memberpress_discord_as_schedule_delete_role', $plugin_admin, 'ets_memberpress_discord_as_handler_delete_memberrole', 10, 3 );
 		$this->loader->add_action( 'ets_memberpress_discord_as_handle_memberpress_complete_transaction', $plugin_admin, 'ets_memberpress_discord_as_handler_memberpress_complete_transaction', 10, 2 );
 		$this->loader->add_action( 'before_delete_post', $plugin_admin, 'ets_memberpress_discord_as_schedule_job_membership_level_deleted' );
-    $this->loader->add_action( 'admin_init', $plugin_admin, 'ets_memberpress_discord_connect_bot' );
+		$this->loader->add_action( 'admin_init', $plugin_admin, 'ets_memberpress_discord_connect_bot' );
 	}
 
 	/**
@@ -365,6 +365,20 @@ class ETS_Memberpress_Discord {
 		}
 		return $response_arr;
 	}
+
+	/**
+	 * Return Discord icon
+	 *
+	 * @since     1.0.0
+	 * @return    string    discord icon image
+	 */
+	public static function get_discord_logo_white(){
+		$img = file_get_contents( plugin_dir_path( dirname( __FILE__ ) ) . 'public/images/discord-logo-white.svg' );
+		$data = base64_encode( $img );
+                
+		return '<img src="data:image/svg+xml;base64,' . $data . '" />';
+	}
+
 	/**
 	 * Run the loader to execute all of the hooks with WordPress.
 	 *
