@@ -24,7 +24,7 @@
 						if ($('.ets-tabs button[data-identity="level-mapping"]').length) {
 							$('.ets-tabs button[data-identity="level-mapping"]').show();
 						}
-						$("#connect-discord-bot").show().html("Bot Connected <i class='fab fa-discord'></i>").addClass('not-active');
+						$("#connect-discord-bot").show().html("Bot Connected " + etsMemberpressParams.discord_icon  ).addClass('not-active');
 
 						var activeTab = localStorage.getItem('activeTab');
 						if ($('.ets-tabs button[data-identity="level-mapping"]').length == 0 && activeTab == 'level-mapping') {

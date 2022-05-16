@@ -72,6 +72,7 @@ class ETS_Memberpress_Discord_Admin {
 			'permissions_const'             => ETS_MEMBERPRESS_DISCORD_BOT_PERMISSIONS,
 			'is_admin'                      => is_admin(),
 			'ets_memberpress_discord_nonce' => wp_create_nonce( 'ets-memberpress-discord-ajax-nonce' ),
+			'discord_icon' => ETS_Memberpress_Discord::get_discord_logo_white(),                    
 		);
 
 		wp_localize_script( $this->plugin_name, 'etsMemberpressParams', $script_params );

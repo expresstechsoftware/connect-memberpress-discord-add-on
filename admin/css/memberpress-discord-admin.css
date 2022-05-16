@@ -476,3 +476,9 @@ select#defaultRole{
   width: 12%;
 }
 .msg-green{color:#008008!important}
+a.ets-btn.btn-connect-to-bot img{
+    width: 20px;
+    display: inline-block;
+    margin-left: 5px;
+        
+}
