@@ -1,4 +1,8 @@
+= 1.0.3 =
+- Remove use of font awesome and added discord icon svg.
+
 = 1.0.2 =
 - Fixed BUG: button apperance settings not working, and downgrade membership does not remove old discord role.
+
 = 1.0.1 =
 - Fixed BUG: All memberships was not available under role mappings.
