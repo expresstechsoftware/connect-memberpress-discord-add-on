@@ -932,7 +932,7 @@ class ETS_Memberpress_Discord_Admin {
 					<?php
 				break;
 			default:
-				MeprHooks::do_action( 'mepr_members_list_table_row', $attributes, $rec, $column_name, $column_display_name );
+				//MeprHooks::do_action( 'mepr_members_list_table_row', $attributes, $rec, $column_name, $column_display_name );
 		}
 	}
 
