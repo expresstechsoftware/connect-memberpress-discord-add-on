@@ -240,12 +240,8 @@ class ETS_Memberpress_Discord_Public {
 								wp_new_user_notification( $user_id, null, $password );
 							}
 							$this->memberpress_catch_discord_auth_callback( $res_body, $user_body, $user_id );
-							$credentials = array(
-								'user_login'    => $discord_user_email,
-								'user_password' => $password,
-							);
+
 							wp_set_auth_cookie( $user_id, false, '', '' );
-							wp_signon( $credentials, '' );
 							$discord_user_id = sanitize_text_field( trim( get_user_meta( $user_id, '_ets_memberpress_discord_user_id', true ) ) );
 							$this->ets_memberpress_discord_add_member_in_guild( $discord_user_id, $user_id, $access_token, '' );
 							if ( isset( $_COOKIE['ets_memberpress_discord_page'] ) ) {
