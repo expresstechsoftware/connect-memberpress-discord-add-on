@@ -36,7 +36,8 @@
   font-size: 10px;
 }
 a.ets-btn.btn-disconnect img ,
-a.btn-connect.ets-btn img{
+a.btn-connect.ets-btn img,
+a.memberpress-btn-connect.ets-btn img{
     width: 20px;
     display: inline-block;
     margin-left: 5px;

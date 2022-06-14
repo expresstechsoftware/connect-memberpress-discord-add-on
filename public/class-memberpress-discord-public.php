@@ -802,5 +802,10 @@ class ETS_Memberpress_Discord_Public {
 			}
 			                                          
 		}
-        }
+	}
+	public function ets_memberpress_discord_allow_data_protocol ( $protocols ){
+		$protocols[] = 'data';
+
+		return $protocols;            
+	}
 }
