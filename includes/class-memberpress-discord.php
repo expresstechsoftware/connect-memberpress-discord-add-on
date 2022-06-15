@@ -177,7 +177,7 @@ class ETS_Memberpress_Discord {
 	 * @access   private
 	 */
 	private function define_public_hooks() {
-    $plugin_admin = new ETS_Memberpress_Discord_Admin( $this->get_plugin_name(), $this->get_version() );
+		$plugin_admin = new ETS_Memberpress_Discord_Admin( $this->get_plugin_name(), $this->get_version() );
 
 		$plugin_public = new ETS_Memberpress_Discord_Public( $this->get_plugin_name(), $this->get_version(), $plugin_admin );
 
@@ -194,7 +194,8 @@ class ETS_Memberpress_Discord {
 		$this->loader->add_action( 'ets_memberpress_discord_as_schedule_member_put_role', $plugin_public, 'ets_memberpress_discord_as_handler_put_memberrole', 10, 3 );
 		$this->loader->add_action( 'mepr-account-home-before-name', $plugin_public, 'ets_memberpress_discord_login_with_discord_button' );
 		$this->loader->add_action( 'mepr-checkout-before-name', $plugin_public, 'ets_memberpress_discord_login_with_discord_button' );
-        	$this->loader->add_action( 'mepr-event-create', $plugin_public, 'ets_memberpress_discord_listen_to_mepr_events' , 99, 1 );
+		$this->loader->add_action( 'mepr-event-create', $plugin_public, 'ets_memberpress_discord_listen_to_mepr_events' , 99, 1 );
+		$this->loader->add_filter( 'kses_allowed_protocols', $plugin_public, 'ets_memberpress_discord_allow_data_protocol' );
 	}
 
 	/**
