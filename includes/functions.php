@@ -120,7 +120,7 @@ function ets_memberpress_discord_check_api_errors( $api_response ) {
  */
 function ets_memberpress_discord_as_get_action_data( $action_id ) {
 	global $wpdb;
-	$result = $wpdb->get_results( $wpdb->prepare( 'SELECT aa.hook, aa.status, aa.args, ag.slug AS as_group FROM ' . $wpdb->prefix . 'actionscheduler_actions as aa INNER JOIN ' . $wpdb->prefix . 'actionscheduler_groups as ag ON aa.group_id=ag.group_id WHERE `action_id`=%d AND ag.slug=%s', $action_id, ETS_MEMBERPRESS_DISCORD_AS_GROUP_NAME ), ARRAY_A );
+	$result = $wpdb->get_results( $wpdb->prepare( 'SELECT aa.hook, aa.status, aa.args, aa.extended_args, ag.slug AS as_group FROM ' . $wpdb->prefix . 'actionscheduler_actions as aa INNER JOIN ' . $wpdb->prefix . 'actionscheduler_groups as ag ON aa.group_id=ag.group_id WHERE `action_id`=%d AND ag.slug=%s', $action_id, ETS_MEMBERPRESS_DISCORD_AS_GROUP_NAME ), ARRAY_A );
 
 	if ( ! empty( $result ) ) {
 		return $result[0];

@@ -223,6 +223,9 @@ class ETS_Memberpress_Discord {
 		if ( $action_data !== false ) {
 			$hook              = $action_data['hook'];
 			$args              = json_decode( $action_data['args'] );
+      if( !is_array($args) ){
+        $args              = json_decode( $action_data['extended_args'] );
+      }
 			$retry_failed_api  = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_retry_failed_api' ) ) );
 			$hook_failed_count = ets_memberpress_discord_count_of_hooks_failures( $hook );
 			$retry_api_count   = absint( sanitize_text_field( trim( get_option( 'ets_memberpress_discord_retry_api_count' ) ) ) );
