@@ -31,8 +31,8 @@ This plugin provides the following features:
 7) Admin can decide if membership should stay in their discord server when membership expires or cancelled.
 8) Admin can decide what default role to be assigned when membership cancelled or expire.
 9) Admin can change role by changing the membership by editng user insider WP Manage user.
-10) Send a Direct message to discord members when their membership has expired. (Only work when allow none member is set to YES and Direct Message advanced setting is set ENABLED)
-11) Send a Direct message to discord members when their membership is cancelled. (Only work when allow none member is set to YES and Direct Message advanced setting is set ENABLED)
+10) Send a Direct message to discord members when their membership has expired. (Only work when allow non-member is set to YES and Direct Message advanced setting is set ENABLED)
+11) Send a Direct message to discord members when their membership is cancelled. (Only work when allow non-member is set to YES and Direct Message advanced setting is set ENABLED)
 12) Short code [mepr_discord_button] can be used on any page to display connect/disconnect button.
 13) Using the shortcode [mepr_discord_button] on any page, anyone can join the website discord server by authentication via member discord account. New members will get `default` role if selected in the setting.
 14) Button styling feature under the plugin settings.
