@@ -1,6 +1,6 @@
 === Connect MemberPress To Discord ===
 Contributors: expresstechsoftware
-Tags: Discord, Talk, Video Chat, Hang Out, Friends, Meberships, discord role management
+Tags: Discord, Talk, Video Chat, Hang Out, Friends, Meberships, discord role management, sell private access.
 Requires at least: 4.7
 Donate link: https://paypal.me/supportets
 Author URI: https://www.expresstechsoftwares.com
@@ -20,29 +20,47 @@ Very simple setup and intutive User interface to Manage Member Role inside Disco
 - Please always contact support if you are facing issues in setup or see any bug.
 - If you did like the plugin, kindly support us in doing free excellent work our PayPal email is: business@expresstechsoftwares.com
 
+[youtube https://youtu.be/2LHUGlwPxNI]
 
 This plugin provides the following features: 
-1) Allow any member to connect their discord account with their MemberPress membership account. 
+1) Allow any member to connect their discord account with their MemberPress membership account.
+
 2) Members will be assigned roles in discord as per their membership level.
-3) Members roles can be changed/remove from the admin of the site.
-4) Members roles will be updated when membership expires.
-5) Members roles will be updated when membership cancelled.
+
+3) Members' roles can be changed/removed from the admin of the site.
+
+4) Members' roles will be updated when membership expires.
+
+5) Members' roles will be updated when membership is cancelled.
+
 6) Admin can decide what default role to be given to all members upon connecting their discord to their membership account.
-7) Admin can decide if membership should stay in their discord server when membership expires or cancelled.
-8) Admin can decide what default role to be assigned when membership cancelled or expire.
-9) Admin can change role by changing the membership by editng user insider WP Manage user.
+
+7) Admin can decide if membership should stay in their discord server when membership expires or is cancelled.
+
+8) Admin can decide what default role to be assigned when membership is cancelled or expire.
+
+9) Admin can change role by changing the membership by editing user insider WP Manage user.
+
 10) Send a Direct message to discord members when their membership has expired. (Only work when allow non-member is set to YES and Direct Message advanced setting is set ENABLED)
-11) Send a Direct message to discord members when their membership is cancelled. (Only work when allow non-member is set to YES and Direct Message advanced setting is set ENABLED)
+
+11) Send a Direct message to discord members when their membership is cancelled. (Only work when allowed non-member is set to YES and Direct Message advanced setting is set ENABLED)
+
 12) Short code [mepr_discord_button] can be used on any page to display connect/disconnect button.
-13) Using the shortcode [mepr_discord_button] on any page, anyone can join the website discord server by authentication via member discord account. New members will get `default` role if selected in the setting.
+
+13) Using the shortcode [mepr_discord_button] on any page, anyone can join the website discord server by authentication via a member discord account. New members will get a default role if selected in the setting.
+
 14) Button styling feature under the plugin settings.
+
 15) Downgrade will remove old discord roles.
+
 
 == Installation ==
 
 = Download, Install and Activate! =
 1. Go to Plugins > Add New to find and install PMPRO discord Addon.
+
 2. Or, download the latest version of the plugin, then go to Plugins > Add New and click the "Upload Plugin" button to upload your .zip file.
+
 3. Activate the plugin.
 
 = Complete the Initial Plugin Setup =
@@ -55,8 +73,9 @@ Go to MemberPress > Discord Settings in the WordPress admin to begin setup.
 == Frequently Asked Questions ==
 = I need help installing, configuring, or customizing the plugin. =
 Please visit [our support site at https://www.expresstechsoftwares.com/step-by-step-documentation-guide-on-how-to-connect-memberpress-and-discord-server-using-discord-addon) for more documentation and our support forums.
+
 = I'm getting an error in error Log 'Missing Access'
-Please make sure your bot role has the highest priority among all other roles in your discord server roles settings.
+Please make sure your bot role has the high priority among all other roles your bot has to manager in your discord server roles settings. please watch video on youtube how to do it. [Installation Video](https://youtu.be/2LHUGlwPxNI?t=408)
 = Role Settings is not appearing.
 1. Clear browser cache, to uninstall and install again.
 2. Try the disabling cache
@@ -74,4 +93,4 @@ Please make sure your bot role has the highest priority among all other roles in
 3. Advanced settings.
 4. Connect Button Appearance.
 5. Spot the Connect to Discord on Members profile page.
-6. Role Management Gif
+6. Role Management GIF
