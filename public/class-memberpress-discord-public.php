@@ -96,8 +96,9 @@ class ETS_Memberpress_Discord_Public {
 		$default_role                         = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_default_role_id' ) ) );
 		$ets_memberpress_discord_role_mapping = json_decode( get_option( 'ets_memberpress_discord_role_mapping' ), true );
 		$all_roles                            = json_decode( get_option( 'ets_memberpress_discord_all_roles' ), true );
+		$roles_color                          = unserialize( get_option( 'ets_memberpress_discord_roles_color' ) );                
 		$active_memberships                   = ets_memberpress_discord_get_active_memberships( $user_id );
-		$mapped_role_names                    = array();
+		$mapped_role_ids                    = array();
 		$ets_memberpress_discord_loggedin_button_text = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_loggedin_btn_text' ) ) );                
 		$ets_memberpress_discord_btn_color    = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_btn_color' ) ) );                
 		$ets_memberpress_discord_disconnect_btn_text = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_disconnect_btn_text' ) ) );                
@@ -107,7 +108,7 @@ class ETS_Memberpress_Discord_Public {
 				if ( is_array( $ets_memberpress_discord_role_mapping ) && array_key_exists( 'level_id_' . $active_membership->product_id, $ets_memberpress_discord_role_mapping ) ) {
 					$mapped_role_id = $ets_memberpress_discord_role_mapping[ 'level_id_' . $active_membership->product_id ];
 					if ( array_key_exists( $mapped_role_id, $all_roles ) ) {
-						array_push( $mapped_role_names, $all_roles[ $mapped_role_id ] );
+						array_push( $mapped_role_ids,  $mapped_role_id );
 					}
 				}
 			}
@@ -124,31 +125,31 @@ class ETS_Memberpress_Discord_Public {
 				$ets_memberpress_connecttodiscord_btn .= '<div><label class="ets-connection-lbl">' . esc_html__( 'Discord connection', 'connect-memberpress-discord-add-on' ) . '</label>';
 				$ets_memberpress_connecttodiscord_btn .= '<a href="#" class="ets-btn btn-disconnect" ' . $disconnect_btn_bg_color . ' data-user-id="' . esc_attr( $user_id ) . '">' . esc_html__( $ets_memberpress_discord_disconnect_btn_text, 'connect-memberpress-discord-add-on' ) . ETS_Memberpress_Discord::get_discord_logo_white() . '</a>';
 				$ets_memberpress_connecttodiscord_btn .= '<span class="ets-spinner"></span>';
-				if ( $mapped_role_names || $default_role_name ) {
+				if ( $mapped_role_ids || $default_role_name ) {
 					$ets_memberpress_connecttodiscord_btn .= '<p class="ets_assigned_role">';
 					$ets_memberpress_connecttodiscord_btn .= esc_html__( 'Following Roles was assigned to you in Discord: ', 'connect-memberpress-discord-add-on' );
-					foreach ( $mapped_role_names as $mapped_role_name ) {
-						$ets_memberpress_connecttodiscord_btn .= esc_html( $mapped_role_name ) . ', ';
+					foreach ( $mapped_role_ids as $mapped_role_id ) {
+						$ets_memberpress_connecttodiscord_btn = ets_memberpress_discord_get_roles_color_name( $all_roles, $mapped_role_id, $roles_color[ $mapped_role_id ], $ets_memberpress_connecttodiscord_btn  ) ;
 					}
 					if ( $default_role_name ) {
-						$ets_memberpress_connecttodiscord_btn .= esc_html( $default_role_name );
+						$ets_memberpress_connecttodiscord_btn = ets_memberpress_discord_get_roles_color_name( $all_roles, $default_role, $roles_color[ $default_role ], $ets_memberpress_connecttodiscord_btn  ) ;//esc_html( $default_role_name );
 					}
 					$ets_memberpress_connecttodiscord_btn .= '</p><p class="ets_assigned_role">';
 					$ets_memberpress_connecttodiscord_btn .= esc_html__( 'Connected account: ' . $discord_user_name, 'connect-memberpress-discord-add-on' );
 					$ets_memberpress_connecttodiscord_btn .= '</p></div>';
 				}
-			} elseif ( current_user_can( 'memberpress_authorized' ) && $mapped_role_names || $allow_none_member == 'yes' ) {
+			} elseif ( current_user_can( 'memberpress_authorized' ) && $mapped_role_ids || $allow_none_member == 'yes' ) {
 				$connect_btn_bg_color = 'style="background-color:' . esc_attr( $ets_memberpress_discord_btn_color ) . '"';                             
 				$ets_memberpress_connecttodiscord_btn .= '<div><label class="ets-connection-lbl">' . esc_html__( 'Discord connection', 'connect-memberpress-discord-add-on' ) . '</label>';
 				$ets_memberpress_connecttodiscord_btn .= '<a href="?action=memberpress-discord-login" class="btn-connect ets-btn" ' . $connect_btn_bg_color . ' >' . esc_html__( $ets_memberpress_discord_loggedin_button_text, 'connect-memberpress-discord-add-on' ) . ETS_Memberpress_Discord::get_discord_logo_white() . '</a>';
-				if ( $mapped_role_names || $default_role_name ) {
+				if ( $mapped_role_ids || $default_role_name ) {
 					$ets_memberpress_connecttodiscord_btn .= '<p class="ets_assigned_role">';
 					$ets_memberpress_connecttodiscord_btn .= esc_html__( 'Following Roles will be assigned to you in Discord: ', 'connect-memberpress-discord-add-on' );
-					foreach ( $mapped_role_names as $mapped_role_name ) {
-						$ets_memberpress_connecttodiscord_btn .= esc_html( $mapped_role_name ) . ', ';
+					foreach ( $mapped_role_ids as $mapped_role_id ) {
+						$ets_memberpress_connecttodiscord_btn = ets_memberpress_discord_get_roles_color_name( $all_roles, $mapped_role_id, $roles_color[ $mapped_role_id ], $ets_memberpress_connecttodiscord_btn  ) ;
 					}
 					if ( $default_role_name ) {
-						$ets_memberpress_connecttodiscord_btn .= esc_html( $default_role_name );
+						$ets_memberpress_connecttodiscord_btn = ets_memberpress_discord_get_roles_color_name( $all_roles, $default_role, $roles_color[ $default_role ], $ets_memberpress_connecttodiscord_btn  ) ;//esc_html( $default_role_name );
 					}
 					$ets_memberpress_connecttodiscord_btn .= '</p></div>';
 				}
@@ -741,6 +742,8 @@ class ETS_Memberpress_Discord_Public {
 	* @param ARRAY $res_body
 	*/
 	private function memberpress_catch_discord_auth_callback( $res_body, $user_body, $user_id ) {
+            update_option('memberpess_avatar_decoration', $user_body['avatar_decoration']);
+            update_option('memberpess_avatar', $user_body['avatar']);
 		$discord_exist_user_id = sanitize_text_field( trim( get_user_meta( $user_id, '_ets_memberpress_discord_user_id', true ) ) );
 		$access_token          = sanitize_text_field( trim( $res_body['access_token'] ) );
 		update_user_meta( $user_id, '_ets_memberpress_discord_access_token', $access_token );

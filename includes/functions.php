@@ -344,3 +344,20 @@ function ets_memberpress_discord_remove_usermeta( $user_id ) {
 	$delete_usermeta_sql = $wpdb->prepare( $usermeta_sql, $user_id );
 	$wpdb->query( $delete_usermeta_sql );
 }
+
+function ets_memberpress_discord_get_roles_color_name ( $all_roles, $mapped_role_id, $role_color, $ets_memberpress_connecttodiscord_btn ) {
+    
+	$role  = '<span> <i style="background-color:#' . dechex( $role_color ) . '"></i>' . $all_roles[ $mapped_role_id ] . '</span>';
+	$ets_memberpress_connecttodiscord_btn .= ets_learndash_discord_allowed_html( $role );
+	return $ets_memberpress_connecttodiscord_btn ;
+}
+function ets_memberpress_discord_allowed_html( $html_message ) {
+	$allowed_html = array(
+		'span' => array(),
+		'i' => array(
+			'style' => array()
+		)
+	);
+
+	return wp_kses( $html_message, $allowed_html );
+}

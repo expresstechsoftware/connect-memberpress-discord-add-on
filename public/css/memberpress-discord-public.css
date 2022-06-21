@@ -33,8 +33,25 @@
   background-color:#FF0000;
 }
 .ets_assigned_role{
-  font-size: 10px;
+  font-size: 12px;
 }
+ .ets_assigned_role > span{
+    padding: 0px 7px;
+    border-radius: 12px;
+    color: #fff;
+    display: inline-flex;
+    flex-direction: row;
+    align-items: center; 
+    background-color: #28303d;
+    margin-right: 5px;
+ }
+ .ets_assigned_role > span > i{
+    width: 14px;
+    height: 14px;
+    display: inline-block;
+    border-radius: 50%;
+    margin-right: 6px;     
+ }
 a.ets-btn.btn-disconnect img ,
 a.btn-connect.ets-btn img,
 a.memberpress-btn-connect.ets-btn img{
