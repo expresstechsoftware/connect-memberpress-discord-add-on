@@ -557,9 +557,11 @@ class ETS_Memberpress_Discord_Admin {
 						}
 						if ( 'previous_mapping' !== $key && false === $isbot && isset( $value['name'] ) && $value['name'] != '@everyone' ) {
 							$discord_roles[ $value['id'] ] = $value['name'];
+							$discord_roles_color[ $value['id'] ] = $value['color'];
 						}
 					}
 					update_option( 'ets_memberpress_discord_all_roles', wp_json_encode( $discord_roles ) );
+					update_option( 'ets_memberpress_discord_roles_color', serialize( $discord_roles_color ) );                                                                                
 				}
 			}
 			return wp_send_json( $response_arr );
