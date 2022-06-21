@@ -351,13 +351,25 @@ function ets_memberpress_discord_get_roles_color_name ( $all_roles, $mapped_role
 	$ets_memberpress_connecttodiscord_btn .= ets_learndash_discord_allowed_html( $role );
 	return $ets_memberpress_connecttodiscord_btn ;
 }
+
 function ets_memberpress_discord_allowed_html( $html_message ) {
 	$allowed_html = array(
 		'span' => array(),
 		'i' => array(
 			'style' => array()
-		)
+		),
+		'img' => array(
+			'src' =>  array()
+                )
 	);
 
 	return wp_kses( $html_message, $allowed_html );
 }
+
+function ets_memberpress_discord_get_user_avatar ( $discord_user_id, $user_avatar, $ets_memberpress_connecttodiscord_btn ) {
+	if ( $user_avatar ){
+		$avatar_url =  '<img src="https://cdn.discordapp.com/avatars/' . $discord_user_id . '/' . $user_avatar . '.png" />';
+		$ets_memberpress_connecttodiscord_btn .= ets_memberpress_discord_allowed_html( $avatar_url );
+	}
+	return $ets_memberpress_connecttodiscord_btn;
+} 

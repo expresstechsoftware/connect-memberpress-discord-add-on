@@ -52,6 +52,13 @@
     border-radius: 50%;
     margin-right: 6px;     
  }
+ .ets_assigned_role > img {
+    border-radius: 50% !important;
+    width: 45px;
+    height: auto;
+    display: inline-block;
+    margin-left: 10px;    
+ }
 a.ets-btn.btn-disconnect img ,
 a.btn-connect.ets-btn img,
 a.memberpress-btn-connect.ets-btn img{
