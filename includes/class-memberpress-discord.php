@@ -167,6 +167,10 @@ class ETS_Memberpress_Discord {
 		$this->loader->add_action( 'ets_memberpress_discord_as_handle_memberpress_complete_transaction', $plugin_admin, 'ets_memberpress_discord_as_handler_memberpress_complete_transaction', 10, 2 );
 		$this->loader->add_action( 'before_delete_post', $plugin_admin, 'ets_memberpress_discord_as_schedule_job_membership_level_deleted' );
 		$this->loader->add_action( 'admin_init', $plugin_admin, 'ets_memberpress_discord_connect_bot' );
+		$this->loader->add_action( 'delete_user', $plugin_admin, 'ets_memberpress_discord_remove_user_from_server' );
+		if ( is_multisite() ) {
+			$this->loader->add_action( 'remove_user_from_blog', $plugin_admin, 'ets_memberpress_discord_remove_user_from_server' );
+		}
 	}
 
 	/**
@@ -194,7 +198,7 @@ class ETS_Memberpress_Discord {
 		$this->loader->add_action( 'ets_memberpress_discord_as_schedule_member_put_role', $plugin_public, 'ets_memberpress_discord_as_handler_put_memberrole', 10, 3 );
 		$this->loader->add_action( 'mepr-account-home-before-name', $plugin_public, 'ets_memberpress_discord_login_with_discord_button' );
 		$this->loader->add_action( 'mepr-checkout-before-name', $plugin_public, 'ets_memberpress_discord_login_with_discord_button' );
-		$this->loader->add_action( 'mepr-event-create', $plugin_public, 'ets_memberpress_discord_listen_to_mepr_events' , 99, 1 );
+		$this->loader->add_action( 'mepr-event-create', $plugin_public, 'ets_memberpress_discord_listen_to_mepr_events', 99, 1 );
 		$this->loader->add_filter( 'kses_allowed_protocols', $plugin_public, 'ets_memberpress_discord_allow_data_protocol' );
 	}
 
@@ -222,11 +226,11 @@ class ETS_Memberpress_Discord {
 		// First check if the action is for PMPRO discord.
 		$action_data = ets_memberpress_discord_as_get_action_data( $action_id );
 		if ( $action_data !== false ) {
-			$hook              = $action_data['hook'];
-			$args              = json_decode( $action_data['args'] );
-      if( !is_array( $args ) ){
-        $args              = json_decode( $action_data['extended_args'] );
-      }
+			$hook = $action_data['hook'];
+			$args = json_decode( $action_data['args'] );
+			if ( ! is_array( $args ) ) {
+				$args = json_decode( $action_data['extended_args'] );
+			}
 			$retry_failed_api  = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_retry_failed_api' ) ) );
 			$hook_failed_count = ets_memberpress_discord_count_of_hooks_failures( $hook );
 			$retry_api_count   = absint( sanitize_text_field( trim( get_option( 'ets_memberpress_discord_retry_api_count' ) ) ) );
@@ -376,10 +380,10 @@ class ETS_Memberpress_Discord {
 	 * @since     1.0.0
 	 * @return    string    discord icon image
 	 */
-	public static function get_discord_logo_white(){
-		$img = file_get_contents( plugin_dir_path( dirname( __FILE__ ) ) . 'public/images/discord-logo-white.svg' );
+	public static function get_discord_logo_white() {
+		$img  = file_get_contents( plugin_dir_path( dirname( __FILE__ ) ) . 'public/images/discord-logo-white.svg' );
 		$data = base64_encode( $img );
-                
+
 		return '<img src="data:image/svg+xml;base64,' . $data . '" />';
 	}
 

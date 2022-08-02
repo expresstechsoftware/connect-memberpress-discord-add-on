@@ -556,12 +556,12 @@ class ETS_Memberpress_Discord_Admin {
 							}
 						}
 						if ( 'previous_mapping' !== $key && false === $isbot && isset( $value['name'] ) && $value['name'] != '@everyone' ) {
-							$discord_roles[ $value['id'] ] = $value['name'];
+							$discord_roles[ $value['id'] ]       = $value['name'];
 							$discord_roles_color[ $value['id'] ] = $value['color'];
 						}
 					}
 					update_option( 'ets_memberpress_discord_all_roles', wp_json_encode( $discord_roles ) );
-					update_option( 'ets_memberpress_discord_roles_color', serialize( $discord_roles_color ) );                                                                                
+					update_option( 'ets_memberpress_discord_roles_color', serialize( $discord_roles_color ) );
 				}
 			}
 			return wp_send_json( $response_arr );
@@ -934,7 +934,7 @@ class ETS_Memberpress_Discord_Admin {
 					<?php
 				break;
 			default:
-				//MeprHooks::do_action( 'mepr_members_list_table_row', $attributes, $rec, $column_name, $column_display_name );
+				// MeprHooks::do_action( 'mepr_members_list_table_row', $attributes, $rec, $column_name, $column_display_name );
 		}
 	}
 
@@ -1047,6 +1047,27 @@ class ETS_Memberpress_Discord_Admin {
 
 			wp_redirect( $discord_authorise_api_url, 302, get_site_url() );
 			exit;
+		}
+	}
+
+	/**
+	 * Method to remove user from discord
+	 *
+	 * @param INT $user_id The User 's ID.
+	 */
+	public function ets_memberpress_discord_remove_user_from_server( $user_id ) {
+		if ( ! is_user_logged_in() && current_user_can( 'remove_users' ) ) {
+			wp_send_json_error( 'Unauthorized user', 401 );
+			exit();
+		}
+		if ( $user_id ){
+			$memberpress_discord = new ETS_Memberpress_Discord();
+			$plugin_admin        = new ETS_Memberpress_Discord_Admin( $memberpress_discord->get_plugin_name(), $memberpress_discord->get_version() );
+			$plugin_public       = new ETS_Memberpress_Discord_Public( $memberpress_discord->get_plugin_name(), $memberpress_discord->get_version(), $plugin_admin );
+			$plugin_public->memberpress_delete_member_from_guild( $user_id, false );
+
+			// delete all user_meta keys.
+			ets_memberpress_discord_remove_usermeta( $user_id );
 		}
 	}
 }
