@@ -922,7 +922,7 @@ class ETS_Memberpress_Discord_Admin {
 					echo __( 'Run API', 'connect-memberpress-discord-add-on' );
 					echo '</a><span class="' . esc_attr( $rec->ID ) . ' spinner"></span>';
 					echo esc_html( $discord_username );
-					echo '<p>' . $discord_user_id . '</p>';
+					echo 'Discord ID - <p>' . $discord_user_id . '</p>';
 				} else {
 					echo __( 'Not Connected', 'connect-memberpress-discord-add-on' );
 				}
