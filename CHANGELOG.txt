@@ -1,3 +1,6 @@
+= 1.0.6 =
+- Added discord user id inside members table, now it is easy to find users inside server who have updated their usernames.
+
 = 1.0.5 =
 - Fixed the action scheduler not not doing re-try
 
