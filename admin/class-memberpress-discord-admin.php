@@ -556,10 +556,12 @@ class ETS_Memberpress_Discord_Admin {
 							}
 						}
 						if ( 'previous_mapping' !== $key && false === $isbot && isset( $value['name'] ) && $value['name'] != '@everyone' ) {
-							$discord_roles[ $value['id'] ] = $value['name'];
+							$discord_roles[ $value['id'] ]       = $value['name'];
+							$discord_roles_color[ $value['id'] ] = $value['color'];
 						}
 					}
 					update_option( 'ets_memberpress_discord_all_roles', wp_json_encode( $discord_roles ) );
+					update_option( 'ets_memberpress_discord_roles_color', serialize( $discord_roles_color ) );
 				}
 			}
 			return wp_send_json( $response_arr );
@@ -907,7 +909,8 @@ class ETS_Memberpress_Discord_Admin {
 	 * @param String $column_display_name
 	 */
 	public function ets_memberpress_discord_members_list_add_custom_column_value( $attributes, $rec, $column_name, $column_display_name ) {
-		$access_token = sanitize_text_field( trim( get_user_meta( $rec->ID, '_ets_memberpress_discord_access_token', true ) ) );
+		$access_token    = sanitize_text_field( trim( get_user_meta( $rec->ID, '_ets_memberpress_discord_access_token', true ) ) );
+		$discord_user_id = sanitize_text_field( trim( get_user_meta( $rec->ID, '_ets_memberpress_discord_user_id', true ) ) );
 		switch ( $column_name ) {
 			case 'col_memberpress_discord':
 				?>
@@ -919,6 +922,7 @@ class ETS_Memberpress_Discord_Admin {
 					echo __( 'Run API', 'connect-memberpress-discord-add-on' );
 					echo '</a><span class="' . esc_attr( $rec->ID ) . ' spinner"></span>';
 					echo esc_html( $discord_username );
+					echo 'Discord ID - <p>' . $discord_user_id . '</p>';
 				} else {
 					echo __( 'Not Connected', 'connect-memberpress-discord-add-on' );
 				}
@@ -932,7 +936,7 @@ class ETS_Memberpress_Discord_Admin {
 					<?php
 				break;
 			default:
-				//MeprHooks::do_action( 'mepr_members_list_table_row', $attributes, $rec, $column_name, $column_display_name );
+				// MeprHooks::do_action( 'mepr_members_list_table_row', $attributes, $rec, $column_name, $column_display_name );
 		}
 	}
 
@@ -1045,6 +1049,27 @@ class ETS_Memberpress_Discord_Admin {
 
 			wp_redirect( $discord_authorise_api_url, 302, get_site_url() );
 			exit;
+		}
+	}
+
+	/**
+	 * Method to remove user from discord
+	 *
+	 * @param INT $user_id The User 's ID.
+	 */
+	public function ets_memberpress_discord_remove_user_from_server( $user_id ) {
+		if ( ! is_user_logged_in() && current_user_can( 'remove_users' ) ) {
+			wp_send_json_error( 'Unauthorized user', 401 );
+			exit();
+		}
+		if ( $user_id ) {
+			$memberpress_discord = new ETS_Memberpress_Discord();
+			$plugin_admin        = new ETS_Memberpress_Discord_Admin( $memberpress_discord->get_plugin_name(), $memberpress_discord->get_version() );
+			$plugin_public       = new ETS_Memberpress_Discord_Public( $memberpress_discord->get_plugin_name(), $memberpress_discord->get_version(), $plugin_admin );
+			$plugin_public->memberpress_delete_member_from_guild( $user_id, false );
+
+			// delete all user_meta keys.
+			ets_memberpress_discord_remove_usermeta( $user_id );
 		}
 	}
 }
