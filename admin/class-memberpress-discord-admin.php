@@ -909,7 +909,8 @@ class ETS_Memberpress_Discord_Admin {
 	 * @param String $column_display_name
 	 */
 	public function ets_memberpress_discord_members_list_add_custom_column_value( $attributes, $rec, $column_name, $column_display_name ) {
-		$access_token = sanitize_text_field( trim( get_user_meta( $rec->ID, '_ets_memberpress_discord_access_token', true ) ) );
+		$access_token    = sanitize_text_field( trim( get_user_meta( $rec->ID, '_ets_memberpress_discord_access_token', true ) ) );
+		$discord_user_id = sanitize_text_field( trim( get_user_meta( $rec->ID, '_ets_memberpress_discord_user_id', true ) ) );
 		switch ( $column_name ) {
 			case 'col_memberpress_discord':
 				?>
@@ -921,6 +922,7 @@ class ETS_Memberpress_Discord_Admin {
 					echo __( 'Run API', 'connect-memberpress-discord-add-on' );
 					echo '</a><span class="' . esc_attr( $rec->ID ) . ' spinner"></span>';
 					echo esc_html( $discord_username );
+					echo '<p>' . $discord_user_id . '</p>';
 				} else {
 					echo __( 'Not Connected', 'connect-memberpress-discord-add-on' );
 				}
@@ -1060,7 +1062,7 @@ class ETS_Memberpress_Discord_Admin {
 			wp_send_json_error( 'Unauthorized user', 401 );
 			exit();
 		}
-		if ( $user_id ){
+		if ( $user_id ) {
 			$memberpress_discord = new ETS_Memberpress_Discord();
 			$plugin_admin        = new ETS_Memberpress_Discord_Admin( $memberpress_discord->get_plugin_name(), $memberpress_discord->get_version() );
 			$plugin_public       = new ETS_Memberpress_Discord_Public( $memberpress_discord->get_plugin_name(), $memberpress_discord->get_version(), $plugin_admin );
