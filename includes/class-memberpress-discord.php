@@ -172,6 +172,7 @@ class ETS_Memberpress_Discord {
 		if ( is_multisite() ) {
 			$this->loader->add_action( 'remove_user_from_blog', $plugin_admin, 'ets_memberpress_discord_remove_user_from_server' );
 		}
+		$this->loader->add_action( 'admin_init', $plugin_admin, 'ets_memberperss_add_search_filter' );
 	}
 
 	/**

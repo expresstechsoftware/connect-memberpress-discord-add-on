@@ -1074,6 +1074,7 @@ class ETS_Memberpress_Discord_Admin {
 	}
 
 	public function ets_memberpress_discord_search_by_discord( $search, $perpage ) {
+		return;
 		if ( $_GET['page'] !== 'memberpress-members') {
 			return;
 		}
@@ -1099,5 +1100,21 @@ class ETS_Memberpress_Discord_Admin {
 		?>
 	  </span>
 	  <?php
+	}
+
+	public function ets_memberperss_add_search_filter( ) {
+		if ( $_GET['page'] !== 'memberpress-members') {
+			return;
+		}
+		add_filter( 'mepr-list-table-joins', function( $joins ){
+			global $wpdb;
+			$joins[] = "LEFT JOIN {$wpdb->usermeta} AS da ON da.user_id = u.ID AND da.meta_key='_ets_memberpress_discord_username'";
+			return $joins;
+		});
+		add_filter( 'mepr-list-table-args', function( $args ){
+			global $wpdb;
+			$args[] = $wpdb->prepare( " ( da.meta_value LIKE '%chaima%' ) " );
+			return $args;
+		});		
 	}
 }
