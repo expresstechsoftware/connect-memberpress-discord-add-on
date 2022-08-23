@@ -168,6 +168,7 @@ class ETS_Memberpress_Discord {
 		$this->loader->add_action( 'before_delete_post', $plugin_admin, 'ets_memberpress_discord_as_schedule_job_membership_level_deleted' );
 		$this->loader->add_action( 'admin_init', $plugin_admin, 'ets_memberpress_discord_connect_bot' );
 		$this->loader->add_action( 'delete_user', $plugin_admin, 'ets_memberpress_discord_remove_user_from_server' );
+		$this->loader->add_action( 'mepr_table_controls_search', $plugin_admin, 'ets_memberpress_discord_search_by_discord', 10, 2);
 		if ( is_multisite() ) {
 			$this->loader->add_action( 'remove_user_from_blog', $plugin_admin, 'ets_memberpress_discord_remove_user_from_server' );
 		}

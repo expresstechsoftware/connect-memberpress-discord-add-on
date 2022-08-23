@@ -1072,4 +1072,32 @@ class ETS_Memberpress_Discord_Admin {
 			ets_memberpress_discord_remove_usermeta( $user_id );
 		}
 	}
+
+	public function ets_memberpress_discord_search_by_discord( $search, $perpage ) {
+		if ( $_GET['page'] !== 'memberpress-members') {
+			return;
+		}
+		?>
+		<span class="search-fields">
+		<span><?php _e('Discord Search', 'connect-memberpress-discord-add-on' ); ?></span>
+		<input id="cspf-table-search" value="<?php echo $search; ?>" />
+		<span><?php _e('by Field', 'connect-memberpress-discord-add-on' ); ?></span>
+		<select id="cspf-table-search-field">
+		  <option value="ets_discord_account" <?php selected($search_field,'ets_discord_account'); ?>><?php _e('Discord Account', 'connect-memberpress-discord-add-on' ); ?></option>
+		  <option value="ets_discord_id" <?php selected($search_field,'ets_discord_id'); ?>><?php _e('Discord ID', 'connect-memberpress-discord-add-on' ); ?></option>		  
+		</select>
+		<input id="cspf-table-search-submit" class="button" type="submit" value="<?php _e('Go', 'connect-memberpress-discord-add-on' ); ?>" />
+		<?php
+		  if(isset($_REQUEST['search']) || isset($_REQUEST['search-filter'])) {
+			$uri = $_SERVER['REQUEST_URI'];
+			$uri = preg_replace('/[\?&]search=[^&]*/','',$uri);
+			$uri = preg_replace('/[\?&]search-field=[^&]*/','',$uri);
+			?>
+			<a href="<?php echo $uri; ?>">[x]</a>
+			<?php
+		  }
+		?>
+	  </span>
+	  <?php
+	}
 }
