@@ -1075,53 +1075,67 @@ class ETS_Memberpress_Discord_Admin {
 	}
 
 	public function ets_memberpress_discord_search_by_discord( $search, $perpage ) {
-	
-		if ( $_GET['page'] !== 'memberpress-members') {
+
+		if ( $_GET['page'] !== 'memberpress-members' ) {
 			return;
 		}
 		wp_dequeue_script( $this->plugin_name );
-		wp_enqueue_script($this->plugin_name . '-search' );
-		$search_field_discord = ( isset($_GET['search_field_discord']) ) ? $_GET['search_field_discord'] : '';
+		wp_enqueue_script( $this->plugin_name . '-search' );
+		$search_discord       = ( isset( $_GET['search-discord'] ) ) ? $_GET['search-discord'] : '';
+		$search_field_discord = ( isset( $_GET['search-field-discord'] ) ) ? $_GET['search-field-discord'] : '';
+		//echo '<pre>';
+		//var_dump( $search_field_discord);
+		//echo '</pre>';
 		?>
 		<span class="search-fields">
-		<span><?php _e('Discord Search', 'connect-memberpress-discord-add-on' ); ?></span>
-		<input id="ets-cspf-table-search" value="<?php echo $search; ?>" />
-		<span><?php _e('by Field', 'connect-memberpress-discord-add-on' ); ?></span>
+		<span><?php _e( 'Discord Search', 'connect-memberpress-discord-add-on' ); ?></span>
+		<input id="ets-cspf-table-search" value="<?php echo $search_discord; ?>" />
+		<span><?php _e( 'by Field', 'connect-memberpress-discord-add-on' ); ?></span>
 		<select id="ets-cspf-table-search-field">
-		  <option value="ets_discord_account" <?php selected($search_field_discord,'ets_discord_account'); ?>><?php _e('Discord Account', 'connect-memberpress-discord-add-on' ); ?></option>
-		  <option value="ets_discord_id" <?php selected($search_field_discord,'ets_discord_id'); ?>><?php _e('Discord ID', 'connect-memberpress-discord-add-on' ); ?></option>		  
+		  <option value="_ets_memberpress_discord_username" <?php selected( $search_field_discord, '_ets_memberpress_discord_username' ); ?>><?php _e( 'Discord User Name', 'connect-memberpress-discord-add-on' ); ?></option>
+		  <option value="_ets_memberpress_discord_user_id" <?php selected( $search_field_discord, '_ets_memberpress_discord_user_id' ); ?>><?php _e( 'Discord User ID', 'connect-memberpress-discord-add-on' ); ?></option>		  
 		</select>
-		<input id="ets-cspf-table-search-submit" class="button" type="submit" value="<?php _e('Go', 'connect-memberpress-discord-add-on' ); ?>" />
+		<input id="ets-cspf-table-search-submit" class="button" type="submit" value="<?php _e( 'Go', 'connect-memberpress-discord-add-on' ); ?>" />
 		<?php
-		  if(isset($_REQUEST['search-discord']) || isset($_REQUEST['search-filter-discord'])) {
+		if ( isset( $_REQUEST['search-discord'] ) || isset( $_REQUEST['search-filter-discord'] ) ) {
 			$uri = $_SERVER['REQUEST_URI'];
-			$uri = preg_replace('/[\?&]search-discord=[^&]*/','',$uri);
-			$uri = preg_replace('/[\?&]search-field-discord=[^&]*/','',$uri);
+			$uri = preg_replace( '/[\?&]search-discord=[^&]*/', '', $uri );
+			$uri = preg_replace( '/[\?&]search-field-discord=[^&]*/', '', $uri );
 			?>
 			<a href="<?php echo $uri; ?>">[x]</a>
 			<?php
-		  }
+		}
 		?>
 	  </span>
-	  <?php
+		<?php
 	}
 
-	public function ets_memberperss_add_search_filter( ) {
-		if ( $_GET['page'] !== 'memberpress-members') {
+	public function ets_memberperss_add_search_filter() {
+		if ( isset( $_GET['page'] ) && $_GET['page'] !== 'memberpress-members' ) {
 			return;
 		}
-// search-discord&search-field-discord=ets_discord_account
-if ( isset($_REQUEST['search-discord']) || isset($_REQUEST['search-filter-discord'])){
-		add_filter( 'mepr-list-table-joins', function( $joins ){
-			global $wpdb;
-			$joins[] = "LEFT JOIN {$wpdb->usermeta} AS da ON da.user_id = u.ID AND da.meta_key='_ets_memberpress_discord_username'";
-			return $joins;
-		});
-		add_filter( 'mepr-list-table-args', function( $args ){
-			global $wpdb;
-			$args[] = $wpdb->prepare( " ( da.meta_value LIKE '%chaima%' ) " );
-			return $args;
-		});	
-	}	
+		// search-discord&search-field-discord=ets_discord_account
+		if ( isset( $_REQUEST['search-discord'] ) || isset( $_REQUEST['search-filter-discord'] ) ) {
+
+				add_filter(
+					'mepr-list-table-joins',
+					function( $joins ) {
+						$search_field_discord = ( isset( $_GET['search-field-discord'] ) ) ? $_GET['search-field-discord'] : '';
+							global $wpdb;
+							$joins[] = "LEFT JOIN {$wpdb->usermeta} AS da ON da.user_id = u.ID AND da.meta_key='" . esc_sql( $search_field_discord ) . "'";
+							return $joins;
+					}
+				);
+
+				add_filter(
+					'mepr-list-table-args',
+					function( $args ) {
+						$search_field = ( isset( $_GET['search-discord'] ) ) ? $_GET['search-discord'] : '';
+							global $wpdb;
+							$args[] = $wpdb->prepare( " ( da.meta_value LIKE '%" . esc_sql( $search_field ) . "%' ) " );
+							return $args;
+					}
+				);
+		}
 	}
 }
