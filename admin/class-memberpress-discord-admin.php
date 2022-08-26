@@ -1122,7 +1122,8 @@ class ETS_Memberpress_Discord_Admin {
 					function( $joins ) {
 						$search_field_discord = ( isset( $_GET['search-field-discord'] ) ) ? $_GET['search-field-discord'] : '';
 							global $wpdb;
-							$joins[] = "LEFT JOIN {$wpdb->usermeta} AS da ON da.user_id = u.ID AND da.meta_key='" . esc_sql( $search_field_discord ) . "'";
+							$joins[] = " /* IMPORTANT */ LEFT JOIN {$wpdb->usermeta} AS da ON da.user_id = u.ID AND da.meta_key='" . esc_sql( $search_field_discord ) . "'";
+							//$joins[] = "LEFT JOIN {$wpdb->usermeta} AS dis ON dis.user_id = u.ID AND d.meta_key='" . esc_sql( $search_field_discord ) . "'";
 							return $joins;
 					}
 				);
