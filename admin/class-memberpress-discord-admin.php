@@ -64,7 +64,7 @@ class ETS_Memberpress_Discord_Admin {
 	 * @since    1.0.0
 	 */
 	public function enqueue_scripts() {
-		$min_js = ( defined( 'WP_DEBUG' ) && true === WP_DEBUG  ) ? '' : '.min';                
+		$min_js = ( defined( 'WP_DEBUG' ) && true === WP_DEBUG ) ? '' : '.min';
 		wp_register_script( $this->plugin_name . 'tabs_js', plugin_dir_url( __FILE__ ) . 'js/skeletabs.js', array( 'jquery' ), $this->version, false );
 		wp_register_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/memberpress-discord-admin' . $min_js . '.js', array( 'jquery' ), $this->version, false );
 		wp_register_script( $this->plugin_name . '-search', plugin_dir_url( __FILE__ ) . 'js/memberpress-discord-search' . $min_js . '.js', array( 'jquery' ), $this->version, false );
@@ -1083,9 +1083,7 @@ class ETS_Memberpress_Discord_Admin {
 		wp_enqueue_script( $this->plugin_name . '-search' );
 		$search_discord       = ( isset( $_GET['search-discord'] ) ) ? $_GET['search-discord'] : '';
 		$search_field_discord = ( isset( $_GET['search-field-discord'] ) ) ? $_GET['search-field-discord'] : '';
-		//echo '<pre>';
-		//var_dump( $search_field_discord);
-		//echo '</pre>';
+
 		?>
 		<span class="search-fields">
 		<span><?php _e( 'Discord Search', 'connect-memberpress-discord-add-on' ); ?></span>
@@ -1114,7 +1112,7 @@ class ETS_Memberpress_Discord_Admin {
 		if ( isset( $_GET['page'] ) && $_GET['page'] !== 'memberpress-members' ) {
 			return;
 		}
-		// search-discord&search-field-discord=ets_discord_account
+
 		if ( isset( $_REQUEST['search-discord'] ) || isset( $_REQUEST['search-filter-discord'] ) ) {
 
 				add_filter(
@@ -1123,7 +1121,7 @@ class ETS_Memberpress_Discord_Admin {
 						$search_field_discord = ( isset( $_GET['search-field-discord'] ) ) ? $_GET['search-field-discord'] : '';
 							global $wpdb;
 							$joins[] = " /* IMPORTANT */ LEFT JOIN {$wpdb->usermeta} AS da ON da.user_id = u.ID AND da.meta_key='" . esc_sql( $search_field_discord ) . "'";
-							//$joins[] = "LEFT JOIN {$wpdb->usermeta} AS dis ON dis.user_id = u.ID AND d.meta_key='" . esc_sql( $search_field_discord ) . "'";
+							// $joins[] = "LEFT JOIN {$wpdb->usermeta} AS dis ON dis.user_id = u.ID AND d.meta_key='" . esc_sql( $search_field_discord ) . "'";
 							return $joins;
 					}
 				);
