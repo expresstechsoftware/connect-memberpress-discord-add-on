@@ -64,10 +64,10 @@ class ETS_Memberpress_Discord_Admin {
 	 * @since    1.0.0
 	 */
 	public function enqueue_scripts() {
-
+		$min_js = ( defined( 'WP_DEBUG' ) && true === WP_DEBUG  ) ? '' : '.min';                
 		wp_register_script( $this->plugin_name . 'tabs_js', plugin_dir_url( __FILE__ ) . 'js/skeletabs.js', array( 'jquery' ), $this->version, false );
-		wp_register_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/memberpress-discord-admin.min.js', array( 'jquery' ), $this->version, false );
-		wp_register_script( $this->plugin_name . '-search', plugin_dir_url( __FILE__ ) . 'js/memberpress-discord-search.js', array( 'jquery' ), $this->version, false );
+		wp_register_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/memberpress-discord-admin' . $min_js . '.js', array( 'jquery' ), $this->version, false );
+		wp_register_script( $this->plugin_name . '-search', plugin_dir_url( __FILE__ ) . 'js/memberpress-discord-search' . $min_js . '.js', array( 'jquery' ), $this->version, false );
 		$script_params = array(
 			'admin_ajax'                    => admin_url( 'admin-ajax.php' ),
 			'permissions_const'             => ETS_MEMBERPRESS_DISCORD_BOT_PERMISSIONS,
