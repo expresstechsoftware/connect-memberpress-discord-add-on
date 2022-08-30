@@ -202,6 +202,7 @@ class ETS_Memberpress_Discord {
 		$this->loader->add_action( 'mepr-checkout-before-name', $plugin_public, 'ets_memberpress_discord_login_with_discord_button' );
 		$this->loader->add_action( 'mepr-event-create', $plugin_public, 'ets_memberpress_discord_listen_to_mepr_events', 99, 1 );
 		$this->loader->add_filter( 'kses_allowed_protocols', $plugin_public, 'ets_memberpress_discord_allow_data_protocol' );
+		$this->loader->add_filter( 'ets_memberpress_show_connect_button_on_profile', $plugin_public, 'ets_memberpress_show_connect_button_on_profile', 10, 1 );
 	}
 
 	/**
