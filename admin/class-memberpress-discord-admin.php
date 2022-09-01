@@ -857,6 +857,7 @@ class ETS_Memberpress_Discord_Admin {
 		$pre_membership_on_txn = get_user_meta( $txn->user_id, '_ets_memberpress_discord_role_id_for_' . $txn->trans_num, true );
 		$active_memberships    = ets_memberpress_discord_get_active_memberships( $txn->user_id );
 		$complete_txn          = array();
+		$failed_txn            = array();
 		$active_product_ids    = array();
 		if ( is_array( $active_memberships ) && count( $active_memberships ) > 0 ) {
 			foreach ( $active_memberships as $active_membership ) {
@@ -870,6 +871,27 @@ class ETS_Memberpress_Discord_Admin {
 					'created_at' => $txn->created_at,
 					'expires_at' => $txn->expires_at,
 				);
+		}
+
+		// Transaction status changed to failed.
+
+		if ( $new_status === 'failed' && ! empty( $txn ) ) {
+			$ets_memberpress_discord_payment_failed = sanitize_text_field( trim ( get_option( 'ets_memberpress_discord_payment_failed' ) ) );
+			$failed_txn = array(
+				'product_id' => $txn->product_id,
+				'txn_number' => $txn->trans_num,
+				'created_at' => $txn->created_at,
+				'expires_at' => $txn->expires_at,
+			);
+			if ( isset( $pre_membership_on_txn['product_id'] ) ) {
+				if( $failed_txn && $access_token && $ets_memberpress_discord_payment_failed == true ) {
+					$this->memberpress_delete_discord_role( $txn->user_id, $pre_membership_on_txn['role_id'], true );
+					delete_user_meta( $txn->user_id, '_ets_memberpress_discord_role_id_for_' . $txn->trans_num, true );					
+				}
+			}
+
+			// Stop here.
+			return;
 		}
 
 		if ( isset( $pre_membership_on_txn['product_id'] ) ) {

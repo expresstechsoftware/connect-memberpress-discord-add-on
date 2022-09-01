@@ -159,6 +159,9 @@ class ETS_Memberpress_Discord {
 		$this->loader->add_filter( 'mepr-admin-members-cols', $plugin_admin, 'ets_memberpress_discord_members_list_add_column' );
 		$this->loader->add_action( 'mepr_members_list_table_row', $plugin_admin, 'ets_memberpress_discord_members_list_add_custom_column_value', 10, 4 );
 		$this->loader->add_action( 'mepr_reminders_worker', $plugin_admin, 'ets_memberpress_discord_send_expiration_warning_dm' );
+		/**
+		 *  This hook is never called. ( To remove )
+		 */
 		$this->loader->add_action( 'mepr_payment_failure', $plugin_admin, 'ets_memberpress_discord_subscription_payment_failed' );
 		$this->loader->add_action( 'ets_memberpress_discord_as_handle_memberpress_expiry', $plugin_admin, 'ets_memberpress_discord_as_handler_memberpress_expiry', 10, 2 );
 		$this->loader->add_action( 'ets_memberpress_discord_as_handle_memberpress_cancelled', $plugin_admin, 'ets_memberpress_discord_as_handler_memberpress_cancelled', 10, 2 );
