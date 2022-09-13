@@ -64,9 +64,10 @@ class ETS_Memberpress_Discord_Admin {
 	 * @since    1.0.0
 	 */
 	public function enqueue_scripts() {
-
+		$min_js = ( defined( 'WP_DEBUG' ) && true === WP_DEBUG ) ? '' : '.min';
 		wp_register_script( $this->plugin_name . 'tabs_js', plugin_dir_url( __FILE__ ) . 'js/skeletabs.js', array( 'jquery' ), $this->version, false );
-		wp_register_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/memberpress-discord-admin.min.js', array( 'jquery' ), $this->version, false );
+		wp_register_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/memberpress-discord-admin' . $min_js . '.js', array( 'jquery' ), $this->version, false );
+		wp_register_script( $this->plugin_name . '-search', plugin_dir_url( __FILE__ ) . 'js/memberpress-discord-search' . $min_js . '.js', array( 'jquery' ), $this->version, false );
 		$script_params = array(
 			'admin_ajax'                    => admin_url( 'admin-ajax.php' ),
 			'permissions_const'             => ETS_MEMBERPRESS_DISCORD_BOT_PERMISSIONS,
@@ -856,6 +857,7 @@ class ETS_Memberpress_Discord_Admin {
 		$pre_membership_on_txn = get_user_meta( $txn->user_id, '_ets_memberpress_discord_role_id_for_' . $txn->trans_num, true );
 		$active_memberships    = ets_memberpress_discord_get_active_memberships( $txn->user_id );
 		$complete_txn          = array();
+		$failed_txn            = array();
 		$active_product_ids    = array();
 		if ( is_array( $active_memberships ) && count( $active_memberships ) > 0 ) {
 			foreach ( $active_memberships as $active_membership ) {
@@ -869,6 +871,27 @@ class ETS_Memberpress_Discord_Admin {
 					'created_at' => $txn->created_at,
 					'expires_at' => $txn->expires_at,
 				);
+		}
+
+		// Transaction status changed to failed.
+
+		if ( $new_status === 'failed' && ! empty( $txn ) ) {
+			$ets_memberpress_discord_payment_failed = sanitize_text_field( trim ( get_option( 'ets_memberpress_discord_payment_failed' ) ) );
+			$failed_txn = array(
+				'product_id' => $txn->product_id,
+				'txn_number' => $txn->trans_num,
+				'created_at' => $txn->created_at,
+				'expires_at' => $txn->expires_at,
+			);
+			if ( isset( $pre_membership_on_txn['product_id'] ) ) {
+				if( $failed_txn && $access_token && $ets_memberpress_discord_payment_failed == true ) {
+					$this->memberpress_delete_discord_role( $txn->user_id, $pre_membership_on_txn['role_id'], true );
+					delete_user_meta( $txn->user_id, '_ets_memberpress_discord_role_id_for_' . $txn->trans_num, true );					
+				}
+			}
+
+			// Stop here.
+			return;
 		}
 
 		if ( isset( $pre_membership_on_txn['product_id'] ) ) {
@@ -1070,6 +1093,70 @@ class ETS_Memberpress_Discord_Admin {
 
 			// delete all user_meta keys.
 			ets_memberpress_discord_remove_usermeta( $user_id );
+		}
+	}
+
+	public function ets_memberpress_discord_search_by_discord( $search, $perpage ) {
+
+		if ( $_GET['page'] !== 'memberpress-members' ) {
+			return;
+		}
+		wp_dequeue_script( $this->plugin_name );
+		wp_enqueue_script( $this->plugin_name . '-search' );
+		$search_discord       = ( isset( $_GET['search-discord'] ) ) ? $_GET['search-discord'] : '';
+		$search_field_discord = ( isset( $_GET['search-field-discord'] ) ) ? $_GET['search-field-discord'] : '';
+
+		?>
+		<span class="search-fields">
+		<span><?php _e( 'Discord Search', 'connect-memberpress-discord-add-on' ); ?></span>
+		<input id="ets-cspf-table-search" value="<?php echo $search_discord; ?>" />
+		<span><?php _e( 'by Field', 'connect-memberpress-discord-add-on' ); ?></span>
+		<select id="ets-cspf-table-search-field">
+		  <option value="_ets_memberpress_discord_username" <?php selected( $search_field_discord, '_ets_memberpress_discord_username' ); ?>><?php _e( 'Discord User Name', 'connect-memberpress-discord-add-on' ); ?></option>
+		  <option value="_ets_memberpress_discord_user_id" <?php selected( $search_field_discord, '_ets_memberpress_discord_user_id' ); ?>><?php _e( 'Discord User ID', 'connect-memberpress-discord-add-on' ); ?></option>		  
+		</select>
+		<input id="ets-cspf-table-search-submit" class="button" type="submit" value="<?php _e( 'Go', 'connect-memberpress-discord-add-on' ); ?>" />
+		<?php
+		if ( isset( $_REQUEST['search-discord'] ) || isset( $_REQUEST['search-filter-discord'] ) ) {
+			$uri = $_SERVER['REQUEST_URI'];
+			$uri = preg_replace( '/[\?&]search-discord=[^&]*/', '', $uri );
+			$uri = preg_replace( '/[\?&]search-field-discord=[^&]*/', '', $uri );
+			?>
+			<a href="<?php echo $uri; ?>">[x]</a>
+			<?php
+		}
+		?>
+	  </span>
+		<?php
+	}
+
+	public function ets_memberperss_add_search_filter() {
+		if ( isset( $_GET['page'] ) && $_GET['page'] !== 'memberpress-members' ) {
+			return;
+		}
+
+		if ( isset( $_REQUEST['search-discord'] ) || isset( $_REQUEST['search-filter-discord'] ) ) {
+
+				add_filter(
+					'mepr-list-table-joins',
+					function( $joins ) {
+						$search_field_discord = ( isset( $_GET['search-field-discord'] ) ) ? $_GET['search-field-discord'] : '';
+							global $wpdb;
+							$joins[] = " /* IMPORTANT */ LEFT JOIN {$wpdb->usermeta} AS da ON da.user_id = u.ID AND da.meta_key='" . esc_sql( $search_field_discord ) . "'";
+							// $joins[] = "LEFT JOIN {$wpdb->usermeta} AS dis ON dis.user_id = u.ID AND d.meta_key='" . esc_sql( $search_field_discord ) . "'";
+							return $joins;
+					}
+				);
+
+				add_filter(
+					'mepr-list-table-args',
+					function( $args ) {
+						$search_field = ( isset( $_GET['search-discord'] ) ) ? $_GET['search-discord'] : '';
+							global $wpdb;
+							$args[] = $wpdb->prepare( " ( da.meta_value LIKE '%" . esc_sql( $search_field ) . "%' ) " );
+							return $args;
+					}
+				);
 		}
 	}
 }
