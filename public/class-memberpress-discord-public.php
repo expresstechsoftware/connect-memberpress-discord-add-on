@@ -59,8 +59,8 @@ class ETS_Memberpress_Discord_Public {
 	 * @since    1.0.0
 	 */
 	public function enqueue_styles() {
-
-		wp_register_style( $this->plugin_name . 'public_css', plugin_dir_url( __FILE__ ) . 'css/memberpress-discord-public.min.css', array(), $this->version, 'all' );
+		$min_css = ( defined( 'WP_DEBUG' ) && true === WP_DEBUG ) ? '' : '.min';
+		wp_register_style( $this->plugin_name . 'public_css', plugin_dir_url( __FILE__ ) . 'css/memberpress-discord-public' . $min_css . '.css', array(), $this->version, 'all' );
 	}
 
 	/**
@@ -69,8 +69,8 @@ class ETS_Memberpress_Discord_Public {
 	 * @since    1.0.0
 	 */
 	public function enqueue_scripts() {
-
-		wp_register_script( $this->plugin_name . 'public_js', plugin_dir_url( __FILE__ ) . 'js/memberpress-discord-public.min.js', array( 'jquery' ), $this->version, false );
+		$min_js = ( defined( 'WP_DEBUG' ) && true === WP_DEBUG ) ? '' : '.min';
+		wp_register_script( $this->plugin_name . 'public_js', plugin_dir_url( __FILE__ ) . 'js/memberpress-discord-public' . $min_js . '.js', array( 'jquery' ), $this->version, false );
 		$script_params = array(
 			'admin_ajax'                           => admin_url( 'admin-ajax.php' ),
 			'permissions_const'                    => ETS_MEMBERPRESS_DISCORD_BOT_PERMISSIONS,
