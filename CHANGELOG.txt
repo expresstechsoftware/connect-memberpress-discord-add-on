@@ -1,5 +1,6 @@
 = 1.0.7 =
 - Added search field by discord username or discord ID in the members table.
+
 = 1.0.6 =
 - Added discord user id inside members table, now it is easy to find users inside server who have updated their usernames.
 
