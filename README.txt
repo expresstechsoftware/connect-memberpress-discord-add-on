@@ -53,6 +53,7 @@ This plugin provides the following features:
 
 15) Downgrade will remove old discord roles.
 
+16) Search members by their Discord Username or Discord ID in the member list. 
 
 == Installation ==
 
