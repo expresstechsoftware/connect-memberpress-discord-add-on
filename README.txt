@@ -53,7 +53,7 @@ This plugin provides the following features:
 
 15) Downgrade will remove old discord roles.
 
-16) Search members by their Discord Username or Discord ID in the member list. 
+16) Search members by their Discord Username or Discord ID in the member list.
 
 == Installation ==
 
@@ -99,3 +99,4 @@ Please make sure your bot role has the high priority among all other roles your 
 4. Connect Button Appearance.
 5. Spot the Connect to Discord on Members profile page.
 6. Role Management GIF
+7. Search members by their Discord Username or Discord ID in the member list table. 
