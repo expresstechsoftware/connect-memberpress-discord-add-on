@@ -1100,6 +1100,16 @@ class ETS_Memberpress_Discord_Admin {
 		}
 	}
 
+	/**
+	 * Added custom search form for discord in MemberPress mepr_table_controls_search hook.
+	 * 
+	 * @param STRING $search
+	 * @param INT $perpage
+	 * 
+	 * @return STRING html form.
+	 * 
+	 */
+
 	public function ets_memberpress_discord_search_by_discord( $search, $perpage ) {
 
 		if ( $_GET['page'] !== 'memberpress-members' ) {
@@ -1134,6 +1144,10 @@ class ETS_Memberpress_Discord_Admin {
 		<?php
 	}
 
+	/**
+	 * Apply custom sql for discord search in members list table search.
+	 * 
+	 */
 	public function ets_memberperss_add_search_filter() {
 		if ( isset( $_GET['page'] ) && $_GET['page'] !== 'memberpress-members' ) {
 			return;
