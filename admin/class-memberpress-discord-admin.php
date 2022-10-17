@@ -877,17 +877,17 @@ class ETS_Memberpress_Discord_Admin {
 		// Transaction status changed to failed.
 
 		if ( $new_status === 'failed' && ! empty( $txn ) ) {
-			$ets_memberpress_discord_payment_failed = sanitize_text_field( trim ( get_option( 'ets_memberpress_discord_payment_failed' ) ) );
-			$failed_txn = array(
+			$ets_memberpress_discord_payment_failed = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_payment_failed' ) ) );
+			$failed_txn                             = array(
 				'product_id' => $txn->product_id,
 				'txn_number' => $txn->trans_num,
 				'created_at' => $txn->created_at,
 				'expires_at' => $txn->expires_at,
 			);
 			if ( isset( $pre_membership_on_txn['product_id'] ) ) {
-				if( $failed_txn && $access_token && $ets_memberpress_discord_payment_failed == true ) {
+				if ( $failed_txn && $access_token && $ets_memberpress_discord_payment_failed == true ) {
 					$this->memberpress_delete_discord_role( $txn->user_id, $pre_membership_on_txn['role_id'], true );
-					delete_user_meta( $txn->user_id, '_ets_memberpress_discord_role_id_for_' . $txn->trans_num, true );					
+					delete_user_meta( $txn->user_id, '_ets_memberpress_discord_role_id_for_' . $txn->trans_num, true );
 				}
 			}
 
@@ -943,12 +943,15 @@ class ETS_Memberpress_Discord_Admin {
 				if ( $access_token ) {
 					$discord_username = sanitize_text_field( trim( get_user_meta( $rec->ID, '_ets_memberpress_discord_username', true ) ) );
 					echo '<p class="' . esc_attr( $rec->ID ) . ' ets-save-success">Success</p><a class="button button-primary ets-memberpress-run-api" data-uid="' . esc_attr( $rec->ID ) . '" href="#">';
-					echo __( 'Run API', 'connect-memberpress-discord-add-on' );
+					echo esc_html__( 'Run API', 'connect-memberpress-discord-add-on' );
 					echo '</a><span class="' . esc_attr( $rec->ID ) . ' spinner"></span>';
 					echo esc_html( $discord_username );
-					echo 'Discord ID - <p>' . $discord_user_id . '</p>';
+					echo '<br>';
+					echo esc_html__( 'Discord ID:', 'connect-memberpress-discord-add-on' );
+					echo '<br>';
+					echo esc_html( $discord_user_id );
 				} else {
-					echo __( 'Not Connected', 'connect-memberpress-discord-add-on' );
+					echo esc_html__( 'Not Connected', 'connect-memberpress-discord-add-on' );
 				}
 				?>
 			  </td>
