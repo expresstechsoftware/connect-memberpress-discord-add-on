@@ -32,8 +32,17 @@
 .btn-disconnect{
   background-color:#FF0000;
 }
-.ets_assigned_role{
-  font-size: 12px;
+div.ets-discord-connection-wrapper{
+  padding: 5px 10px;
+}
+div.ets-discord-connection-wrapper > label.ets-connection-lbl {
+  
+  display: inline !important;
+  margin-right: 10px;
+}
+p.ets_assigned_role{
+  font-size: 14px;
+  margin-top: 10px;
 }
  .ets_assigned_role > span{
     padding: 0px 7px;

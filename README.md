@@ -57,6 +57,7 @@ This plugin provides the following features:
 13) Short code [mepr_discord_button] can be used on any page to display connect/disconnect button.
 14) Using the shortcode [mepr_discord_button] on any page, anyone can join the website discord server by authentication via member discord account. New members will get `default` role if selected in the setting.
 15) Button styling feature under the plugin settings.
+16) Search members by their Discord Username or Discord ID in the member list.
 
 ## Solution of Missing Access Error
 - Inside the log tab you will see "50001:Missing Access", which is happening because the new BOT role need to the TOP priroty among the other roles.
