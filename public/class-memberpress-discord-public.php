@@ -59,8 +59,8 @@ class ETS_Memberpress_Discord_Public {
 	 * @since    1.0.0
 	 */
 	public function enqueue_styles() {
-
-		wp_register_style( $this->plugin_name . 'public_css', plugin_dir_url( __FILE__ ) . 'css/memberpress-discord-public.min.css', array(), $this->version, 'all' );
+		$min_css = ( defined( 'WP_DEBUG' ) && true === WP_DEBUG ) ? '' : '.min';
+		wp_register_style( $this->plugin_name . 'public_css', plugin_dir_url( __FILE__ ) . 'css/memberpress-discord-public' . $min_css . '.css', array(), $this->version, 'all' );
 	}
 
 	/**
@@ -69,8 +69,8 @@ class ETS_Memberpress_Discord_Public {
 	 * @since    1.0.0
 	 */
 	public function enqueue_scripts() {
-
-		wp_register_script( $this->plugin_name . 'public_js', plugin_dir_url( __FILE__ ) . 'js/memberpress-discord-public.min.js', array( 'jquery' ), $this->version, false );
+		$min_js = ( defined( 'WP_DEBUG' ) && true === WP_DEBUG ) ? '' : '.min';
+		wp_register_script( $this->plugin_name . 'public_js', plugin_dir_url( __FILE__ ) . 'js/memberpress-discord-public' . $min_js . '.js', array( 'jquery' ), $this->version, false );
 		$script_params = array(
 			'admin_ajax'                           => admin_url( 'admin-ajax.php' ),
 			'permissions_const'                    => ETS_MEMBERPRESS_DISCORD_BOT_PERMISSIONS,
@@ -124,7 +124,7 @@ class ETS_Memberpress_Discord_Public {
 				$discord_user_name                     = sanitize_text_field( trim( get_user_meta( $user_id, '_ets_memberpress_discord_username', true ) ) );
 				$discord_user_id                       = sanitize_text_field( trim( get_user_meta( $user_id, '_ets_memberpress_discord_user_id', true ) ) );
 				$discord_user_avatar                   = sanitize_text_field( trim( get_user_meta( $user_id, '_ets_memberpress_discord_avatar', true ) ) );
-				$ets_memberpress_connecttodiscord_btn .= '<div><label class="ets-connection-lbl">' . esc_html__( 'Discord connection', 'connect-memberpress-discord-add-on' ) . '</label>';
+				$ets_memberpress_connecttodiscord_btn .= '<div class="ets-discord-connection-wrapper"><label class="ets-connection-lbl">' . esc_html__( 'Discord connection: ', 'connect-memberpress-discord-add-on' ) . '</label>';
 				$ets_memberpress_connecttodiscord_btn .= '<a href="#" class="ets-btn btn-disconnect" ' . $disconnect_btn_bg_color . ' data-user-id="' . esc_attr( $user_id ) . '">' . esc_html__( $ets_memberpress_discord_disconnect_btn_text, 'connect-memberpress-discord-add-on' ) . ETS_Memberpress_Discord::get_discord_logo_white() . '</a>';
 				$ets_memberpress_connecttodiscord_btn .= '<span class="ets-spinner"></span>';
 				if ( $mapped_role_ids || $default_role_name ) {
@@ -143,7 +143,7 @@ class ETS_Memberpress_Discord_Public {
 				}
 			} elseif ( current_user_can( 'memberpress_authorized' ) && $mapped_role_ids || $allow_none_member == 'yes' ) {
 				$connect_btn_bg_color                  = 'style="background-color:' . esc_attr( $ets_memberpress_discord_btn_color ) . '"';
-				$ets_memberpress_connecttodiscord_btn .= '<div><label class="ets-connection-lbl">' . esc_html__( 'Discord connection', 'connect-memberpress-discord-add-on' ) . '</label>';
+				$ets_memberpress_connecttodiscord_btn .= '<div class="ets-discord-connection-wrapper"><label class="ets-connection-lbl">' . esc_html__( 'Discord connection: ', 'connect-memberpress-discord-add-on' ) . '</label>';
 				$ets_memberpress_connecttodiscord_btn .= '<a href="?action=memberpress-discord-login" class="btn-connect ets-btn" ' . $connect_btn_bg_color . ' >' . esc_html__( $ets_memberpress_discord_loggedin_button_text, 'connect-memberpress-discord-add-on' ) . ETS_Memberpress_Discord::get_discord_logo_white() . '</a>';
 				if ( $mapped_role_ids || $default_role_name ) {
 					$ets_memberpress_connecttodiscord_btn .= '<p class="ets_assigned_role">';
@@ -676,7 +676,8 @@ class ETS_Memberpress_Discord_Public {
 			$member_discord_login                 = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_login_with_discord' ) ) );
 			$btn_color                            = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_btn_color' ) ) );
 			$btn_text                             = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_loggedout_btn_text' ) ) );
-
+			$mapped_role_ids = array();
+			$roles_color                          = unserialize( get_option( 'ets_memberpress_discord_roles_color' ) );
 			if ( $member_discord_login ) {
 				echo wp_kses( '<style>.memberpress-btn-connect{background-color: ' . esc_attr( $btn_color ) . ';}</style>', array( 'style' => array() ) );
 				$curr_level_id     = $membership_id;
@@ -690,6 +691,7 @@ class ETS_Memberpress_Discord_Public {
 						$mapped_role_id = $ets_memberpress_discord_role_mapping[ 'level_id_' . $curr_level_id ];
 						if ( array_key_exists( $mapped_role_id, $all_roles ) ) {
 							$mapped_role_name = $all_roles[ $mapped_role_id ];
+							array_push( $mapped_role_ids , $mapped_role_id );
 						}
 					}
 				}
@@ -707,15 +709,19 @@ class ETS_Memberpress_Discord_Public {
 					)
 				);
 				$memberpress_connecttodiscord_btn = '';
-				if ( $mapped_role_name ) {
+				if ( $mapped_role_name || $default_role_name ) {
 					$memberpress_connecttodiscord_btn .= '<p class="ets_assigned_role">' . esc_html__( 'Following Roles will be assigned to you in Discord: ', 'connect-memberpress-discord-add-on' );
-					$memberpress_connecttodiscord_btn .= esc_html( $mapped_role_name );
-					if ( $default_role_name ) {
-						$memberpress_connecttodiscord_btn .= ', ' . esc_html( $default_role_name );
+					foreach ( $mapped_role_ids as $mapped_role_id ) {
+						$memberpress_connecttodiscord_btn = ets_memberpress_discord_get_roles_color_name( $all_roles, $mapped_role_id, $roles_color[ $mapped_role_id ], $memberpress_connecttodiscord_btn );
 					}
+					//$memberpress_connecttodiscord_btn .= esc_html( $mapped_role_name );
+					//if ( $default_role_name ) {
+						$memberpress_connecttodiscord_btn = ets_memberpress_discord_get_roles_color_name( $all_roles, $default_role, $roles_color[ $default_role ], $memberpress_connecttodiscord_btn );
+						//$memberpress_connecttodiscord_btn .= ', ' . esc_html( $default_role_name );
+					//}
 					$memberpress_connecttodiscord_btn .= '</p>';
 
-					echo wp_kses( $memberpress_connecttodiscord_btn, array( 'p' => array( 'class' => array( 'ets_assigned_role' ) ) ) );
+					echo wp_kses( $memberpress_connecttodiscord_btn, array( 'p' => array( 'class' => array( 'ets_assigned_role' ) ), 'span' => array(), 'i'    => array( 'style' => array(), ), ) );
 				}
 			}
 		}

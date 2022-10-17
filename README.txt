@@ -5,9 +5,9 @@ Requires at least: 4.7
 Donate link: https://paypal.me/supportets
 Author URI: https://www.expresstechsoftwares.com
 Author: ExpressTech Software Solutions Pvt. Ltd.
-Tested up to: 6.0
+Tested up to: 6.0.2
 Requires PHP: 7.0
-Stable tag: 1.0.6
+Stable tag: 1.0.7
 License: GPLv2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -53,6 +53,7 @@ This plugin provides the following features:
 
 15) Downgrade will remove old discord roles.
 
+16) Search members by their Discord Username or Discord ID in the member list.
 
 == Installation ==
 
@@ -98,3 +99,4 @@ Please make sure your bot role has the high priority among all other roles your 
 4. Connect Button Appearance.
 5. Spot the Connect to Discord on Members profile page.
 6. Role Management GIF
+7. Search members by their Discord Username or Discord ID in the member list table. 
