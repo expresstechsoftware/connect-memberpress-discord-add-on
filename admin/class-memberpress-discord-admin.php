@@ -1122,14 +1122,14 @@ class ETS_Memberpress_Discord_Admin {
 
 		?>
 		<span class="search-fields">
-		<span><?php _e( 'Discord Search', 'connect-memberpress-discord-add-on' ); ?></span>
+		<span><?php esc_html_e( 'Discord Search', 'connect-memberpress-discord-add-on' ); ?></span>
 		<input id="ets-cspf-table-search" value="<?php echo $search_discord; ?>" />
-		<span><?php _e( 'by Field', 'connect-memberpress-discord-add-on' ); ?></span>
+		<span><?php esc_html_e( 'by Field', 'connect-memberpress-discord-add-on' ); ?></span>
 		<select id="ets-cspf-table-search-field">
-		  <option value="_ets_memberpress_discord_username" <?php selected( $search_field_discord, '_ets_memberpress_discord_username' ); ?>><?php _e( 'Discord User Name', 'connect-memberpress-discord-add-on' ); ?></option>
-		  <option value="_ets_memberpress_discord_user_id" <?php selected( $search_field_discord, '_ets_memberpress_discord_user_id' ); ?>><?php _e( 'Discord User ID', 'connect-memberpress-discord-add-on' ); ?></option>		  
+		  <option value="_ets_memberpress_discord_username" <?php selected( $search_field_discord, '_ets_memberpress_discord_username' ); ?>><?php esc_html_e( 'Discord User Name', 'connect-memberpress-discord-add-on' ); ?></option>
+		  <option value="_ets_memberpress_discord_user_id" <?php selected( $search_field_discord, '_ets_memberpress_discord_user_id' ); ?>><?php esc_html_e( 'Discord User ID', 'connect-memberpress-discord-add-on' ); ?></option>		  
 		</select>
-		<input id="ets-cspf-table-search-submit" class="button" type="submit" value="<?php _e( 'Go', 'connect-memberpress-discord-add-on' ); ?>" />
+		<input id="ets-cspf-table-search-submit" class="button" type="submit" value="<?php esc_html_e( 'Go', 'connect-memberpress-discord-add-on' ); ?>" />
 		<?php
 		if ( isset( $_REQUEST['search-discord'] ) || isset( $_REQUEST['search-filter-discord'] ) ) {
 			$uri = $_SERVER['REQUEST_URI'];
