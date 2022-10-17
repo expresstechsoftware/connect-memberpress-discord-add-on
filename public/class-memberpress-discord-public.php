@@ -716,7 +716,7 @@ class ETS_Memberpress_Discord_Public {
 					}
 					//$memberpress_connecttodiscord_btn .= esc_html( $mapped_role_name );
 					if ( $default_role_name ) {
-						$memberpress_connecttodiscord_btn = ets_memberpress_discord_get_roles_color_name( $all_roles, $default_role, $roles_color[ $mapped_role_id ], $memberpress_connecttodiscord_btn );
+						$memberpress_connecttodiscord_btn = ets_memberpress_discord_get_roles_color_name( $all_roles, $default_role, $roles_color[ $default_role ], $memberpress_connecttodiscord_btn );
 						//$memberpress_connecttodiscord_btn .= ', ' . esc_html( $default_role_name );
 					}
 					$memberpress_connecttodiscord_btn .= '</p>';
