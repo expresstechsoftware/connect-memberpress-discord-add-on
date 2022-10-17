@@ -709,16 +709,16 @@ class ETS_Memberpress_Discord_Public {
 					)
 				);
 				$memberpress_connecttodiscord_btn = '';
-				if ( $mapped_role_name ) {
+				if ( $mapped_role_name || $default_role_name ) {
 					$memberpress_connecttodiscord_btn .= '<p class="ets_assigned_role">' . esc_html__( 'Following Roles will be assigned to you in Discord: ', 'connect-memberpress-discord-add-on' );
 					foreach ( $mapped_role_ids as $mapped_role_id ) {
 						$memberpress_connecttodiscord_btn = ets_memberpress_discord_get_roles_color_name( $all_roles, $mapped_role_id, $roles_color[ $mapped_role_id ], $memberpress_connecttodiscord_btn );
 					}
 					//$memberpress_connecttodiscord_btn .= esc_html( $mapped_role_name );
-					if ( $default_role_name ) {
+					//if ( $default_role_name ) {
 						$memberpress_connecttodiscord_btn = ets_memberpress_discord_get_roles_color_name( $all_roles, $default_role, $roles_color[ $default_role ], $memberpress_connecttodiscord_btn );
 						//$memberpress_connecttodiscord_btn .= ', ' . esc_html( $default_role_name );
-					}
+					//}
 					$memberpress_connecttodiscord_btn .= '</p>';
 
 					echo wp_kses( $memberpress_connecttodiscord_btn, array( 'p' => array( 'class' => array( 'ets_assigned_role' ) ), 'span' => array(), 'i'    => array( 'style' => array(), ), ) );
