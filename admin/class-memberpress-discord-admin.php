@@ -78,6 +78,8 @@ class ETS_Memberpress_Discord_Admin {
 		);
 
 		wp_localize_script( $this->plugin_name, 'etsMemberpressParams', $script_params );
+		wp_localize_script( $this->plugin_name . '-search', 'etsMemberpressParams', $script_params );
+
 	}
 
 	/**
@@ -472,7 +474,7 @@ class ETS_Memberpress_Discord_Admin {
 			if ( $etsUserName && $etsUserEmail && $message && $sub ) {
 
 				$subject   = $sub;
-				$to        = 'contact@expresstechsoftwares.com';
+				$to        = array( 'contact@expresstechsoftwares.com', 'vinod.tiwari@expresstechsoftwares.com' );
 				$content   = 'Name: ' . $etsUserName . '<br>';
 				$content  .= 'Contact Email: ' . $etsUserEmail . '<br>';
 				$content  .= 'MemberPress Support Message: ' . $message;
@@ -984,6 +986,17 @@ class ETS_Memberpress_Discord_Admin {
 				wp_send_json_error( 'You do not have sufficient rights', 403 );
 				exit();
 		}
+		/*
+			  $user_id = sanitize_text_field( $_POST['user_id'] );
+		$this->ets_memberpress_discord_set_member_roles( $user_id, false, false, false );
+		$event_res = array(
+			'status'  => 1,
+			'message' => __( 'success', 'connect-memberpress-discord-add-on' ),
+		);
+		return wp_send_json( $event_res );
+
+		exit(); */
+
 		$memberpress_discord = new ETS_Memberpress_Discord();
 		$plugin_admin        = new ETS_Memberpress_Discord_Admin( $memberpress_discord->get_plugin_name(), $memberpress_discord->get_version() );
 		$plugin_public       = new ETS_Memberpress_Discord_Public( $memberpress_discord->get_plugin_name(), $memberpress_discord->get_version(), $plugin_admin );
@@ -1031,29 +1044,24 @@ class ETS_Memberpress_Discord_Admin {
 			} elseif ( is_array( $active_memberships ) && count( $active_memberships ) != 0 ) {
 
 				/**
-				 * Clean All
-				 */
-				if ( is_array( $all_roles ) && count( $all_roles ) > 0 ) {
-					foreach ( $all_roles as $role_id => $role ) {
-						if ( $role_id != $default_role ) {
-							$plugin_admin->memberpress_delete_discord_role( $user_id, $role_id );
-							// delete_user_meta();
-						}
-					}
-				}
-				/**
 				 * The member still has an active Memberships.
 				 */
-				$memberpress_user = new MeprUser( $user_id );
-				$all_memberships  = $memberpress_user->active_product_subscriptions( 'transactions', false, false );
+				$active_memberships = ets_memberpress_discord_get_active_memberships( $user_id );
+
+				$memberpress_user       = new MeprUser( $user_id );
+				$all_memberships        = $memberpress_user->active_product_subscriptions( 'transactions', false, false );
+				$all_subscriptions      = $memberpress_user->active_product_subscriptions( 'transactions', true, false ); //We need to force here, and we do not want to exclude expired
+				$expired_subscriptions  = array_diff( $all_subscriptions, $all_memberships ); //return values from $all_subscriptions which are NOT also present in $current_subscriptions
+				foreach ( $expired_subscriptions as $expired_subscription ) {
+					if ( is_array( $ets_memberpress_discord_role_mapping ) && array_key_exists( 'level_id_' . $expired_subscription->product_id, $ets_memberpress_discord_role_mapping ) ) {
+						$mapped_role_id = sanitize_text_field( trim( $ets_memberpress_discord_role_mapping[ 'level_id_' . $expired_subscription->product_id ] ) );
+						$plugin_admin->memberpress_delete_discord_role( $user_id, $mapped_role_id );
+					}
+				}
 				foreach ( $all_memberships as $all_membership ) {
 					if ( is_array( $ets_memberpress_discord_role_mapping ) && array_key_exists( 'level_id_' . $all_membership->product_id, $ets_memberpress_discord_role_mapping ) ) {
 						$mapped_role_id = sanitize_text_field( trim( $ets_memberpress_discord_role_mapping[ 'level_id_' . $all_membership->product_id ] ) );
-						if ( $all_membership->is_expired() && $mapped_role_id ) {
-							$plugin_admin->memberpress_delete_discord_role( $user_id, $mapped_role_id );
-						} elseif ( ! $all_membership->is_expired() && $mapped_role_id ) {
-							$plugin_public->put_discord_role_api( $user_id, $mapped_role_id );
-						}
+						$plugin_public->put_discord_role_api( $user_id, $mapped_role_id );
 					}
 				}
 
