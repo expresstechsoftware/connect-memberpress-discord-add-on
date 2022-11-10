@@ -986,16 +986,7 @@ class ETS_Memberpress_Discord_Admin {
 				wp_send_json_error( 'You do not have sufficient rights', 403 );
 				exit();
 		}
-		/*
-			  $user_id = sanitize_text_field( $_POST['user_id'] );
-		$this->ets_memberpress_discord_set_member_roles( $user_id, false, false, false );
-		$event_res = array(
-			'status'  => 1,
-			'message' => __( 'success', 'connect-memberpress-discord-add-on' ),
-		);
-		return wp_send_json( $event_res );
 
-		exit(); */
 
 		$memberpress_discord = new ETS_Memberpress_Discord();
 		$plugin_admin        = new ETS_Memberpress_Discord_Admin( $memberpress_discord->get_plugin_name(), $memberpress_discord->get_version() );
@@ -1010,7 +1001,8 @@ class ETS_Memberpress_Discord_Admin {
 		$all_roles                            = json_decode( get_option( 'ets_memberpress_discord_all_roles' ), true );
 
 		/**
-		 * If the member has already clicked on the disconnect button, this will not be executed!
+		 * If the member has already clicked on the disconnect button And 'Kick out option is enabled' :
+		 *  This will not be executed!
 		 */
 		if ( $access_token ) {
 
