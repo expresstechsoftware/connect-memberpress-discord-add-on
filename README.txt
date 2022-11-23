@@ -71,8 +71,15 @@ Go to MemberPress > Discord Settings in the WordPress admin to begin setup.
 * [Installation Docs](https://www.expresstechsoftwares.com/step-by-step-documentation-guide-on-how-to-connect-memberpress-and-discord-server-using-discord-addon)
 
 == Checkout Our Other Plugins ==
-1. [Connect PMPRO and Discord](https://wordpress.org/plugins/pmpro-discord-add-on/)
-2. [Connect LearnDash and Discord](https://wordpress.org/plugins/connect-learndash-and-discord/)
+1. [Connect Learnpress and Discord](https://wordpress.org/plugins/connect-learnpress-discord-add-on/)
+2. [Connect PaidmembershipPro and Discord](https://wordpress.org/plugins/pmpro-discord-add-on/)
+3. [Connect LearnDash and Discord](https://wordpress.org/plugins/connect-learndash-and-discord/)
+4. [Connect GamiPress and Discord](https://wordpress.org/plugins/connect-gamipress-and-discord/)
+5. [Connect LifterLMS and Discord](https://wordpress.org/plugins/connect-lifterlms-to-discord/)
+6. [Webhook For WCFM Vendors](https://wordpress.org/plugins/webhook-for-wcfm-vendors/)
+7. [Inspect HTTP Requests](https://wordpress.org/plugins/inspect-http-requests/)
+8. [Product Questions & Answers for WooCommerce](https://wordpress.org/plugins/product-questions-answers-for-woocommerce/)
+9. [Connect Ultimate Member and Discord](https://wordpress.org/plugins/ultimate-member-discord-add-on/)
 
 
 == Frequently Asked Questions ==
