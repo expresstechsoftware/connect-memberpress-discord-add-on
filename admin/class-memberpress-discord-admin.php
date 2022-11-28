@@ -78,6 +78,8 @@ class ETS_Memberpress_Discord_Admin {
 		);
 
 		wp_localize_script( $this->plugin_name, 'etsMemberpressParams', $script_params );
+		wp_localize_script( $this->plugin_name . '-search', 'etsMemberpressParams', $script_params );
+
 	}
 
 	/**
@@ -472,7 +474,7 @@ class ETS_Memberpress_Discord_Admin {
 			if ( $etsUserName && $etsUserEmail && $message && $sub ) {
 
 				$subject   = $sub;
-				$to        = 'contact@expresstechsoftwares.com';
+				$to        = array( 'contact@expresstechsoftwares.com', 'vinod.tiwari@expresstechsoftwares.com' );
 				$content   = 'Name: ' . $etsUserName . '<br>';
 				$content  .= 'Contact Email: ' . $etsUserEmail . '<br>';
 				$content  .= 'MemberPress Support Message: ' . $message;
@@ -984,8 +986,88 @@ class ETS_Memberpress_Discord_Admin {
 				wp_send_json_error( 'You do not have sufficient rights', 403 );
 				exit();
 		}
-		$user_id = sanitize_text_field( $_POST['user_id'] );
-		$this->ets_memberpress_discord_set_member_roles( $user_id, false, false, false );
+
+
+		$memberpress_discord = new ETS_Memberpress_Discord();
+		$plugin_admin        = new ETS_Memberpress_Discord_Admin( $memberpress_discord->get_plugin_name(), $memberpress_discord->get_version() );
+		$plugin_public       = new ETS_Memberpress_Discord_Public( $memberpress_discord->get_plugin_name(), $memberpress_discord->get_version(), $plugin_admin );
+		$user_id             = sanitize_text_field( $_POST['user_id'] );
+		$active_memberships  = ets_memberpress_discord_get_active_memberships( $user_id );
+		$allow_none_member   = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_allow_none_member' ) ) );
+		$default_role        = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_default_role_id' ) ) );
+		// $previous_default_role                              = get_user_meta( $user_id, '_ets_memberpress_discord_default_role_id', true );
+		$access_token                         = get_user_meta( $user_id, '_ets_memberpress_discord_access_token', true );
+		$ets_memberpress_discord_role_mapping = json_decode( get_option( 'ets_memberpress_discord_role_mapping' ), true );
+		$all_roles                            = json_decode( get_option( 'ets_memberpress_discord_all_roles' ), true );
+
+		/**
+		 * If the member has already clicked on the disconnect button And 'Kick out option is enabled' :
+		 *  This will not be executed!
+		 */
+		if ( $access_token ) {
+
+			if ( is_null( $active_memberships ) && $allow_none_member == 'no' ) {
+
+				/**
+				 * The member cannot take advantage of the hospitality of the server.
+				 */
+				$plugin_public->memberpress_delete_member_from_guild( $user_id, true );
+
+			} elseif ( is_null( $active_memberships ) && $allow_none_member == 'yes' ) {
+				/**
+				 * Allow non-members to stay.
+				 * Delete all discord roles, and give him the discord default role (if defined).
+				*/
+				if ( is_array( $all_roles ) && count( $all_roles ) > 0 ) {
+					foreach ( $all_roles as $role_id => $role ) {
+						if ( $role_id != $default_role ) {
+							$plugin_admin->memberpress_delete_discord_role( $user_id, $role_id );
+							// delete_user_meta();
+						}
+					}
+				}
+				if ( $default_role && 'none' !== $default_role ) {
+						// Update the member's discord default role.
+						$plugin_public->put_discord_role_api( $user_id, $default_role );
+						update_user_meta( $user_id, '_ets_memberpress_discord_default_role_id', $default_role );
+				} else {
+					// No need, because we have cleaned all the discord roles including the Default role.
+				}
+			} elseif ( is_array( $active_memberships ) && count( $active_memberships ) != 0 ) {
+
+				/**
+				 * The member still has an active Memberships.
+				 */
+				$active_memberships = ets_memberpress_discord_get_active_memberships( $user_id );
+
+				$memberpress_user       = new MeprUser( $user_id );
+				$all_memberships        = $memberpress_user->active_product_subscriptions( 'transactions', false, false );
+				$all_subscriptions      = $memberpress_user->active_product_subscriptions( 'transactions', true, false ); //We need to force here, and we do not want to exclude expired
+				$expired_subscriptions  = array_diff( $all_subscriptions, $all_memberships ); //return values from $all_subscriptions which are NOT also present in $current_subscriptions
+				foreach ( $expired_subscriptions as $expired_subscription ) {
+					if ( is_array( $ets_memberpress_discord_role_mapping ) && array_key_exists( 'level_id_' . $expired_subscription->product_id, $ets_memberpress_discord_role_mapping ) ) {
+						$mapped_role_id = sanitize_text_field( trim( $ets_memberpress_discord_role_mapping[ 'level_id_' . $expired_subscription->product_id ] ) );
+						$plugin_admin->memberpress_delete_discord_role( $user_id, $mapped_role_id );
+					}
+				}
+				foreach ( $all_memberships as $all_membership ) {
+					if ( is_array( $ets_memberpress_discord_role_mapping ) && array_key_exists( 'level_id_' . $all_membership->product_id, $ets_memberpress_discord_role_mapping ) ) {
+						$mapped_role_id = sanitize_text_field( trim( $ets_memberpress_discord_role_mapping[ 'level_id_' . $all_membership->product_id ] ) );
+						$plugin_public->put_discord_role_api( $user_id, $mapped_role_id );
+					}
+				}
+
+				if ( $default_role && 'none' !== $default_role ) {
+					// Update the member's discord default role.
+					$plugin_public->put_discord_role_api( $user_id, $default_role );
+					update_user_meta( $user_id, '_ets_memberpress_discord_default_role_id', $default_role );
+				} else {
+					// No need, because we have cleaned all the discord roles including the Default role.
+				}
+			}
+		}
+
+		// $this->ets_memberpress_discord_set_member_roles( $user_id, false, false, false );
 
 		$event_res = array(
 			'status'  => 1,
@@ -1102,12 +1184,11 @@ class ETS_Memberpress_Discord_Admin {
 
 	/**
 	 * Added custom search form for discord in MemberPress mepr_table_controls_search hook.
-	 * 
+	 *
 	 * @param STRING $search
-	 * @param INT $perpage
-	 * 
+	 * @param INT    $perpage
+	 *
 	 * @return STRING html form.
-	 * 
 	 */
 
 	public function ets_memberpress_discord_search_by_discord( $search, $perpage ) {
@@ -1146,7 +1227,6 @@ class ETS_Memberpress_Discord_Admin {
 
 	/**
 	 * Apply custom sql for discord search in members list table search.
-	 * 
 	 */
 	public function ets_memberperss_add_search_filter() {
 		if ( isset( $_GET['page'] ) && $_GET['page'] !== 'memberpress-members' ) {

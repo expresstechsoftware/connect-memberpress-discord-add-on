@@ -51,7 +51,7 @@ if ( $currentUser ) {
 				  </div>
 				  <div class="contact-body mt-3">
 					<p><a href="mailto:contact@expresstechsoftwares.com"><?php echo esc_html( 'contact@expresstechsoftwares.com' ); ?></a></p>
-					<p><a href="mailto:business@expresstechsoftwares.com"><?php echo esc_html( 'business@expresstechsoftwares.com' ); ?></a></p>
+					<p><a href="mailto:vinod.tiwari@expresstechsoftwares.com"><?php echo esc_html( 'vinod.tiwari@expresstechsoftwares.com' ); ?></a></p>
 				  </div>
 				</div>
 				<div class="contact-details d-inline-block w-100 mb-4">
