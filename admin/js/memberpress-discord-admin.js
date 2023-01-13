@@ -18,8 +18,12 @@
 				success: function (response) {
 					if (response != null && response.hasOwnProperty('code') && response.code == 50001 && response.message == 'Missing Access') {
 						$(".btn-connect-to-bot").show();
+					} else if ( response.code === 10004 && response.message == 'Unknown Guild' ) {
+						$(".btn-connect-to-bot").show().after('<p><b>The server ID is wrong or you did not connect the Bot.</b></p>');
+					}else if( response.code === 0 && response.message == '401: Unauthorized' ) {
+						$("#connect-discord-bot").show().html("Error: Unauthorized - The Bot Token is wrong").addClass('error-bk');
 					} else if (response == null || response.message == '401: Unauthorized' || response.hasOwnProperty('code') || response == 0) {
-						$("#connect-discord-bot").show().html("Error: Please check all details are correct Or Click to connect the Bot").addClass('error-bk');
+						$("#connect-discord-bot").show().html("Error: Please check all details are correct").addClass('error-bk');
 					} else {
 						if ($('.ets-tabs button[data-identity="level-mapping"]').length) {
 							$('.ets-tabs button[data-identity="level-mapping"]').show();
