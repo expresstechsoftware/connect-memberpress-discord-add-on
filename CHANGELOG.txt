@@ -1,3 +1,9 @@
+= 1.0.10 =
+- added visual clues to demonstrate the error connect to bot cases.
+
+= 1.0.9 =
+- Fixe Error 10004
+
 = 1.0.8 =
 - update the discord roles of members via the 'RUN API' button, Case of an expiated transaction, without waiting for the memberpress cron.
 
