@@ -380,6 +380,7 @@ class ETS_Memberpress_Discord_Admin {
 		$ets_memberpress_loggedin_btn_text            = isset( $_POST['ets_memberpress_loggedin_btn_text'] ) && $_POST['ets_memberpress_loggedin_btn_text'] != '' ? sanitize_text_field( trim( $_POST['ets_memberpress_loggedin_btn_text'] ) ) : 'Connect To Discord';
 		$ets_memberpress_loggedout_btn_text           = isset( $_POST['ets_memberpress_loggedout_btn_text'] ) && $_POST['ets_memberpress_loggedout_btn_text'] != '' ? sanitize_text_field( trim( $_POST['ets_memberpress_loggedout_btn_text'] ) ) : 'Login With Discord';
 		$ets_memberpress_discord_disconnect_btn_text  = $_POST['ets_memberpress_discord_disconnect_btn_text'] ? sanitize_text_field( trim( $_POST['ets_memberpress_discord_disconnect_btn_text'] ) ) : 'Disconnect From Discord';
+		$ets_memberpress_discord_member_facing_text   = $_POST['ets_memberpress_discord_member_facing_text'] ? sanitize_text_field( trim( $_POST['ets_memberpress_discord_member_facing_text'] ) ) : '';
 
 		if ( isset( $_POST['apr_submit'] ) ) {
 
@@ -398,6 +399,11 @@ class ETS_Memberpress_Discord_Admin {
 				}
 				if ( $ets_memberpress_discord_disconnect_btn_text ) {
 					update_option( 'ets_memberpress_discord_disconnect_btn_text', $ets_memberpress_discord_disconnect_btn_text );
+				}
+				if ( $ets_memberpress_discord_member_facing_text ) {
+					update_option( 'ets_memberpress_discord_member_facing_text', $ets_memberpress_discord_member_facing_text );
+				} else {
+					update_option( 'ets_memberpress_discord_member_facing_text', '' );
 				}
 				$message = 'Your settings are saved successfully.';
 				if ( isset( $_POST['current_url'] ) ) {
@@ -987,7 +993,6 @@ class ETS_Memberpress_Discord_Admin {
 				exit();
 		}
 
-
 		$memberpress_discord = new ETS_Memberpress_Discord();
 		$plugin_admin        = new ETS_Memberpress_Discord_Admin( $memberpress_discord->get_plugin_name(), $memberpress_discord->get_version() );
 		$plugin_public       = new ETS_Memberpress_Discord_Public( $memberpress_discord->get_plugin_name(), $memberpress_discord->get_version(), $plugin_admin );
@@ -1040,10 +1045,10 @@ class ETS_Memberpress_Discord_Admin {
 				 */
 				$active_memberships = ets_memberpress_discord_get_active_memberships( $user_id );
 
-				$memberpress_user       = new MeprUser( $user_id );
-				$all_memberships        = $memberpress_user->active_product_subscriptions( 'transactions', false, false );
-				$all_subscriptions      = $memberpress_user->active_product_subscriptions( 'transactions', true, false ); //We need to force here, and we do not want to exclude expired
-				$expired_subscriptions  = array_diff( $all_subscriptions, $all_memberships ); //return values from $all_subscriptions which are NOT also present in $current_subscriptions
+				$memberpress_user      = new MeprUser( $user_id );
+				$all_memberships       = $memberpress_user->active_product_subscriptions( 'transactions', false, false );
+				$all_subscriptions     = $memberpress_user->active_product_subscriptions( 'transactions', true, false ); // We need to force here, and we do not want to exclude expired
+				$expired_subscriptions = array_diff( $all_subscriptions, $all_memberships ); // return values from $all_subscriptions which are NOT also present in $current_subscriptions
 				foreach ( $expired_subscriptions as $expired_subscription ) {
 					if ( is_array( $ets_memberpress_discord_role_mapping ) && array_key_exists( 'level_id_' . $expired_subscription->product_id, $ets_memberpress_discord_role_mapping ) ) {
 						$mapped_role_id = sanitize_text_field( trim( $ets_memberpress_discord_role_mapping[ 'level_id_' . $expired_subscription->product_id ] ) );

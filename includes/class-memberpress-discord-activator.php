@@ -19,11 +19,12 @@ class ETS_Memberpress_Discord_Activator {
 	 * @since    1.0.0
 	 */
 	public static function activate() {
-    update_option( 'ets_memberpress_discord_btn_color', '#77a02e' );
-    update_option( 'ets_memberpress_discord_btn_disconnect_color', '#ff0000' );
-    update_option( 'ets_memberpress_discord_loggedout_btn_text', 'Login with Discord' );
-    update_option( 'ets_memberpress_discord_loggedin_btn_text', 'Connect with Discord' );
-    update_option( 'ets_memberpress_discord_disconnect_btn_text', 'Disconnect Discord' );
+		update_option( 'ets_memberpress_discord_btn_color', '#77a02e' );
+		update_option( 'ets_memberpress_discord_btn_disconnect_color', '#ff0000' );
+		update_option( 'ets_memberpress_discord_loggedout_btn_text', 'Login with Discord' );
+		update_option( 'ets_memberpress_discord_loggedin_btn_text', 'Connect with Discord' );
+		update_option( 'ets_memberpress_discord_disconnect_btn_text', 'Disconnect Discord' );
+		update_option( 'ets_memberpress_discord_member_facing_text', 'Following Roles will be assigned to you in Discord' );
 		update_option( 'ets_memberpress_discord_payment_failed', true );
 		update_option( 'ets_memberpress_discord_log_api_response', false );
 		update_option( 'ets_memberpress_discord_retry_failed_api', true );
