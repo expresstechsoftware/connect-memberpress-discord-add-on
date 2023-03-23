@@ -1,3 +1,6 @@
+= 1.0.12 =
+- Add link to plugin support forum
+
 = 1.0.11 =
 - Add custom message for roles assigned or to be assigned.
 
