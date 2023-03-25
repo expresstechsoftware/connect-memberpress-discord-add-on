@@ -13,7 +13,11 @@ if ( defined( 'WP_UNINSTALL_PLUGIN' )
 		&& $_REQUEST['slug'] == 'connect-memberpress-to-discord'
 	&& wp_verify_nonce( $_REQUEST['_ajax_nonce'], 'updates' )
   ) {
-	global $wpdb;
-	  $wpdb->query( 'DELETE FROM ' . $wpdb->prefix . "usermeta WHERE `meta_key` LIKE '_ets_memberpress_discord%'" );
-	  $wpdb->query( 'DELETE FROM ' . $wpdb->prefix . "options WHERE `option_name` LIKE 'ets_memberpress_discord_%'" );
+	$ets_memberpress_discord_data_erases            = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_data_erases' ) ) );
+	if ( $ets_memberpress_discord_data_erases == true ){
+		global $wpdb;
+		$wpdb->query( 'DELETE FROM ' . $wpdb->prefix . "usermeta WHERE `meta_key` LIKE '_ets_memberpress_discord%'" );
+		$wpdb->query( 'DELETE FROM ' . $wpdb->prefix . "options WHERE `option_name` LIKE 'ets_memberpress_discord_%'" );		
+	}
+
 }
