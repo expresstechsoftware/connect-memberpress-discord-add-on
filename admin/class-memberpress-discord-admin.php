@@ -354,6 +354,13 @@ class ETS_Memberpress_Discord_Admin {
 						update_option( 'ets_memberpress_discord_retry_api_count', $retry_api_count );
 					}
 				}
+
+				if ( isset( $_POST['ets_memberpress_discord_data_erases'] ) ) {
+					update_option( 'ets_memberpress_discord_data_erases', true );
+				} else {
+					update_option( 'ets_memberpress_discord_data_erases', false );
+				}
+
 				$message = 'Your settings are saved successfully.';
 				if ( isset( $_POST['current_url'] ) ) {
 					$pre_location = sanitize_text_field( $_POST['current_url'] ) . '&save_settings_msg=' . $message . '#mepr_advance';
