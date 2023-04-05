@@ -360,6 +360,11 @@ class ETS_Memberpress_Discord_Admin {
 				} else {
 					update_option( 'ets_memberpress_discord_data_erases', false );
 				}
+				if ( isset( $_POST['ets_memberpress_discord_embed_messaging_feature'] ) ) {
+					update_option( 'ets_memberpress_discord_embed_messaging_feature', true );
+				} else {
+					update_option( 'ets_memberpress_discord_embed_messaging_feature', false );
+				}
 
 				$message = 'Your settings are saved successfully.';
 				if ( isset( $_POST['current_url'] ) ) {
