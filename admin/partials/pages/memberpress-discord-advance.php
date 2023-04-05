@@ -75,12 +75,8 @@ $current_url                                        = ets_memberpress_discord_ge
 	<tr>
 		<th scope="row"><?php esc_html_e( 'Membership welcome message', 'expresstechsoftwares-memberpress-discord-add-on' ); ?></th>
 		<td> <fieldset>
-		<textarea class="ets_memberpress_discord_dm_textarea" name="ets_memberpress_discord_welcome_message" id="ets_memberpress_discord_welcome_message" row="25" cols="50">
-		<?php
-		if ( $ets_memberpress_discord_welcome_message ) {
-			echo esc_textarea( wp_unslash( stripslashes_deep( $ets_memberpress_discord_welcome_message ) ) ); }
-		?>
-		</textarea> 
+			<?php $ets_memberpress_discord_welcome_message_value = ( isset( $ets_memberpress_discord_welcome_message ) ) ? $ets_memberpress_discord_welcome_message : ''; ?>
+		<textarea class="ets_memberpress_discord_dm_textarea" name="ets_memberpress_discord_welcome_message" id="ets_memberpress_discord_welcome_message" row="25" cols="50"><?php echo esc_textarea( wp_unslash( stripslashes_deep( $ets_memberpress_discord_welcome_message_value ) ) ); ?></textarea> 
 	<br/>
 	<small>Merge fields: [MEMBER_USERNAME], [MEMBER_EMAIL], [MEMBERSHIP_LEVEL], [SITE_URL], [BLOG_NAME], [MEMBERSHIP_ENDDATE], [MEMBERSHIP_STARTDATE]</small>
 		</fieldset></td>
@@ -100,12 +96,8 @@ $current_url                                        = ets_memberpress_discord_ge
 	<tr>
 		<th scope="row"><?php esc_html_e( 'Membership expiration warning message', 'expresstechsoftwares-memberpress-discord-add-on' ); ?></th>
 		<td> <fieldset>
-		<textarea  class="ets_memberpress_discord_dm_textarea" name="ets_memberpress_discord_expiration_warning_message" id="ets_memberpress_discord_expiration_warning_message" row="25" cols="50">
-		<?php
-		if ( $ets_memberpress_discord_expiration_warning_message ) {
-			echo esc_textarea( wp_unslash( stripslashes_deep( $ets_memberpress_discord_expiration_warning_message ) ) ); }
-		?>
-		</textarea> 
+			<?php $ets_memberpress_discord_expiration_warning_message_value = ( isset( $ets_memberpress_discord_expiration_warning_message ) ) ? $ets_memberpress_discord_expiration_warning_message : ''; ?>
+		<textarea  class="ets_memberpress_discord_dm_textarea" name="ets_memberpress_discord_expiration_warning_message" id="ets_memberpress_discord_expiration_warning_message" row="25" cols="50"><?php echo esc_textarea( wp_unslash( stripslashes_deep( $ets_memberpress_discord_expiration_warning_message_value ) ) ); ?></textarea> 
 	<br/>
 	<small>Merge fields: [MEMBER_USERNAME], [MEMBER_EMAIL], [MEMBERSHIP_LEVEL], [SITE_URL], [BLOG_NAME], [MEMBERSHIP_ENDDATE], [MEMBERSHIP_STARTDATE]</small>
 		</fieldset></td>
@@ -124,12 +116,8 @@ $current_url                                        = ets_memberpress_discord_ge
 	<tr>
 		<th scope="row"><?php esc_html_e( 'Membership expired message', 'expresstechsoftwares-memberpress-discord-add-on' ); ?></th>
 		<td> <fieldset>
-		<textarea  class="ets_memberpress_discord_dm_textarea" name="ets_memberpress_discord_expiration_expired_message" id="ets_memberpress_discord_expiration_expired_message" row="25" cols="50">
-		<?php
-		if ( $ets_memberpress_discord_expiration_expired_message ) {
-			echo esc_textarea( wp_unslash( stripslashes_deep( $ets_memberpress_discord_expiration_expired_message ) ) ); }
-		?>
-		</textarea> 
+			<?php $ets_memberpress_discord_expiration_expired_message_value = ( isset( $ets_memberpress_discord_expiration_expired_message ) ) ? $ets_memberpress_discord_expiration_expired_message : ''; ?>
+		<textarea  class="ets_memberpress_discord_dm_textarea" name="ets_memberpress_discord_expiration_expired_message" id="ets_memberpress_discord_expiration_expired_message" row="25" cols="50"><?php echo esc_textarea( wp_unslash( stripslashes_deep( $ets_memberpress_discord_expiration_expired_message_value ) ) ); ?></textarea> 
 	<br/>
 	<small>Merge fields: [MEMBER_USERNAME], [MEMBER_EMAIL], [MEMBERSHIP_LEVEL], [SITE_URL], [BLOG_NAME]</small>
 		</fieldset>
@@ -149,12 +137,8 @@ $current_url                                        = ets_memberpress_discord_ge
 		<tr>
 		<th scope="row"><?php esc_html_e( 'Membership cancel message', 'expresstechsoftwares-memberpress-discord-add-on' ); ?></th>
 		<td> <fieldset>
-		<textarea  class="ets_memberpress_discord_dm_textarea" name="ets_memberpress_discord_cancel_message" id="ets_memberpress_discord_cancel_message" row="25" cols="50">
-		<?php
-		if ( $ets_memberpress_discord_cancel_message ) {
-			echo esc_textarea( wp_unslash( stripslashes_deep( $ets_memberpress_discord_cancel_message ) ) ); }
-		?>
-		</textarea> 
+		<?php $ets_memberpress_discord_cancel_message_value = ( isset( $ets_memberpress_discord_cancel_message ) ) ? $ets_memberpress_discord_cancel_message : ''; ?>
+		<textarea  class="ets_memberpress_discord_dm_textarea" name="ets_memberpress_discord_cancel_message" id="ets_memberpress_discord_cancel_message" row="25" cols="50"><?php echo esc_textarea( wp_unslash( stripslashes_deep( $ets_memberpress_discord_cancel_message_value ) ) ); ?></textarea> 
 	<br/>
 	<small>Merge fields: [MEMBER_USERNAME], [MEMBER_EMAIL], [MEMBERSHIP_LEVEL], [SITE_URL], [BLOG_NAME]</small>
 		</fieldset>
