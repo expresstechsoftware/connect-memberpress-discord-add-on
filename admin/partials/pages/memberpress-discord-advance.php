@@ -27,11 +27,11 @@ $current_url                                        = ets_memberpress_discord_ge
   <table class="form-table" role="presentation">
 	<tbody>
 	<tr>
-		<th scope="row"><?php echo __( 'Shortcode:', 'expresstechsoftwares-memberpress-discord-add-on' ); ?></th>
+		<th scope="row"><?php esc_html_e( 'Shortcode:', 'expresstechsoftwares-memberpress-discord-add-on' ); ?></th>
 		<td> <fieldset>
 		[mepr_discord_button]
 		<br/>
-		<small><?php echo __( 'Use this shortcode to display Discord Connect button anywhere on your website, Optionally you can make your redirect url to that page on which the button shortcode is being added.', 'expresstechsoftwares-memberpress-discord-add-on' ); ?></small>
+		<small><?php esc_html_e( 'Use this shortcode to display Discord Connect button anywhere on your website, Optionally you can make your redirect url to that page on which the button shortcode is being added.', 'expresstechsoftwares-memberpress-discord-add-on' ); ?></small>
 		</fieldset></td>
 	  </tr>
 	<tr>
@@ -49,7 +49,7 @@ $current_url                                        = ets_memberpress_discord_ge
 		</fieldset></td>
 	  </tr>		
 	<tr>
-		<th scope="row"><?php echo __( 'Data erases on uninstall?', 'pmpro-discord-add-on' ); ?></th>
+		<th scope="row"><?php esc_html_e( 'Data erases on uninstall?', 'pmpro-discord-add-on' ); ?></th>
 		<td> <fieldset>
 		<input name="ets_memberpress_discord_data_erases" type="checkbox" id="ets_memberpress_discord_data_erases" 
 		<?php
@@ -62,7 +62,7 @@ $current_url                                        = ets_memberpress_discord_ge
 		</fieldset></td>
 	  </tr>			
   <tr>
-		<th scope="row"><?php echo __( 'Send welcome message', 'expresstechsoftwares-memberpress-discord-add-on' ); ?></th>
+		<th scope="row"><?php esc_html_e( 'Send welcome message', 'expresstechsoftwares-memberpress-discord-add-on' ); ?></th>
 		<td> <fieldset>
 		<input name="ets_memberpress_discord_send_welcome_dm" type="checkbox" id="ets_memberpress_discord_send_welcome_dm" 
 		<?php
@@ -73,7 +73,7 @@ $current_url                                        = ets_memberpress_discord_ge
 		</fieldset></td>
 	  </tr>
 	<tr>
-		<th scope="row"><?php echo __( 'Membership welcome message', 'expresstechsoftwares-memberpress-discord-add-on' ); ?></th>
+		<th scope="row"><?php esc_html_e( 'Membership welcome message', 'expresstechsoftwares-memberpress-discord-add-on' ); ?></th>
 		<td> <fieldset>
 		<textarea class="ets_memberpress_discord_dm_textarea" name="ets_memberpress_discord_welcome_message" id="ets_memberpress_discord_welcome_message" row="25" cols="50">
 		<?php
@@ -87,7 +87,7 @@ $current_url                                        = ets_memberpress_discord_ge
 	  </tr>
 
 	<tr>
-		<th scope="row"><?php echo __( 'Send membership expiration warning message', 'expresstechsoftwares-memberpress-discord-add-on' ); ?></th>
+		<th scope="row"><?php esc_html_e( 'Send membership expiration warning message', 'expresstechsoftwares-memberpress-discord-add-on' ); ?></th>
 		<td> <fieldset>
 		<input name="ets_memberpress_discord_send_expiration_warning_dm" type="checkbox" id="ets_memberpress_discord_send_expiration_warning_dm" 
 		<?php
@@ -98,7 +98,7 @@ $current_url                                        = ets_memberpress_discord_ge
 		</fieldset></td>
 	  </tr>
 	<tr>
-		<th scope="row"><?php echo __( 'Membership expiration warning message', 'expresstechsoftwares-memberpress-discord-add-on' ); ?></th>
+		<th scope="row"><?php esc_html_e( 'Membership expiration warning message', 'expresstechsoftwares-memberpress-discord-add-on' ); ?></th>
 		<td> <fieldset>
 		<textarea  class="ets_memberpress_discord_dm_textarea" name="ets_memberpress_discord_expiration_warning_message" id="ets_memberpress_discord_expiration_warning_message" row="25" cols="50">
 		<?php
@@ -111,7 +111,7 @@ $current_url                                        = ets_memberpress_discord_ge
 		</fieldset></td>
 	  </tr>
 	<tr>
-		<th scope="row"><?php echo __( 'Send membership expired message', 'expresstechsoftwares-memberpress-discord-add-on' ); ?></th>
+		<th scope="row"><?php esc_html_e( 'Send membership expired message', 'expresstechsoftwares-memberpress-discord-add-on' ); ?></th>
 		<td> <fieldset>
 		<input name="ets_memberpress_discord_send_membership_expired_dm" type="checkbox" id="ets_memberpress_discord_send_membership_expired_dm" 
 		<?php
@@ -122,7 +122,7 @@ $current_url                                        = ets_memberpress_discord_ge
 		</fieldset></td>
 	  </tr>
 	<tr>
-		<th scope="row"><?php echo __( 'Membership expired message', 'expresstechsoftwares-memberpress-discord-add-on' ); ?></th>
+		<th scope="row"><?php esc_html_e( 'Membership expired message', 'expresstechsoftwares-memberpress-discord-add-on' ); ?></th>
 		<td> <fieldset>
 		<textarea  class="ets_memberpress_discord_dm_textarea" name="ets_memberpress_discord_expiration_expired_message" id="ets_memberpress_discord_expiration_expired_message" row="25" cols="50">
 		<?php
@@ -136,7 +136,7 @@ $current_url                                        = ets_memberpress_discord_ge
   </td>
 		</tr>
 	<tr>
-		<th scope="row"><?php echo __( 'Send membership cancel message', 'expresstechsoftwares-memberpress-discord-add-on' ); ?></th>
+		<th scope="row"><?php esc_html_e( 'Send membership cancel message', 'expresstechsoftwares-memberpress-discord-add-on' ); ?></th>
 		<td> <fieldset>
 		<input name="ets_memberpress_discord_send_membership_cancel_dm" type="checkbox" id="ets_memberpress_discord_send_membership_cancel_dm" 
 		<?php
@@ -147,7 +147,7 @@ $current_url                                        = ets_memberpress_discord_ge
 		</fieldset></td>
 	  </tr>
 		<tr>
-		<th scope="row"><?php echo __( 'Membership cancel message', 'expresstechsoftwares-memberpress-discord-add-on' ); ?></th>
+		<th scope="row"><?php esc_html_e( 'Membership cancel message', 'expresstechsoftwares-memberpress-discord-add-on' ); ?></th>
 		<td> <fieldset>
 		<textarea  class="ets_memberpress_discord_dm_textarea" name="ets_memberpress_discord_cancel_message" id="ets_memberpress_discord_cancel_message" row="25" cols="50">
 		<?php
@@ -161,7 +161,7 @@ $current_url                                        = ets_memberpress_discord_ge
   </td>
 		</tr>
   <tr>
-		<th scope="row"><?php echo __( 'Re-assign roles upon payment failure', 'expresstechsoftwares-memberpress-discord-add-on' ); ?></th>
+		<th scope="row"><?php esc_html_e( 'Re-assign roles upon payment failure', 'expresstechsoftwares-memberpress-discord-add-on' ); ?></th>
 		<td> <fieldset>
 		<input name="upon_failed_payment" type="checkbox" id="upon_failed_payment" 
 		<?php
@@ -172,7 +172,7 @@ $current_url                                        = ets_memberpress_discord_ge
 		</fieldset></td>
 	  </tr>
 	  </tr>
-		<th scope="row"><?php echo __( 'Retry Failed API calls', 'expresstechsoftwares-memberpress-discord-add-on' ); ?></th>
+		<th scope="row"><?php esc_html_e( 'Retry Failed API calls', 'expresstechsoftwares-memberpress-discord-add-on' ); ?></th>
 		<td> <fieldset>
 		<input name="retry_failed_api" type="checkbox" id="retry_failed_api" 
 		<?php
@@ -183,7 +183,7 @@ $current_url                                        = ets_memberpress_discord_ge
 		</fieldset></td>
 	  </tr>
 	  <tr>
-		<th scope="row"><?php echo __( 'Kick members out when they Disconnect their Account?', 'expresstechsoftwares-memberpress-discord-add-on' ); ?></th>
+		<th scope="row"><?php esc_html_e( 'Kick members out when they Disconnect their Account?', 'expresstechsoftwares-memberpress-discord-add-on' ); ?></th>
 		<td> <fieldset>
 		<input name="memberpress_member_kick_out" type="checkbox" id="memberpress_member_kick_out" 
 		<?php
@@ -191,12 +191,12 @@ $current_url                                        = ets_memberpress_discord_ge
 			echo 'checked="checked"'; }
 		?>
 		 value="1"><br/>
-	 <small><?php echo __( 'Members will be kicked out if this setting is checked.', 'expresstechsoftwares-memberpress-discord-add-on' ); ?></small>
+	 <small><?php esc_html_e( 'Members will be kicked out if this setting is checked.', 'expresstechsoftwares-memberpress-discord-add-on' ); ?></small>
 		</fieldset></td>
 		
 	  </tr>
 	  <tr>
-		<th scope="row"><?php echo __( 'Login with Discord on checkout Page', 'expresstechsoftwares-memberpress-discord-add-on' ); ?></th>
+		<th scope="row"><?php esc_html_e( 'Login with Discord on checkout Page', 'expresstechsoftwares-memberpress-discord-add-on' ); ?></th>
 		<td> <fieldset>
 		<input name="memberpress_member_discord_login" type="checkbox" id="memberpress_member_discord_login" 
 		<?php
@@ -205,11 +205,11 @@ $current_url                                        = ets_memberpress_discord_ge
 		?>
 		 value="1">
 		</fieldset>
-	<small><?php echo __( 'A new account will be created if the discord account E-mail is not exist into the system.', 'expresstechsoftwares-memberpress-discord-add-on' ); ?></small>
+	<small><?php esc_html_e( 'A new account will be created if the discord account E-mail is not exist into the system.', 'expresstechsoftwares-memberpress-discord-add-on' ); ?></small>
   </td>
 	  </tr>
 	<tr>
-		<th scope="row"><?php echo __( 'How many times a failed API call should get re-try', 'expresstechsoftwares-memberpress-discord-add-on' ); ?></th>
+		<th scope="row"><?php esc_html_e( 'How many times a failed API call should get re-try', 'expresstechsoftwares-memberpress-discord-add-on' ); ?></th>
 		<td> <fieldset>
 		<input name="ets_memberpress_discord_retry_api_count" type="number" min="1" id="ets_memberpress_discord_retry_api_count" value="
 		<?php
@@ -222,7 +222,7 @@ $current_url                                        = ets_memberpress_discord_ge
 		</fieldset></td>
 	  </tr> 
 	  <tr>
-		<th scope="row"><?php echo __( 'Set job queue concurrency', 'expresstechsoftwares-memberpress-discord-add-on' ); ?></th>
+		<th scope="row"><?php esc_html_e( 'Set job queue concurrency', 'expresstechsoftwares-memberpress-discord-add-on' ); ?></th>
 		<td> <fieldset>
 		<input name="set_job_cnrc" type="number" min="1" id="set_job_cnrc" value="
 		<?php
@@ -235,7 +235,7 @@ $current_url                                        = ets_memberpress_discord_ge
 		</fieldset></td>
 	  </tr>
 	  <tr>
-		<th scope="row"><?php echo __( 'Set job queue batch size', 'expresstechsoftwares-memberpress-discord-add-on' ); ?></th>
+		<th scope="row"><?php esc_html_e( 'Set job queue batch size', 'expresstechsoftwares-memberpress-discord-add-on' ); ?></th>
 		<td> <fieldset>
 		<input name="set_job_q_batch_size" type="number" min="1" id="set_job_q_batch_size" value="
 		<?php
@@ -248,7 +248,7 @@ $current_url                                        = ets_memberpress_discord_ge
 		</fieldset></td>
 	  </tr>
 	<tr>
-		<th scope="row"><?php echo __( 'Log API calls response (For debugging purpose)', 'expresstechsoftwares-memberpress-discord-add-on' ); ?></th>
+		<th scope="row"><?php esc_html_e( 'Log API calls response (For debugging purpose)', 'expresstechsoftwares-memberpress-discord-add-on' ); ?></th>
 		<td> <fieldset>
 		<input name="log_api_res" type="checkbox" id="log_api_res" 
 		<?php
@@ -263,7 +263,7 @@ $current_url                                        = ets_memberpress_discord_ge
   </table>
   <div class="bottom-btn">
 	<button type="submit" name="adv_submit" value="ets_submit" class="ets-submit ets-bg-green">
-	  <?php echo __( 'Save Settings', 'expresstechsoftwares-memberpress-discord-add-on' ); ?>
+	  <?php esc_html_e( 'Save Settings', 'expresstechsoftwares-memberpress-discord-add-on' ); ?>
 	</button>
   </div>
 </form>
