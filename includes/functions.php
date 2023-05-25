@@ -373,3 +373,73 @@ function ets_memberpress_discord_get_user_avatar( $discord_user_id, $user_avatar
 	}
 	return $ets_memberpress_connecttodiscord_btn;
 }
+
+/**
+ * Send DM message Rich Embed .
+ *
+ * @param string $message The message to send.
+ */
+function ets_memberpress_discord_get_rich_embed_message( $message ) {
+
+	$blog_logo_full      = is_array( wp_get_attachment_image_src( get_theme_mod( 'custom_logo' ), 'full' ) ) ? esc_url( wp_get_attachment_image_src( get_theme_mod( 'custom_logo' ), 'full' )[0] ) : '';
+	$blog_logo_thumbnail = is_array( wp_get_attachment_image_src( get_theme_mod( 'custom_logo' ), 'thumbnail' ) ) ? esc_url( wp_get_attachment_image_src( get_theme_mod( 'custom_logo' ), 'thumbnail' )[0] ) : '';
+
+	$SITE_URL         = get_bloginfo( 'url' );
+	$BLOG_NAME        = get_bloginfo( 'name' );
+	$BLOG_DESCRIPTION = get_bloginfo( 'description' );
+
+	$timestamp     = date( 'c', strtotime( 'now' ) );
+	$convert_lines = preg_split( '/\[LINEBREAK\]/', $message );
+	$fields        = array();
+	if ( is_array( $convert_lines ) ) {
+		for ( $i = 0; $i < count( $convert_lines ); $i++ ) {
+			array_push(
+				$fields,
+				array(
+					'name'   => '.',
+					'value'  => $convert_lines[ $i ],
+					'inline' => false,
+				)
+			);
+		}
+	}
+
+	$rich_embed_message = json_encode(
+		array(
+			'content'    => '',
+			'username'   => $BLOG_NAME,
+			'avatar_url' => $blog_logo_thumbnail,
+			'tts'        => false,
+			'embeds'     => array(
+				array(
+					'title'       => '',
+					'type'        => 'rich',
+					'description' => $BLOG_DESCRIPTION,
+					'url'         => '',
+					'timestamp'   => $timestamp,
+					'color'       => hexdec( '3366ff' ),
+					'footer'      => array(
+						'text'     => $BLOG_NAME,
+						'icon_url' => $blog_logo_thumbnail,
+					),
+					'image'       => array(
+						'url' => $blog_logo_full,
+					),
+					'thumbnail'   => array(
+						'url' => $blog_logo_thumbnail,
+					),
+					'author'      => array(
+						'name' => $BLOG_NAME,
+						'url'  => $SITE_URL,
+					),
+					'fields'      => $fields,
+
+				),
+			),
+
+		),
+		JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE
+	);
+
+	return $rich_embed_message;
+}

@@ -1,3 +1,10 @@
+= 1.0.14 =
+- Update support WordPress 6.2
+- Add Opt-out delete all data associated with the plugin when it is uninstalled.
+
+= 1.0.12 =
+- Add link to plugin support forum
+
 = 1.0.11 =
 - Add custom message for roles assigned or to be assigned.
 
