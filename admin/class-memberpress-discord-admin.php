@@ -1065,12 +1065,14 @@ class ETS_Memberpress_Discord_Admin {
 					if ( is_array( $ets_memberpress_discord_role_mapping ) && array_key_exists( 'level_id_' . $expired_subscription->product_id, $ets_memberpress_discord_role_mapping ) ) {
 						$mapped_role_id = sanitize_text_field( trim( $ets_memberpress_discord_role_mapping[ 'level_id_' . $expired_subscription->product_id ] ) );
 						$plugin_admin->memberpress_delete_discord_role( $user_id, $mapped_role_id );
+						delete_user_meta( $user_id, '_ets_memberpress_discord_role_id_for_' . $expired_subscription->trans_num );
 					}
 				}
 				foreach ( $all_memberships as $all_membership ) {
 					if ( is_array( $ets_memberpress_discord_role_mapping ) && array_key_exists( 'level_id_' . $all_membership->product_id, $ets_memberpress_discord_role_mapping ) ) {
 						$mapped_role_id = sanitize_text_field( trim( $ets_memberpress_discord_role_mapping[ 'level_id_' . $all_membership->product_id ] ) );
 						$plugin_public->put_discord_role_api( $user_id, $mapped_role_id );
+						update_user_meta( $user_id, '_ets_memberpress_discord_role_id_for_' . $all_membership->trans_num, $mapped_role_id );
 					}
 				}
 
