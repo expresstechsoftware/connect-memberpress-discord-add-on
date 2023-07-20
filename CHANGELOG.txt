@@ -1,3 +1,5 @@
+= 1.0.15 =
+- Update user meta 'discord_role_id_for_' when RUN API button
 = 1.0.14 =
 - Update support WordPress 6.2
 - Add Opt-out delete all data associated with the plugin when it is uninstalled.
