@@ -109,6 +109,8 @@ class ETS_Memberpress_Discord {
 		 */
 		require_once ETS_MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . 'public/class-memberpress-discord-public.php';
 
+		require_once ETS_MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . 'includes/class-memberpress-discord-admin-notices.php';
+
 		$this->loader = new ETS_Memberpress_Discord_Loader();
 
 	}
@@ -176,6 +178,7 @@ class ETS_Memberpress_Discord {
 			$this->loader->add_action( 'remove_user_from_blog', $plugin_admin, 'ets_memberpress_discord_remove_user_from_server' );
 		}
 		$this->loader->add_action( 'admin_init', $plugin_admin, 'ets_memberperss_add_search_filter' );
+		$this->loader->add_action( 'wp_ajax_ets_memberpress_discord_notice_dismiss', $plugin_admin, 'ets_memberpress_discord_notice_dismiss' );
 	}
 
 	/**
