@@ -67,6 +67,8 @@ class ETS_Memberpress_Discord_Admin_Notices {
 				'src'   => array(),
 				'class' => array(),
 			),
+			'h1'  => array(),
+			'b'   => array(),
 		);
 
 		return $allowed_html;
