@@ -1,3 +1,6 @@
+= 1.0.18 =
+- Update the dismissible notification asking for review
+
 = 1.0.17 =
 - Add dismissible notification asking for review
 

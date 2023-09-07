@@ -505,3 +505,13 @@ div.ets-memberpress-discord-review-notice div.ets-memberpress-discord-notice-ico
 div.ets-memberpress-discord-review-notice div.ets-memberpress-discord-notice-content{
   padding: 20px;
 }
+div.ets-memberpress-discord-review-notice div.ets-memberpress-discord-notice-content p.ets-memberpress-discord-signature {
+  display: flex; 
+  align-items: center;
+}
+div.ets-memberpress-discord-review-notice div.ets-memberpress-discord-notice-content img{
+  width: 45px;
+  height: auto;
+  border-radius: 50%;
+  margin-left: 15px;
+}
