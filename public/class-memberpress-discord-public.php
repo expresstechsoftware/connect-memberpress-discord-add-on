@@ -108,7 +108,7 @@ class ETS_Memberpress_Discord_Public {
 			foreach ( $active_memberships as $active_membership ) {
 				if ( is_array( $ets_memberpress_discord_role_mapping ) && array_key_exists( 'level_id_' . $active_membership->product_id, $ets_memberpress_discord_role_mapping ) ) {
 					$mapped_role_id = $ets_memberpress_discord_role_mapping[ 'level_id_' . $active_membership->product_id ];
-					if ( array_key_exists( $mapped_role_id, $all_roles ) ) {
+					if ( array_key_exists( $mapped_role_id, $all_roles ) && ! in_array( $mapped_role_id, $mapped_role_ids, true ) ) {
 						array_push( $mapped_role_ids, $mapped_role_id );
 					}
 				}
@@ -671,15 +671,15 @@ class ETS_Memberpress_Discord_Public {
 	public function ets_memberpress_discord_login_with_discord_button( $membership_id ) {
 		wp_enqueue_style( $this->plugin_name . 'public_css' );
 		if ( ! is_user_logged_in() ) {
-			$default_role                         = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_default_role_id' ) ) );
-			$ets_memberpress_discord_role_mapping = json_decode( get_option( 'ets_memberpress_discord_role_mapping' ), true );
-			$all_roles                            = json_decode( get_option( 'ets_memberpress_discord_all_roles' ), true );
-			$member_discord_login                 = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_login_with_discord' ) ) );
-			$btn_color                            = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_btn_color' ) ) );
-			$btn_text                             = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_loggedout_btn_text' ) ) );
+			$default_role                               = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_default_role_id' ) ) );
+			$ets_memberpress_discord_role_mapping       = json_decode( get_option( 'ets_memberpress_discord_role_mapping' ), true );
+			$all_roles                                  = json_decode( get_option( 'ets_memberpress_discord_all_roles' ), true );
+			$member_discord_login                       = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_login_with_discord' ) ) );
+			$btn_color                                  = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_btn_color' ) ) );
+			$btn_text                                   = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_loggedout_btn_text' ) ) );
 			$ets_memberpress_discord_member_facing_text = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_member_facing_text' ) ) );
-			$mapped_role_ids                      = array();
-			$roles_color                          = unserialize( get_option( 'ets_memberpress_discord_roles_color' ) );
+			$mapped_role_ids                            = array();
+			$roles_color                                = unserialize( get_option( 'ets_memberpress_discord_roles_color' ) );
 			if ( $member_discord_login ) {
 				echo wp_kses( '<style>.memberpress-btn-connect{background-color: ' . esc_attr( $btn_color ) . ';}</style>', array( 'style' => array() ) );
 				$curr_level_id     = $membership_id;
