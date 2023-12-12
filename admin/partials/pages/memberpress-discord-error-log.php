@@ -1,21 +1,21 @@
 <!-- Search fileds	 -->
 <form id="ets-log-search-form" method="GET">
-		<label for="api-response-code">API Response Code:</label>
+		<label for="api-response-code"><?php esc_html_e( 'API Response Code:', 'connect-memberpress-discord-add-on' ); ?></label>
 		<input type="text" name="api-response-code" id="api-response-code">
 
-		<label for="error-message">Error Message:</label>
+		<label for="error-message"><?php esc_html_e( 'Error Message:', 'connect-memberpress-discord-add-on' ); ?></label>
 		<input type="text" name="error-message" id="error-message">
 
-		<label for="wp-user-id">WordPress User ID:</label>
+		<label for="wp-user-id"><?php esc_html_e( 'WordPress User ID:', 'connect-memberpress-discord-add-on' ); ?></label>
 		<input type="text" name="wp-user-id" id="wp-user-id">
 
-		<label for="discord-user-id">Discord User ID:</label>
+		<label for="discord-user-id"><?php esc_html_e( 'Discord User ID:', 'connect-memberpress-discord-add-on' ); ?></label>
 		<input type="text" name="discord-user-id" id="discord-user-id">
 
-		<label for="datetime">Datetime (YYYY-MM-DD HH:MM:SS):</label>
+		<label for="datetime"><?php esc_html_e( 'Datetime (YYYY-MM-DD HH:MM:SS):', 'connect-memberpress-discord-add-on' ); ?></label>
 		<input type="text" name="datetime" id="datetime">
 
-		<input type="submit" class="ets-submit ets-bg-blue" value="Search">
+		<input type="submit" class="ets-submit ets-bg-blue" value="<?php esc_attr_e( 'Search', 'connect-memberpress-discord-add-on' ); ?>">
 	</form>
 <div class="error-log">
 <?php
