@@ -36,7 +36,9 @@ function ets_memberpress_discord_get_current_screen_url() {
 }
 
 /**
- * Log API call response
+ * @deprecated 1.1.0 Use ets_memberpress_discord_log_api_response_v2 instead.
+ *
+ * Log API call response. This function will be removed in future versions.
  *
  * @param INT          $user_id
  * @param STRING       $api_url
@@ -52,6 +54,36 @@ function ets_memberpress_discord_log_api_response( $user_id, $api_url = '', $api
 		write_api_response_logs( $log_string, $user_id );
 	}
 }
+
+/**
+ * Log API call response
+ *
+ * @param int          $user_id
+ * @param string       $api_url
+ * @param array        $api_args
+ * @param array|object $api_response
+ */
+function ets_memberpress_discord_log_api_response_v2( $user_id, $api_url = '', $api_args = array(), $api_response = '' ) {
+	$log_api_response = get_option( 'ets_memberpress_discord_log_api_response' );
+
+	if ( $log_api_response == true ) {
+		$log_data = array(
+			'api_endpoint'           => $api_url,
+			'api_endpoint_version'   => '',
+			'request_params'         => serialize( $api_args ),
+			'api_response_header'    => '',
+			'api_response_body'      => serialize( $api_response ),
+			'api_response_http_code' => '',
+			'error_detail_code'      => '',
+			'error_message'          => '',
+			'wp_user_id'             => $user_id,
+			'discord_user_id'        => '',
+		);
+
+		write_api_response_logs_v2( $log_data, $user_id );
+	}
+}
+
 
 /**
  * @deprecated 1.1.0 Use write_api_response_logs_v2() instead.
