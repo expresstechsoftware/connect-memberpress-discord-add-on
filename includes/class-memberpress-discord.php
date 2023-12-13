@@ -82,8 +82,14 @@ class ETS_Memberpress_Discord {
 		require_once ETS_MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . 'includes/libraries/action-scheduler/action-scheduler.php';
 
 		/**
-			 * Define common functions.
-			 */
+		 * The class responsible for Logs
+		 * core plugin.
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-memberpress-discord-api-logger.php';
+
+		/**
+		 * Define common functions.
+		 */
 		require_once ETS_MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . 'includes/functions.php';
 
 		/**
