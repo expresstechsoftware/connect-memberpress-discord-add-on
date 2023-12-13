@@ -54,14 +54,19 @@ function ets_memberpress_discord_log_api_response( $user_id, $api_url = '', $api
 }
 
 /**
- * Add API error logs into log file
+ * @deprecated 1.1.0 Use write_api_response_logs_v2() instead.
  *
- * @param array  $response_arr
- * @param array  $backtrace_arr
- * @param string $error_type
+ * Add API error logs into log file. This function will be removed in future versions.
+ *
+ * @param array $response_arr
+ * @param int   $user_id
+ * @param array $backtrace_arr
  * @return None
  */
 function write_api_response_logs( $response_arr, $user_id, $backtrace_arr = array() ) {
+
+	_deprecated_function( __FUNCTION__, '1.1.0', 'write_api_response_logs_v2()' );
+
 	$error        = current_time( 'mysql' );
 	$user_details = '';
 	if ( $user_id ) {
@@ -83,6 +88,69 @@ function write_api_response_logs( $response_arr, $user_id, $backtrace_arr = arra
 	}
 
 }
+
+/**
+ * Add API error logs into the database
+ *
+ * @param array $response_arr
+ * @param int   $user_id
+ * @param array $backtrace_arr
+ * @return None
+ */
+function write_api_response_logs_v2( $response_arr, $user_id, $backtrace_arr = array() ) {
+
+	$api_logger = new ETS_Memberpress_Discord_Api_Logger();
+
+	if ( is_array( $response_arr ) && array_key_exists( 'code', $response_arr ) ) {
+		$api_logger->log_api_request(
+			array(
+				'api_endpoint'           => '',
+				'api_endpoint_version'   => '',
+				'request_params'         => '',
+				'api_response_header'    => '',
+				'api_response_body'      => '',
+				'api_response_http_code' => '',
+				'error_detail_code'      => $response_arr['code'],
+				'error_message'          => $response_arr['message'],
+				'wp_user_id'             => $user_id,
+				'discord_user_id'        => '',
+			)
+		);
+	} elseif ( is_array( $response_arr ) && array_key_exists( 'error', $response_arr ) ) {
+
+		$api_logger->log_api_request(
+			array(
+				'api_endpoint'           => '',
+				'api_endpoint_version'   => '',  // Provide the version if applicable
+				'request_params'         => '',
+				'api_response_header'    => '',
+				'api_response_body'      => '',
+				'api_response_http_code' => '',
+				'error_detail_code'      => '',
+				'error_message'          => $response_arr['error'],
+				'wp_user_id'             => $user_id,
+				'discord_user_id'        => '',
+			)
+		);
+	} elseif ( get_option( 'ets_memberpress_discord_log_api_response' ) == true ) {
+
+		$api_logger->log_api_request(
+			array(
+				'api_endpoint'           => '',
+				'api_endpoint_version'   => '',
+				'request_params'         => '',
+				'api_response_header'    => '',
+				'api_response_body'      => '',
+				'api_response_http_code' => '',
+				'error_detail_code'      => '',
+				'error_message'          => json_encode( $response_arr ),
+				'wp_user_id'             => $user_id,
+				'discord_user_id'        => '',
+			)
+		);
+	}
+}
+
 
 /**
  * Check API call response and detect conditions which can cause of action failure and retry should be attemped.
