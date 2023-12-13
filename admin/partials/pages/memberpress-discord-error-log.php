@@ -1,4 +1,3 @@
-<!-- Search fileds	 -->
 <form id="ets-log-search-form" method="GET">
 		<label for="api-response-code"><?php esc_html_e( 'API Response Code:', 'connect-memberpress-discord-add-on' ); ?></label>
 		<input type="text" name="api-response-code" id="api-response-code">
