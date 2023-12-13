@@ -133,66 +133,101 @@ function write_api_response_logs_v2( $response_arr, $user_id, $backtrace_arr = a
 
 	$api_logger = new ETS_Memberpress_Discord_Api_Logger();
 
-	if ( is_array( $response_arr ) && array_key_exists( 'code', $response_arr ) ) {
-		$api_logger->log_api_request(
-			array(
-				'api_endpoint'           => '',
-				'api_endpoint_version'   => '',
-				'request_params'         => '',
-				'api_response_header'    => '',
-				'api_response_body'      => '',
-				'api_response_http_code' => '',
-				'error_detail_code'      => $response_arr['code'],
-				'error_message'          => $response_arr['message'],
-				'wp_user_id'             => $user_id,
-				'discord_user_id'        => '',
-			)
-		);
-	} elseif ( is_array( $response_arr ) && array_key_exists( 'error', $response_arr ) ) {
+    if ( is_array( $response_arr ) && array_key_exists( 'code', $response_arr ) ) {
+        $hash_key = md5( json_encode( $response_arr ) . time() );
+        error_log ( '1 ' . $hash_key, true );
 
-		$api_logger->log_api_request(
-			array(
-				'api_endpoint'           => '',
-				'api_endpoint_version'   => '', 
-				'request_params'         => '',
-				'api_response_header'    => '',
-				'api_response_body'      => '',
-				'api_response_http_code' => '',
-				'error_detail_code'      => '',
-				'error_message'          => $response_arr['error'],
-				'wp_user_id'             => $user_id,
-				'discord_user_id'        => '',
-			)
-		);
-	} elseif ( get_option( 'ets_memberpress_discord_log_api_response' ) == true ) {
+        if ( ! is_duplicate_hash_key( $hash_key ) ) {
+            $api_logger->log_api_request(
+                array(
+                    'api_endpoint'           => '',
+                    'api_endpoint_version'   => '',
+                    'request_params'         => '',
+                    'api_response_header'    => '',
+                    'api_response_body'      => '',
+                    'api_response_http_code' => '',
+                    'error_detail_code'      => $response_arr['code'],
+                    'error_message'          => $response_arr['message'],
+                    'wp_user_id'             => $user_id,
+                    'discord_user_id'        => '',
+                    'hash_key'               => $hash_key,
+                )
+            );
+        }
+    } elseif ( is_array( $response_arr ) && array_key_exists( 'error', $response_arr ) ) {
+        $hash_key = md5( json_encode( $response_arr ) . time() );
+        error_log('2 ' . $hash_key, true);
 
-		// update_option( 'response_arr_' .time() , $response_arr );
-		if ( is_array( $response_arr ) ) {
-			$api_endpoint = $response_arr['api_endpoint'];
-			$api_endpoint_version = ( ! empty ( $response_arr['api_endpoint_version'] ) ) ? $response_arr['api_endpoint_version'] : ets_memberpress_discord_extractEndpointVersion( $api_endpoint );
-			$request_params = $response_arr['request_params'];
-			$api_response_header = $response_arr['api_response_header'];
-			$api_response_body = $response_arr['api_response_body'];
-			$api_response_http_code = $response_arr['api_response_http_code'];
-			$error_detail_code = $response_arr['error_detail_code'];
-			$discord_user_id = $response_arr['discord_user_id'];
-			$api_logger->log_api_request(
-				array(
-					'api_endpoint'           => $api_endpoint,
-					'api_endpoint_version'   => $api_endpoint_version,
-					'request_params'         => $request_params,
-					'api_response_header'    =>  $api_response_header,
-					'api_response_body'      => $api_response_body,
-					'api_response_http_code' =>  $api_response_http_code,
-					'error_detail_code'      => $error_detail_code,
-					'error_message'          => json_encode( $response_arr ),
-					'wp_user_id'             => $user_id,
-					'discord_user_id'        => $discord_user_id,
-				)
-			);
-		}
-	}
+        if ( ! is_duplicate_hash_key( $hash_key ) ) {
+            $api_logger->log_api_request(
+                array(
+                    'api_endpoint'           => '',
+                    'api_endpoint_version'   => '', 
+                    'request_params'         => '',
+                    'api_response_header'    => '',
+                    'api_response_body'      => '',
+                    'api_response_http_code' => '',
+                    'error_detail_code'      => '',
+                    'error_message'          => $response_arr['error'],
+                    'wp_user_id'             => $user_id,
+                    'discord_user_id'        => '',
+                    'hash_key'               => $hash_key, 
+                )
+            );
+        }
+    } elseif ( get_option( 'ets_memberpress_discord_log_api_response' ) == true ) {
+        if ( is_array( $response_arr ) ) {
+            $api_endpoint = $response_arr['api_endpoint'];
+            $api_endpoint_version = ( ! empty( $response_arr['api_endpoint_version'] ) ) ? $response_arr['api_endpoint_version'] : ets_memberpress_discord_extractEndpointVersion( $api_endpoint );
+            $request_params = $response_arr['request_params'];
+            $api_response_header = $response_arr['api_response_header'];
+            $api_response_body = $response_arr['api_response_body'];
+            $api_response_http_code = $response_arr['api_response_http_code'];
+            $error_detail_code = $response_arr['error_detail_code'];
+            $discord_user_id = $response_arr['discord_user_id'];
+
+            $hash_key = md5( json_encode( $response_arr ) . time() );
+
+            if ( ! is_duplicate_hash_key( $hash_key ) ) {
+                // update_option();
+                error_log( ' Step 3 :' . $hash_key);
+
+                $api_logger->log_api_request(
+                    array(
+                        'api_endpoint'           => $api_endpoint,
+                        'api_endpoint_version'   => $api_endpoint_version,
+                        'request_params'         => $request_params,
+                        'api_response_header'    => $api_response_header,
+                        'api_response_body'      => $api_response_body,
+                        'api_response_http_code' => $api_response_http_code,
+                        'error_detail_code'      => $error_detail_code,
+                        'error_message'          => json_encode( $response_arr ),
+                        'wp_user_id'             => $user_id,
+                        'discord_user_id'        => $discord_user_id,
+                        'hash_key'               => 'a9bf6c5d8b25f8c6195cc6ef8981c847',
+                    )
+                );
+            }
+        }
+    }
 }
+
+/**
+ * Check if the hash key already exists in the database
+ *
+ * @param string $hash_key
+ * @return bool
+ */
+function is_duplicate_hash_key( $hash_key ) {
+	global $wpdb;
+	$table_name      = $wpdb->prefix . 'ets_memberpress_discord_api_logs';
+	$query = $wpdb->prepare( "SELECT COUNT(*) FROM $table_name WHERE hash_key = %s", $hash_key );
+	$result = $wpdb->get_var( $query );
+	
+	return ( $result > 0 );
+}
+
+
 
 /**
  * Function to extract API endpoint version from the full endpoint URL
