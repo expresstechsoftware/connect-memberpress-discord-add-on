@@ -180,15 +180,21 @@ function write_api_response_logs_v2( $response_arr, $user_id, $backtrace_arr = a
 			);
 
 	} elseif ( get_option( 'ets_memberpress_discord_log_api_response_v2' ) == true ) {
+		update_option( 'get_response_arr_3_b_' . time(), $response_arr );
 		if ( is_array( $response_arr ) ) {
-			$api_endpoint           = $response_arr['api_endpoint'];
+
+			$message_data = unserialize( $response_arr['api_response_body'] );
+			$message_body = json_decode( $message_data['body'] );
+
+			$api_endpoint           = $response_arr['api_endpoint'] ?? '';
 			$api_endpoint_version   = ( ! empty( $response_arr['api_endpoint_version'] ) ) ? $response_arr['api_endpoint_version'] : ets_memberpress_discord_extractEndpointVersion( $api_endpoint );
-			$request_params         = $response_arr['request_params'];
+			$request_params         = $response_arr['request_params'] ?? '';
 			$api_response_header    = $response_arr['api_response_header'];
-			$api_response_body      = $response_arr['api_response_body'];
-			$api_response_http_code = $response_arr['api_response_http_code'];
-			$error_detail_code      = $response_arr['error_detail_code'];
-			$discord_user_id        = $response_arr['discord_user_id'];
+			$api_response_body      = $response_arr['api_response_body'] ?? '';
+			$api_response_http_code = $response_arr['api_response_http_code'] ?? '';
+			$error_detail_code      = $message_body->code;
+			$error_message          = $message_body->message;
+			$discord_user_id        = $response_arr['discord_user_id'] ?? '';
 
 				$api_logger->log_api_request(
 					array(
@@ -199,7 +205,7 @@ function write_api_response_logs_v2( $response_arr, $user_id, $backtrace_arr = a
 						'api_response_body'      => $api_response_body,
 						'api_response_http_code' => $api_response_http_code,
 						'error_detail_code'      => $error_detail_code,
-						'error_message'          => json_encode( $response_arr ),
+						'error_message'          => $error_message,
 						'wp_user_id'             => $user_id,
 						'discord_user_id'        => $discord_user_id,
 					)
