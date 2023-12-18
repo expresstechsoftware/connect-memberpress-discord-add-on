@@ -180,7 +180,7 @@ function write_api_response_logs_v2( $response_arr, $user_id, $backtrace_arr = a
 			);
 
 	} elseif ( get_option( 'ets_memberpress_discord_log_api_response_v2' ) == true ) {
-		update_option( 'get_response_arr_3_b_' . time(), $response_arr );
+		// update_option( 'get_response_arr_3_b_' . time(), $response_arr );
 		if ( is_array( $response_arr ) ) {
 
 			$api_response_body = unserialize( $response_arr['api_response_body'] );
@@ -213,7 +213,7 @@ function write_api_response_logs_v2( $response_arr, $user_id, $backtrace_arr = a
 						'api_endpoint_version'   => $api_endpoint_version,
 						'request_params'         => $request_params,
 						'api_response_header'    => $api_response_header,
-						'api_response_body'      => $api_response_body,
+						'api_response_body'      => $response_arr['api_response_body'],
 						'api_response_http_code' => $api_response_http_code,
 						'error_detail_code'      => $error_detail_code,
 						'error_message'          => $error_message,
