@@ -134,7 +134,6 @@ function write_api_response_logs_v2( $response_arr, $user_id, $backtrace_arr = a
 	$api_logger = new ETS_Memberpress_Discord_Api_Logger();
 
 	if ( is_array( $response_arr ) && array_key_exists( 'code', $response_arr ) ) {
-		$hash_key = md5( json_encode( $response_arr ) );
 
 			$api_logger->log_api_request(
 				array(
@@ -148,12 +147,10 @@ function write_api_response_logs_v2( $response_arr, $user_id, $backtrace_arr = a
 					'error_message'          => $response_arr['message'],
 					'wp_user_id'             => $user_id,
 					'discord_user_id'        => '',
-					'hash_key'               => $hash_key,
 				)
 			);
 
 	} elseif ( is_array( $response_arr ) && array_key_exists( 'error', $response_arr ) ) {
-		$hash_key = md5( json_encode( $response_arr ) );
 
 			$api_logger->log_api_request(
 				array(
@@ -167,7 +164,6 @@ function write_api_response_logs_v2( $response_arr, $user_id, $backtrace_arr = a
 					'error_message'          => $response_arr['error'],
 					'wp_user_id'             => $user_id,
 					'discord_user_id'        => '',
-					'hash_key'               => $hash_key,
 				)
 			);
 
@@ -182,8 +178,6 @@ function write_api_response_logs_v2( $response_arr, $user_id, $backtrace_arr = a
 			$error_detail_code      = $response_arr['error_detail_code'];
 			$discord_user_id        = $response_arr['discord_user_id'];
 
-			$hash_key = md5( json_encode( $response_arr ) );
-
 				$api_logger->log_api_request(
 					array(
 						'api_endpoint'           => $api_endpoint,
@@ -196,7 +190,6 @@ function write_api_response_logs_v2( $response_arr, $user_id, $backtrace_arr = a
 						'error_message'          => json_encode( $response_arr ),
 						'wp_user_id'             => $user_id,
 						'discord_user_id'        => $discord_user_id,
-						'hash_key'               => 'a9bf6c5d8b25f8c6195cc6ef8981c847',
 					)
 				);
 

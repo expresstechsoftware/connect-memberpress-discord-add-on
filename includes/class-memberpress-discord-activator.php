@@ -50,7 +50,7 @@ class ETS_Memberpress_Discord_Activator {
 
 		$table_name      = $wpdb->prefix . 'ets_memberpress_discord_api_logs';
 		$charset_collate = $wpdb->get_charset_collate();
-		$sql = "CREATE TABLE $table_name (
+		$sql             = "CREATE TABLE $table_name (
 			id INT AUTO_INCREMENT PRIMARY KEY,
 			api_endpoint VARCHAR(255),
 			api_endpoint_version VARCHAR(10),
@@ -62,10 +62,8 @@ class ETS_Memberpress_Discord_Activator {
 			error_message TEXT,
 			wp_user_id INT,
 			discord_user_id BIGINT,
-			hash_key VARCHAR(32) COLLATE utf8mb4_unicode_520_ci,
 			datetime DATETIME DEFAULT CURRENT_TIMESTAMP
 		) $charset_collate;";
-		
 
 		dbDelta( $sql );
 	}
