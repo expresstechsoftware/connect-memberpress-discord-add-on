@@ -20,7 +20,7 @@ if ( isset( $_GET['save_settings_msg'] ) ) {
 	</div>
 	<?php
 }
-$log_api_res                                  = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_log_api_response' ) ) );
+$log_api_res                                  = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_log_api_response_v2' ) ) );
 if (  $log_api_res ) {
 	?>
 	<div class="notice notice-success support-success-msg">

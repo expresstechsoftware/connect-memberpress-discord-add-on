@@ -1,6 +1,6 @@
 <?php
 $upon_failed_payment                                = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_payment_failed' ) ) );
-$log_api_res                                        = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_log_api_response' ) ) );
+$log_api_res                                        = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_log_api_response_v2' ) ) );
 $retry_failed_api                                   = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_retry_failed_api' ) ) );
 $set_job_cnrc                                       = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_job_queue_concurrency' ) ) );
 $set_job_q_batch_size                               = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_job_queue_batch_size' ) ) );

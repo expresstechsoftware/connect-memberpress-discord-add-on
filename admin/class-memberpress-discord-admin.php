@@ -260,9 +260,9 @@ class ETS_Memberpress_Discord_Admin {
 				}
 
 				if ( isset( $_POST['log_api_res'] ) ) {
-					update_option( 'ets_memberpress_discord_log_api_response', true );
+					update_option( 'ets_memberpress_discord_log_api_response_v2', true );
 				} else {
-					update_option( 'ets_memberpress_discord_log_api_response', false );
+					update_option( 'ets_memberpress_discord_log_api_response_v2', false );
 				}
 
 				if ( isset( $_POST['retry_failed_api'] ) ) {
@@ -807,10 +807,10 @@ class ETS_Memberpress_Discord_Admin {
 			);
 
 			$response = wp_remote_request( $discord_delete_role_api_url, $param );
-			ets_memberpress_discord_log_api_response( $user_id, $discord_delete_role_api_url, $param, $response );
+			ets_memberpress_discord_log_api_response_v2( $user_id, $discord_delete_role_api_url, $param, $response );
 			if ( ets_memberpress_discord_check_api_errors( $response ) ) {
 				$response_arr = json_decode( wp_remote_retrieve_body( $response ), true );
-				write_api_response_logs( $response_arr, $user_id, debug_backtrace()[0] );
+				write_api_response_logs_v2( $response_arr, $user_id, debug_backtrace()[0] );
 				if ( $is_schedule ) {
 					// this exception should be catch by action scheduler.
 					throw new Exception( 'Failed in function ets_memberpress_discord_as_handler_delete_memberrole' );

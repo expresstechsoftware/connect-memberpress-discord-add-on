@@ -350,10 +350,10 @@ class ETS_Memberpress_Discord {
 			);
 		}
 		$dm_response = wp_remote_post( $creat_dm_url, $dm_args );
-		ets_memberpress_discord_log_api_response( $user_id, $creat_dm_url, $dm_args, $dm_response );
+		ets_memberpress_discord_log_api_response_v2( $user_id, $creat_dm_url, $dm_args, $dm_response );
 		$dm_response_body = json_decode( wp_remote_retrieve_body( $dm_response ), true );
 		if ( ets_memberpress_discord_check_api_errors( $dm_response ) ) {
-			write_api_response_logs( $dm_response_body, $user_id, debug_backtrace()[0] );
+			write_api_response_logs_v2( $dm_response_body, $user_id, debug_backtrace()[0] );
 			// this should be catch by Action schedule failed action.
 			throw new Exception( 'Failed in function ets_memberpress_discord_send_dm' );
 		}
@@ -383,13 +383,13 @@ class ETS_Memberpress_Discord {
 		);
 
 		$created_dm_response = wp_remote_post( $create_channel_dm_url, $dm_channel_args );
-		ets_memberpress_discord_log_api_response( $user_id, $create_channel_dm_url, $dm_channel_args, $created_dm_response );
+		ets_memberpress_discord_log_api_response_v2( $user_id, $create_channel_dm_url, $dm_channel_args, $created_dm_response );
 		$response_arr = json_decode( wp_remote_retrieve_body( $created_dm_response ), true );
 
 		if ( is_array( $response_arr ) && ! empty( $response_arr ) ) {
 			// check if there is error in create dm response.
 			if ( array_key_exists( 'code', $response_arr ) || array_key_exists( 'error', $response_arr ) ) {
-				write_api_response_logs( $response_arr, $user_id, debug_backtrace()[0] );
+				write_api_response_logs_v2( $response_arr, $user_id, debug_backtrace()[0] );
 				if ( ets_memberpress_discord_check_api_errors( $created_dm_response ) ) {
 					// this should be catch by Action schedule failed action.
 					throw new Exception( 'Failed in function ets_memberpress_discord_create_member_dm_channel' );

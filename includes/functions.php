@@ -64,7 +64,7 @@ function ets_memberpress_discord_log_api_response( $user_id, $api_url = '', $api
  * @param array|object $api_response
  */
 function ets_memberpress_discord_log_api_response_v2( $user_id, $api_url = '', $api_args = array(), $api_response = '' ) {
-	$log_api_response = get_option( 'ets_memberpress_discord_log_api_response' );
+	$log_api_response = get_option( 'ets_memberpress_discord_log_api_response_v2' );
 
 	if ( $log_api_response == true ) {
 		$log_data = array(
@@ -104,7 +104,7 @@ function write_api_response_logs( $response_arr, $user_id, $backtrace_arr = arra
 	if ( $user_id ) {
 		$user_details = '::User Id:' . $user_id;
 	}
-	$log_api_response = get_option( 'ets_memberpress_discord_log_api_response' );
+	$log_api_response = get_option( 'ets_memberpress_discord_log_api_response_v2' );
 	$uuid             = get_option( 'ets_memberpress_discord_uuid_file_name' );
 	$log_file_name    = $uuid . ETS_Memberpress_Discord_Admin::$log_file_name;
 
@@ -167,7 +167,7 @@ function write_api_response_logs_v2( $response_arr, $user_id, $backtrace_arr = a
 				)
 			);
 
-	} elseif ( get_option( 'ets_memberpress_discord_log_api_response' ) == true ) {
+	} elseif ( get_option( 'ets_memberpress_discord_log_api_response_v2' ) == true ) {
 		if ( is_array( $response_arr ) ) {
 			$api_endpoint           = $response_arr['api_endpoint'];
 			$api_endpoint_version   = ( ! empty( $response_arr['api_endpoint_version'] ) ) ? $response_arr['api_endpoint_version'] : ets_memberpress_discord_extractEndpointVersion( $api_endpoint );
