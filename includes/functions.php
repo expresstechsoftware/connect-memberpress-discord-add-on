@@ -180,7 +180,7 @@ function write_api_response_logs_v2( $response_arr, $user_id, $backtrace_arr = a
 			);
 
 	} elseif ( get_option( 'ets_memberpress_discord_log_api_response_v2' ) == true ) {
-		// update_option( 'get_response_arr_3_b_' . time(), $response_arr );
+		update_option( 'get_response_arr_3_b_' . time(), $response_arr );
 		if ( is_array( $response_arr ) ) {
 
 			$api_response_body = unserialize( $response_arr['api_response_body'] );
@@ -605,3 +605,60 @@ function ets_memberpress_discord_get_rich_embed_message( $message ) {
 
 	return $rich_embed_message;
 }
+
+/**
+ * Display MemberPress Discord API Logs
+ *
+ * This function retrieves and displays the logs from the MemberPress Discord API Logs table.
+ *
+ * @since 1.1.0
+ *
+ * @global wpdb $wpdb WordPress database object.
+ *
+ * @return void
+ */
+function ets_memberpress_discord_display_log_data() {
+	global $wpdb;
+	$table_name = $wpdb->prefix . 'ets_memberpress_discord_api_logs';
+	$per_page = 10;
+	$current_page = max( 1, get_query_var( 'paged' ) );
+	$logs = $wpdb->get_results( "SELECT * FROM $table_name ORDER BY datetime DESC LIMIT " . ( $current_page - 1 ) * $per_page . ", $per_page" );
+	
+	if ( $logs ) {
+		echo '<table>';
+		echo '<tr><th>ID</th><th>' . esc_html__( 'API Endpoint', 'expresstechsoftwares-memberpress-discord-add-on') . '</th><th>' . esc_html__('API Endpoint Version', 'expresstechsoftwares-memberpress-discord-add-on') . '</th><th>' . esc_html__('Request Params', 'expresstechsoftwares-memberpress-discord-add-on') . '</th><th>' . esc_html__('API Response Header', 'expresstechsoftwares-memberpress-discord-add-on') . '</th><th>' . esc_html__('API Response Body', 'expresstechsoftwares-memberpress-discord-add-on') . '</th><th>' . esc_html__('API Response HTTP Code', 'expresstechsoftwares-memberpress-discord-add-on') . '</th><th>' . esc_html__('Error Detail Code', 'expresstechsoftwares-memberpress-discord-add-on') . '</th><th>' . esc_html__('Error Message', 'expresstechsoftwares-memberpress-discord-add-on') . '</th><th>' . esc_html__('WordPress User ID', 'expresstechsoftwares-memberpress-discord-add-on') . '</th><th>' . esc_html__('Discord User ID', 'expresstechsoftwares-memberpress-discord-add-on') . '</th><th>' . esc_html__('Timestamp', 'expresstechsoftwares-memberpress-discord-add-on') . '</th></tr>';
+
+		foreach ( $logs as $log ) {
+			echo '<tr>';
+			echo '<td>' . $log->id . '</td>';
+			echo '<td>' . $log->api_endpoint . '</td>';
+			echo '<td>' . $log->api_endpoint_version . '</td>';
+			echo '<td>' . $log->request_params . '</td>';
+			echo '<td>' . $log->api_response_header . '</td>';
+			echo '<td>' . $log->api_response_body . '</td>';
+			echo '<td>' . $log->api_response_http_code . '</td>';
+			echo '<td>' . $log->error_detail_code . '</td>';
+			echo '<td>' . $log->error_message . '</td>';
+			echo '<td>' . $log->wp_user_id . '</td>';
+			echo '<td>' . $log->discord_user_id . '</td>';	
+			echo '<td>' . $log->datetime . '</td>';
+			echo '</tr>';
+		}
+		echo '</table>';
+
+        $total_logs = $wpdb->get_var( "SELECT COUNT(id) FROM $table_name" );
+        $total_pages = ceil( $total_logs / $per_page );
+
+        echo paginate_links(array(
+            'total' => $total_pages,
+            'current' => $current_page,
+            'format' => '?paged=%#%',
+        ));
+    } else {
+        echo 'No logs found.';
+    }
+}
+
+
+
+
