@@ -183,13 +183,19 @@ function write_api_response_logs_v2( $response_arr, $user_id, $backtrace_arr = a
 		update_option( 'get_response_arr_3_b_' . time(), $response_arr );
 		if ( is_array( $response_arr ) ) {
 
-			$message_data = unserialize( $response_arr['api_response_body'] );
-			$message_body = json_decode( $message_data['body'] );
+			$api_response_body = unserialize( $response_arr['api_response_body'] );
+			$message_body = json_decode( $api_response_body['body'] );
 			if ( is_object( $message_body ) ) {
 				$error_detail_code = property_exists( $message_body, 'code' ) ? $message_body->code : null;
 				$error_message     = property_exists( $message_body, 'message' ) ? $message_body->message : null;
+
+			} elseif ( $api_response_body['response'] ) {
+
+				$error_detail_code = $api_response_body['response']['code'];
+				$error_message     = $api_response_body['response']['message'];
+
 			} else {
-				// Handle the case where $message_body is not an object
+
 				$error_detail_code = null;
 				$error_message     = null;
 			}
@@ -198,7 +204,6 @@ function write_api_response_logs_v2( $response_arr, $user_id, $backtrace_arr = a
 			$api_endpoint_version   = ( ! empty( $response_arr['api_endpoint_version'] ) ) ? $response_arr['api_endpoint_version'] : ets_memberpress_discord_extractEndpointVersion( $api_endpoint );
 			$request_params         = $response_arr['request_params'] ?? '';
 			$api_response_header    = $response_arr['api_response_header'];
-			$api_response_body      = $response_arr['api_response_body'] ?? '';
 			$api_response_http_code = $response_arr['api_response_http_code'] ?? '';
 			$discord_user_id        = $response_arr['discord_user_id'] ?? '';
 
