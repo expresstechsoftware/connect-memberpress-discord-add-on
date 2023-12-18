@@ -134,23 +134,35 @@ function write_api_response_logs_v2( $response_arr, $user_id, $backtrace_arr = a
 	$api_logger = new ETS_Memberpress_Discord_Api_Logger();
 
 	if ( is_array( $response_arr ) && array_key_exists( 'code', $response_arr ) ) {
+		update_option( 'get_response_arr_1_' . time(), $response_arr );
+
+		$api_endpoint           = $response_arr['api_endpoint'] ?? '';
+		$api_endpoint_version   = ( ! empty( $response_arr['api_endpoint_version'] ) ) ? $response_arr['api_endpoint_version'] : ets_memberpress_discord_extractEndpointVersion( $api_endpoint );
+		$request_params         = $response_arr['request_params'] ?? '';
+		$api_response_header    = $response_arr['api_response_header'] ?? '';
+		$api_response_body      = $response_arr['api_response_body'] ?? '';
+		$api_response_http_code = $response_arr['api_response_http_code'] ?? '';
+		$error_detail_code      = $response_arr['code'] ?? '';
+		$error_message          = $response_arr['message'] ?? '';
+		$discord_user_id        = $response_arr['discord_user_id'] ?? '';
 
 			$api_logger->log_api_request(
 				array(
-					'api_endpoint'           => '',
-					'api_endpoint_version'   => '',
-					'request_params'         => '',
-					'api_response_header'    => '',
-					'api_response_body'      => '',
-					'api_response_http_code' => '',
-					'error_detail_code'      => $response_arr['code'],
-					'error_message'          => $response_arr['message'],
+					'api_endpoint'           => $api_endpoint,
+					'api_endpoint_version'   => $api_endpoint_version,
+					'request_params'         => $request_params,
+					'api_response_header'    => $api_response_header,
+					'api_response_body'      => $api_response_body,
+					'api_response_http_code' => $api_response_http_code,
+					'error_detail_code'      => $error_detail_code,
+					'error_message'          => $error_message,
 					'wp_user_id'             => $user_id,
-					'discord_user_id'        => '',
+					'discord_user_id'        => $discord_user_id,
 				)
 			);
 
 	} elseif ( is_array( $response_arr ) && array_key_exists( 'error', $response_arr ) ) {
+		update_option( 'get_response_arr_2_' . time(), $response_arr );
 
 			$api_logger->log_api_request(
 				array(
