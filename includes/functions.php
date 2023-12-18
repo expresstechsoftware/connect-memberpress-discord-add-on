@@ -633,9 +633,9 @@ function ets_memberpress_discord_display_log_data() {
 			echo '<td>' . $log->id . '</td>';
 			echo '<td>' . $log->api_endpoint . '</td>';
 			echo '<td>' . $log->api_endpoint_version . '</td>';
-			echo '<td>' . $log->request_params . '</td>';
-			echo '<td>' . $log->api_response_header . '</td>';
-			echo '<td>' . $log->api_response_body . '</td>';
+			echo '<td>' . unserialize( $log->request_params ) . '</td>';
+			echo '<td>' . unserialize( $log->api_response_header ) . '</td>';
+			echo '<td>' . unserialize( $log->api_response_body ). '</td>';
 			echo '<td>' . $log->api_response_http_code . '</td>';
 			echo '<td>' . $log->error_detail_code . '</td>';
 			echo '<td>' . $log->error_message . '</td>';
