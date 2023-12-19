@@ -1,26 +1,31 @@
-<form id="ets-log-search-form" method="GET">
-	<label for="api-response-code"><?php esc_html_e( 'API Response Code:', 'connect-memberpress-discord-add-on' ); ?></label>
-	<input type="text" name="api-response-code" id="api-response-code">
+<form id="ets-log-search-form" method="GET" action="<?php echo esc_url( add_query_arg( array( 'page' => 'memberpress-discord', 'tab' => 'mepr_logs' ), admin_url( 'admin.php' ) ) ); ?>">
+    <label for="api-response-code"><?php esc_html_e( 'API Response Code:', 'connect-memberpress-discord-add-on' ); ?></label>
+    <input type="text" name="api-response-code" id="api-response-code" value="<?php echo esc_attr( isset( $_GET['api-response-code'] ) ? $_GET['api-response-code'] : '' ); ?>">
 
-	<label for="error-message"><?php esc_html_e( 'Error Message:', 'connect-memberpress-discord-add-on' ); ?></label>
-	<input type="text" name="error-message" id="error-message">
+    <label for="error-message"><?php esc_html_e( 'Error Message:', 'connect-memberpress-discord-add-on' ); ?></label>
+    <input type="text" name="error-message" id="error-message" value="<?php echo esc_attr( isset( $_GET['error-message'] ) ? $_GET['error-message'] : '' ); ?>">
 
-	<label for="wp-user-id"><?php esc_html_e( 'WordPress User ID:', 'connect-memberpress-discord-add-on' ); ?></label>
-	<input type="text" name="wp-user-id" id="wp-user-id">
+    <label for="wp-user-id"><?php esc_html_e( 'WordPress User ID:', 'connect-memberpress-discord-add-on' ); ?></label>
+    <input type="text" name="wp-user-id" id="wp-user-id" value="<?php echo esc_attr( isset( $_GET['wp-user-id'] ) ? $_GET['wp-user-id'] : '' ); ?>">
 
-	<label for="discord-user-id"><?php esc_html_e( 'Discord User ID:', 'connect-memberpress-discord-add-on' ); ?></label>
-	<input type="text" name="discord-user-id" id="discord-user-id">
+    <label for="discord-user-id"><?php esc_html_e( 'Discord User ID:', 'connect-memberpress-discord-add-on' ); ?></label>
+    <input type="text" name="discord-user-id" id="discord-user-id" value="<?php echo esc_attr( isset( $_GET['discord-user-id'] ) ? $_GET['discord-user-id'] : '' ); ?>">
 
-	<label for="datetime"><?php esc_html_e( 'Datetime (YYYY-MM-DD HH:MM:SS):', 'connect-memberpress-discord-add-on' ); ?></label>
-	<input type="text" name="datetime" id="datetime">
+    <label for="datetime"><?php esc_html_e( 'Datetime (YYYY-MM-DD HH:MM:SS):', 'connect-memberpress-discord-add-on' ); ?></label>
+    <input type="text" name="datetime" id="datetime" value="<?php echo esc_attr( isset( $_GET['datetime'] ) ? $_GET['datetime'] : '' ); ?>">
 
-	<input type="submit" class="ets-submit ets-bg-blue" value="<?php esc_attr_e( 'Search', 'connect-memberpress-discord-add-on' ); ?>">
+    <!-- Add new search field for API endpoint -->
+    <label for="api-endpoint"><?php esc_html_e( 'API Endpoint:', 'connect-memberpress-discord-add-on' ); ?></label>
+    <input type="text" name="api-endpoint" id="api-endpoint" value="<?php echo esc_attr( isset( $_GET['api-endpoint'] ) ? $_GET['api-endpoint'] : '' ); ?>">
+
+    <input type="submit" class="ets-submit ets-bg-blue" value="<?php esc_attr_e( 'Search', 'connect-memberpress-discord-add-on' ); ?>">
 </form>
+
 
 <?php
 $logs = ets_memberpress_discord_display_log_data();
-
-if ( is_array( $logs ) && count( $logs ) > 0 ) {
+// var_dump( $logs );
+if ( $logs ) {
 	$page        = isset( $_GET['page'] ) ? absint( $_GET['page'] ) : 1;
 	$per_page    = 10;
 	$total_logs  = count( $logs );
@@ -40,10 +45,7 @@ if ( is_array( $logs ) && count( $logs ) > 0 ) {
 	$paginated_logs = array_slice( $logs, $offset, $per_page );
 	?>
 
-
-
-
-	<div class="error-log">
+<div class="error-log">
 	<table class="log-table">
 	<thead>
 		<tr>
@@ -81,24 +83,32 @@ if ( is_array( $logs ) && count( $logs ) > 0 ) {
 	</tbody>
 </table>
 
-<div class="log-pagination">
-	<?php
-	echo paginate_links(
-		array(
-			'base'         => add_query_arg( 'paged', '%#%' ),
-			'format'       => '',
-			'prev_text'    => __( '&laquo; Previous' ),
-			'next_text'    => __( 'Next &raquo;' ),
-			'total'        => $total_pages,
-			'current'      => $current_page,
-			'add_fragment' => '#mepr_logs',
-		)
-	);
-	?>
-</div>
+	<div class="log-pagination">
+		<?php
+		echo paginate_links(
+			array(
+				'base'         => add_query_arg( 'paged', '%#%' ),
+				'format'       => '',
+				'prev_text'    => __( '&laquo; Previous' ),
+				'next_text'    => __( 'Next &raquo;' ),
+				'total'        => $total_pages,
+				'current'      => $current_page,
+				'add_fragment' => '#mepr_logs',
+			)
+		);
+		?>
 	</div>
+</div>
+	<?php
+} else {
+	echo 'No logs found.....';
+}
+?>
 
-	<div class="clrbtndiv">
+<div class="ets-log-popup" style="display: none;"></div>
+
+
+<div class="clrbtndiv">
 	<div class="form-group">
 		<input type="button" class="clrbtn ets-submit ets-bg-red" id="clrbtn" name="clrbtn" value="Clear Logs !">
 		<span class="clr-log spinner"></span>
@@ -110,10 +120,3 @@ if ( is_array( $logs ) && count( $logs ) > 0 ) {
 		<a href="<?php echo get_site_url(); ?>/wp-admin/tools.php?page=action-scheduler&status=pending&s=memberpress" class="ets-submit ets-bg-greent"><?php echo __( 'Action Queue', 'connect-memberpress-discord-add-on' ); ?></a>
 	</div>
 </div>
-
-
-	<?php
-} else {
-	echo 'No logs found.';
-}
-?>

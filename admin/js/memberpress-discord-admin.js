@@ -309,6 +309,18 @@
 			});
 		});
 
+		
+			$('.serialized-data').on('click', function() {
+				alert('ok');
+				var data = $(this).data('content');
+				$('.ets-log-popup').html('<pre>' + data + '</pre>').fadeIn();
+			});
+	
+			$('.ets-log-popup').on('click', function() {
+				$(this).fadeOut();
+			});
+		
+
 	});
 	/*Tab options*/
 	$.skeletabs.setDefaults({

@@ -615,7 +615,7 @@ function ets_memberpress_discord_get_rich_embed_message( $message ) {
  *
  * @global wpdb $wpdb WordPress database object.
  *
- * @return void
+ * @return string|int
  */
 function ets_memberpress_discord_display_log_data() {
 	global $wpdb;
@@ -624,13 +624,55 @@ function ets_memberpress_discord_display_log_data() {
 	$current_page = max( 1, get_query_var( 'paged' ) );
 	$sort_by      = isset( $_GET['sort_by'] ) ? sanitize_key( $_GET['sort_by'] ) : 'datetime';
 	$sort_order   = isset( $_GET['sort_order'] ) ? strtoupper( sanitize_text_field( $_GET['sort_order'] ) ) : 'DESC';
-	$logs         = $wpdb->get_results( "SELECT * FROM $table_name ORDER BY $sort_by $sort_order LIMIT " . ( $current_page - 1 ) * $per_page . ", $per_page" );
+
+	$api_endpoint = isset( $_GET['api-endpoint'] ) ? sanitize_text_field( $_GET['api-endpoint'] ) : '';
+	$api_response_code = isset( $_GET['api-response-code'] ) ? sanitize_text_field( $_GET['api-response-code'] ) : '';
+    $error_message     = isset( $_GET['error-message'] ) ? sanitize_text_field( $_GET['error-message'] ) : '';
+    $wp_user_id        = isset( $_GET['wp-user-id'] ) ? sanitize_text_field( $_GET['wp-user-id'] ) : '';
+    $discord_user_id   = isset( $_GET['discord-user-id'] ) ? sanitize_text_field( $_GET['discord-user-id'] ) : '';
+    $datetime          = isset( $_GET['datetime'] ) ? sanitize_text_field( $_GET['datetime'] ) : '';
+
+	$where_clause = ' WHERE 1=1';
+
+	if ( isset( $_GET['ets-log-search-form'] ) ) {
+		if ( ! empty( $api_response_code ) ) {
+			$where_clause .= $wpdb->prepare( " AND api_response_code = %s", $api_response_code );
+		}
+	
+		if ( ! empty( $error_message ) ) {
+			$where_clause .= $wpdb->prepare( " AND error_message LIKE %s", '%' . $wpdb->esc_like( $error_message ) . '%' );
+		}
+	
+		if ( ! empty( $wp_user_id ) ) {
+			$where_clause .= $wpdb->prepare( " AND wp_user_id = %s", $wp_user_id );
+		}
+	
+		if ( ! empty( $discord_user_id ) ) {
+			$where_clause .= $wpdb->prepare( " AND discord_user_id = %s", $discord_user_id );
+		}
+	
+		if ( ! empty( $datetime ) ) {
+			$where_clause .= $wpdb->prepare( " AND datetime = %s", $datetime );
+		}
+	
+		if ( ! empty( $api_endpoint ) ) {
+			$where_clause .= $wpdb->prepare( " AND api_endpoint LIKE %s", '%' . $wpdb->esc_like( $api_endpoint ) . '%' );
+		}
+	
+		$logs = $wpdb->get_results(
+			"SELECT * FROM $table_name" . $where_clause . " ORDER BY datetime DESC LIMIT " . ( $current_page - 1 ) * $per_page . ", $per_page"
+		);
+	} else{
+		$logs = $wpdb->get_results( "SELECT * FROM $table_name ORDER BY datetime DESC LIMIT " . ( $current_page - 1 ) * $per_page . ", $per_page" );
+	}
+
+	// $logs         = $wpdb->get_results( "SELECT * FROM $table_name ORDER BY $sort_by $sort_order LIMIT " . ( $current_page - 1 ) * $per_page . ", $per_page" );
 
 	if ( $logs ) {
 		echo '<table class="log-table">';
 		echo '<thead>';
 		echo '<tr>';
-		echo '<th><a href="?page=memberpress-discord&sort_by=id&sort_order=' . ( $sort_order === 'ASC' ? 'DESC' : 'ASC' ) . '#mepr_logs">ID ?</a></th>';
+		echo '<th><a href="?page=memberpress-discord&sort_by=id&sort_order=' . ( $sort_order === 'ASC' ? 'DESC' : 'ASC' ) . '#mepr_logs">ID</a></th>';
 		echo '<th>API Endpoint</th>';
 		echo '<th>API Endpoint Version</th>';
 		echo '<th>Request Params</th>';
@@ -651,9 +693,10 @@ function ets_memberpress_discord_display_log_data() {
 			echo '<td>' . $log->id . '</td>';
 			echo '<td>' . esc_html( $log->api_endpoint ) . '</td>';
 			echo '<td>' . esc_html( $log->api_endpoint_version ) . '</td>';
-			echo '<td>' . esc_html( unserialize( $log->request_params ) ) . '</td>';
+			echo '<td class="serialized-data" data-content="' . esc_html( ets_unserialize_and_format( $log->request_params ) ) . '">Click to view</td>';
 			echo '<td>' . esc_html( unserialize( $log->api_response_header ) ) . '</td>';
-			echo '<td>' . esc_html( unserialize( $log->api_response_body ) ) . '</td>';
+			echo '<td class="serialized-data" data-content="' . esc_html( ets_unserialize_and_format( $log->api_response_body ) ) . '">Click to view</td>';
+			// echo '<td>' . esc_html( unserialize( $log->api_response_body ) ) . '</td>';
 			echo '<td>' . esc_html( $log->api_response_http_code ) . '</td>';
 			echo '<td>' . esc_html( $log->error_detail_code ) . '</td>';
 			echo '<td>' . esc_html( $log->error_message ) . '</td>';
@@ -680,17 +723,18 @@ function ets_memberpress_discord_display_log_data() {
 					'sort_by'    => $sort_by,
 					'sort_order' => $sort_order,
 				),
-				'add_fragment' => 'mepr_logs',
+				'add_fragment' => '#mepr_logs',
 			)
 		);
 		echo '</div>';
 	} else {
-		echo 'No logs found....';
+		return 0;
 	}
 }
 
-
-
-
-
+function ets_unserialize_and_format( $data ) {
+    $unserialized_data = unserialize( $data );
+    $formatted_data = json_encode( $unserialized_data, JSON_PRETTY_PRINT );
+    return $formatted_data;
+}
 

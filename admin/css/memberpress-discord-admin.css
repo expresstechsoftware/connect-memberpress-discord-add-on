@@ -595,3 +595,24 @@ Log tab
   background-color: #0073aa;
   color: #fff;
 }
+
+.serialized-data {
+  max-width: 200px; 
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  cursor: pointer;
+}
+
+.ets-log-popup {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 20px;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  z-index: 1000;
+}
+
