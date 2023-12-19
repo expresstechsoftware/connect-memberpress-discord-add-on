@@ -44,7 +44,7 @@ class ETS_Memberpress_Discord_Activator {
 		update_option( 'ets_memberpress_discord_expiration_expired_message', 'Hi [MEMBER_USERNAME] ([MEMBER_EMAIL]), Your membership [MEMBERSHIP_LEVEL] is expired at [MEMBERSHIP_ENDDATE] at [SITE_URL] Thanks, Kind Regards, [BLOG_NAME]' );
 		update_option( 'ets_memberpress_discord_send_membership_cancel_dm', true );
 		update_option( 'ets_memberpress_discord_cancel_message', 'Hi [MEMBER_USERNAME], ([MEMBER_EMAIL]), Your membership [MEMBERSHIP_LEVEL] at [BLOG_NAME] is cancelled, Regards, [SITE_URL]' );
-		update_option( 'ets_memberpress_discord_uuid_file_name', wp_generate_uuid4() );
+		// update_option( 'ets_memberpress_discord_uuid_file_name', wp_generate_uuid4() );
 		update_option( 'ets_memberpress_discord_data_erases', false );
 		update_option( 'ets_memberpress_discord_embed_messaging_feature', false );
 

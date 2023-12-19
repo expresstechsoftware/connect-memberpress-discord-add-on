@@ -543,3 +543,55 @@ div.ets-memberpress-discord-review-notice div.ets-memberpress-discord-notice-con
 #ets-log-search-form input[type="submit"]:hover {
   background-color: #3367d6;
 }
+
+/*
+Log tab
+*/
+.log-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.log-table th, .log-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+.log-table th {
+  background-color: #f2f2f2;
+}
+
+.log-table tbody tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.log-table tbody tr:hover {
+  background-color: #e5e5e5;
+}
+.log-pagination {
+  margin-top: 20px;
+}
+
+.log-pagination a {
+  color: #0073aa;
+  display: inline-block;
+  padding: 6px 12px;
+  text-decoration: none;
+  border: 1px solid #ddd;
+  margin-right: 5px;
+}
+
+.log-pagination span {
+  color: #333;
+  display: inline-block;
+  padding: 6px 12px;
+  border: 1px solid #ddd;
+  margin-right: 5px;
+}
+
+.log-pagination a:hover {
+  background-color: #0073aa;
+  color: #fff;
+}

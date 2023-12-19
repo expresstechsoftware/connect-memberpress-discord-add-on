@@ -20,11 +20,11 @@ $ets_memberpress_discord_data_erases                = sanitize_text_field( trim(
 $ets_memberpress_discord_embed_messaging_feature    = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_embed_messaging_feature' ) ) );
 $current_url                                        = ets_memberpress_discord_get_current_screen_url();
 
-// $response = get_option('response_arr_1702465262');
+// $response = get_option( '' );
+// // $api_response_body =  unserialize( $response['api_response_body'] );
 
 // echo '<pre>';
-
-// var_dump( $response['api_response_body']);
+// var_dump( $response);
 
 // echo '</pre>';
 ?>

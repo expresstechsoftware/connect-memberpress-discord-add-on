@@ -184,7 +184,7 @@ function write_api_response_logs_v2( $response_arr, $user_id, $backtrace_arr = a
 		if ( is_array( $response_arr ) ) {
 
 			$api_response_body = unserialize( $response_arr['api_response_body'] );
-			$message_body = json_decode( $api_response_body['body'] );
+			$message_body      = json_decode( $api_response_body['body'] );
 			if ( is_object( $message_body ) ) {
 				$error_detail_code = property_exists( $message_body, 'code' ) ? $message_body->code : null;
 				$error_message     = property_exists( $message_body, 'message' ) ? $message_body->message : null;
@@ -619,45 +619,77 @@ function ets_memberpress_discord_get_rich_embed_message( $message ) {
  */
 function ets_memberpress_discord_display_log_data() {
 	global $wpdb;
-	$table_name = $wpdb->prefix . 'ets_memberpress_discord_api_logs';
-	$per_page = 10;
+	$table_name   = $wpdb->prefix . 'ets_memberpress_discord_api_logs';
+	$per_page     = 10;
 	$current_page = max( 1, get_query_var( 'paged' ) );
-	$logs = $wpdb->get_results( "SELECT * FROM $table_name ORDER BY datetime DESC LIMIT " . ( $current_page - 1 ) * $per_page . ", $per_page" );
-	
+	$sort_by      = isset( $_GET['sort_by'] ) ? sanitize_key( $_GET['sort_by'] ) : 'datetime';
+	$sort_order   = isset( $_GET['sort_order'] ) ? strtoupper( sanitize_text_field( $_GET['sort_order'] ) ) : 'DESC';
+	$logs         = $wpdb->get_results( "SELECT * FROM $table_name ORDER BY $sort_by $sort_order LIMIT " . ( $current_page - 1 ) * $per_page . ", $per_page" );
+
 	if ( $logs ) {
-		echo '<table>';
-		echo '<tr><th>ID</th><th>' . esc_html__( 'API Endpoint', 'expresstechsoftwares-memberpress-discord-add-on') . '</th><th>' . esc_html__('API Endpoint Version', 'expresstechsoftwares-memberpress-discord-add-on') . '</th><th>' . esc_html__('Request Params', 'expresstechsoftwares-memberpress-discord-add-on') . '</th><th>' . esc_html__('API Response Header', 'expresstechsoftwares-memberpress-discord-add-on') . '</th><th>' . esc_html__('API Response Body', 'expresstechsoftwares-memberpress-discord-add-on') . '</th><th>' . esc_html__('API Response HTTP Code', 'expresstechsoftwares-memberpress-discord-add-on') . '</th><th>' . esc_html__('Error Detail Code', 'expresstechsoftwares-memberpress-discord-add-on') . '</th><th>' . esc_html__('Error Message', 'expresstechsoftwares-memberpress-discord-add-on') . '</th><th>' . esc_html__('WordPress User ID', 'expresstechsoftwares-memberpress-discord-add-on') . '</th><th>' . esc_html__('Discord User ID', 'expresstechsoftwares-memberpress-discord-add-on') . '</th><th>' . esc_html__('Timestamp', 'expresstechsoftwares-memberpress-discord-add-on') . '</th></tr>';
+		echo '<table class="log-table">';
+		echo '<thead>';
+		echo '<tr>';
+		echo '<th><a href="?page=memberpress-discord&sort_by=id&sort_order=' . ( $sort_order === 'ASC' ? 'DESC' : 'ASC' ) . '#mepr_logs">ID ?</a></th>';
+		echo '<th>API Endpoint</th>';
+		echo '<th>API Endpoint Version</th>';
+		echo '<th>Request Params</th>';
+		echo '<th>API Response Header</th>';
+		echo '<th>API Response Body</th>';
+		echo '<th>API Response HTTP Code</th>';
+		echo '<th>Error Detail Code</th>';
+		echo '<th>Error Message</th>';
+		echo '<th>WordPress User ID</th>';
+		echo '<th>Discord User ID</th>';
+		echo '<th><a href="?page=memberpress-discord&sort_by=datetime&sort_order=' . ( $sort_order === 'ASC' ? 'DESC' : 'ASC' ) . '#mepr_logs">Timestamp</a></th>';
+		echo '</tr>';
+		echo '</thead>';
+		echo '<tbody>';
 
 		foreach ( $logs as $log ) {
 			echo '<tr>';
 			echo '<td>' . $log->id . '</td>';
-			echo '<td>' . $log->api_endpoint . '</td>';
-			echo '<td>' . $log->api_endpoint_version . '</td>';
-			echo '<td>' . unserialize( $log->request_params ) . '</td>';
-			echo '<td>' . unserialize( $log->api_response_header ) . '</td>';
-			echo '<td>' . unserialize( $log->api_response_body ). '</td>';
-			echo '<td>' . $log->api_response_http_code . '</td>';
-			echo '<td>' . $log->error_detail_code . '</td>';
-			echo '<td>' . $log->error_message . '</td>';
-			echo '<td>' . $log->wp_user_id . '</td>';
-			echo '<td>' . $log->discord_user_id . '</td>';	
-			echo '<td>' . $log->datetime . '</td>';
+			echo '<td>' . esc_html( $log->api_endpoint ) . '</td>';
+			echo '<td>' . esc_html( $log->api_endpoint_version ) . '</td>';
+			echo '<td>' . esc_html( unserialize( $log->request_params ) ) . '</td>';
+			echo '<td>' . esc_html( unserialize( $log->api_response_header ) ) . '</td>';
+			echo '<td>' . esc_html( unserialize( $log->api_response_body ) ) . '</td>';
+			echo '<td>' . esc_html( $log->api_response_http_code ) . '</td>';
+			echo '<td>' . esc_html( $log->error_detail_code ) . '</td>';
+			echo '<td>' . esc_html( $log->error_message ) . '</td>';
+			echo '<td>' . esc_html( $log->wp_user_id ) . '</td>';
+			echo '<td>' . esc_html( $log->discord_user_id ) . '</td>';
+			echo '<td>' . esc_html( $log->datetime ) . '</td>';
 			echo '</tr>';
 		}
+
+		echo '</tbody>';
 		echo '</table>';
 
-        $total_logs = $wpdb->get_var( "SELECT COUNT(id) FROM $table_name" );
-        $total_pages = ceil( $total_logs / $per_page );
+		$total_logs  = $wpdb->get_var( "SELECT COUNT(id) FROM $table_name" );
+		$total_pages = ceil( $total_logs / $per_page );
 
-        echo paginate_links(array(
-            'total' => $total_pages,
-            'current' => $current_page,
-            'format' => '?paged=%#%',
-        ));
-    } else {
-        echo 'No logs found.';
-    }
+		echo '<div class="log-pagination">';
+		echo paginate_links(
+			array(
+				'total'        => $total_pages,
+				'current'      => $current_page,
+				'format'       => '?paged=%#%',
+				'add_args'     => array(
+					'page'       => 'memberpress-discord',
+					'sort_by'    => $sort_by,
+					'sort_order' => $sort_order,
+				),
+				'add_fragment' => 'mepr_logs',
+			)
+		);
+		echo '</div>';
+	} else {
+		echo 'No logs found....';
+	}
 }
+
+
 
 
 
