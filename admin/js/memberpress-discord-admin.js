@@ -309,16 +309,20 @@
 			});
 		});
 
+		$('#toggle-search-form').click(function() {
+            $('#search-form-wrapper').toggle();
+        });
+
 		
-			$('.serialized-data').on('click', function() {
-				alert('ok');
-				var data = $(this).data('content');
-				$('.ets-log-popup').html('<pre>' + data + '</pre>').fadeIn();
-			});
+		$('.serialized-data').on('click', function() {
+			// alert('ok');
+			var data = $(this).data('content');
+			$('.ets-log-popup').html('<pre>' + data + '</pre>').fadeIn();
+		});
 	
-			$('.ets-log-popup').on('click', function() {
-				$(this).fadeOut();
-			});
+		$('.ets-log-popup').on('click', function() {
+			$(this).fadeOut();
+		});
 		
 
 	});

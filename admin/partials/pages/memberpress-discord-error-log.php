@@ -1,33 +1,42 @@
-<form id="ets-log-search-form" method="GET" action="<?php echo esc_url(
-	add_query_arg(
-		array(
-			'page' => 'memberpress-discord',
-		),
-		admin_url( 'admin.php' )
-	)
-); ?>#mepr_logs">
-	<label for="api-response-code"><?php esc_html_e( 'API Response Code:', 'connect-memberpress-discord-add-on' ); ?></label>
-	<input type="text" name="api-response-code" id="api-response-code" value="<?php echo esc_attr( isset( $_GET['api-response-code'] ) ? $_GET['api-response-code'] : '' ); ?>">
+<button id="toggle-search-form"><?php esc_html_e( 'Toggle Search Form', 'connect-memberpress-discord-add-on' ); ?></button>
 
-	<label for="error-message"><?php esc_html_e( 'Error Message:', 'connect-memberpress-discord-add-on' ); ?></label>
-	<input type="text" name="error-message" id="error-message" value="<?php echo esc_attr( isset( $_GET['error-message'] ) ? $_GET['error-message'] : '' ); ?>">
+<div class="search-form-wrapper" style="display: none;">
 
-	<label for="wp-user-id"><?php esc_html_e( 'WordPress User ID:', 'connect-memberpress-discord-add-on' ); ?></label>
-	<input type="text" name="wp-user-id" id="wp-user-id" value="<?php echo esc_attr( isset( $_GET['wp-user-id'] ) ? $_GET['wp-user-id'] : '' ); ?>">
+	<form id="ets-log-search-form" method="GET" action="
+	<?php
+	echo esc_url(
+		add_query_arg(
+			array(
+				'page' => 'memberpress-discord',
+			),
+			admin_url( 'admin.php' )
+		)
+	);
+	?>
+	#mepr_logs">
+		<label for="api-response-code"><?php esc_html_e( 'API Response Code:', 'connect-memberpress-discord-add-on' ); ?></label>
+		<input type="text" name="api-response-code" id="api-response-code" value="<?php echo esc_attr( isset( $_GET['api-response-code'] ) ? $_GET['api-response-code'] : '' ); ?>">
 
-	<label for="discord-user-id"><?php esc_html_e( 'Discord User ID:', 'connect-memberpress-discord-add-on' ); ?></label>
-	<input type="text" name="discord-user-id" id="discord-user-id" value="<?php echo esc_attr( isset( $_GET['discord-user-id'] ) ? $_GET['discord-user-id'] : '' ); ?>">
+		<label for="error-message"><?php esc_html_e( 'Error Message:', 'connect-memberpress-discord-add-on' ); ?></label>
+		<input type="text" name="error-message" id="error-message" value="<?php echo esc_attr( isset( $_GET['error-message'] ) ? $_GET['error-message'] : '' ); ?>">
 
-	<label for="datetime"><?php esc_html_e( 'Datetime (YYYY-MM-DD HH:MM:SS):', 'connect-memberpress-discord-add-on' ); ?></label>
-	<input type="text" name="datetime" id="datetime" value="<?php echo esc_attr( isset( $_GET['datetime'] ) ? $_GET['datetime'] : '' ); ?>">
+		<label for="wp-user-id"><?php esc_html_e( 'WordPress User ID:', 'connect-memberpress-discord-add-on' ); ?></label>
+		<input type="text" name="wp-user-id" id="wp-user-id" value="<?php echo esc_attr( isset( $_GET['wp-user-id'] ) ? $_GET['wp-user-id'] : '' ); ?>">
 
-	<!-- Add new search field for API endpoint -->
-	<label for="api-endpoint"><?php esc_html_e( 'API Endpoint:', 'connect-memberpress-discord-add-on' ); ?></label>
-	<input type="text" name="api-endpoint" id="api-endpoint" value="<?php echo esc_attr( isset( $_GET['api-endpoint'] ) ? $_GET['api-endpoint'] : '' ); ?>">
+		<label for="discord-user-id"><?php esc_html_e( 'Discord User ID:', 'connect-memberpress-discord-add-on' ); ?></label>
+		<input type="text" name="discord-user-id" id="discord-user-id" value="<?php echo esc_attr( isset( $_GET['discord-user-id'] ) ? $_GET['discord-user-id'] : '' ); ?>">
 
-	<input type="submit" class="ets-submit ets-bg-blue" value="<?php esc_attr_e( 'Search', 'connect-memberpress-discord-add-on' ); ?>">
-</form>
+		<label for="datetime"><?php esc_html_e( 'Datetime (YYYY-MM-DD HH:MM:SS):', 'connect-memberpress-discord-add-on' ); ?></label>
+		<input type="text" name="datetime" id="datetime" value="<?php echo esc_attr( isset( $_GET['datetime'] ) ? $_GET['datetime'] : '' ); ?>">
 
+		<!-- Add new search field for API endpoint -->
+		<label for="api-endpoint"><?php esc_html_e( 'API Endpoint:', 'connect-memberpress-discord-add-on' ); ?></label>
+		<input type="text" name="api-endpoint" id="api-endpoint" value="<?php echo esc_attr( isset( $_GET['api-endpoint'] ) ? $_GET['api-endpoint'] : '' ); ?>">
+
+		<input type="submit" class="ets-submit ets-bg-blue" value="<?php esc_attr_e( 'Search', 'connect-memberpress-discord-add-on' ); ?>">
+	</form>
+
+</div>
 
 <?php
 
