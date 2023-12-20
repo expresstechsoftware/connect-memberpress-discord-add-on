@@ -625,44 +625,44 @@ function ets_memberpress_discord_display_log_data() {
 	$sort_by      = isset( $_GET['sort_by'] ) ? sanitize_key( $_GET['sort_by'] ) : 'datetime';
 	$sort_order   = isset( $_GET['sort_order'] ) ? strtoupper( sanitize_text_field( $_GET['sort_order'] ) ) : 'DESC';
 
-	$api_endpoint = isset( $_GET['api-endpoint'] ) ? sanitize_text_field( $_GET['api-endpoint'] ) : '';
+	$api_endpoint      = isset( $_GET['api-endpoint'] ) ? sanitize_text_field( $_GET['api-endpoint'] ) : '';
 	$api_response_code = isset( $_GET['api-response-code'] ) ? sanitize_text_field( $_GET['api-response-code'] ) : '';
-    $error_message     = isset( $_GET['error-message'] ) ? sanitize_text_field( $_GET['error-message'] ) : '';
-    $wp_user_id        = isset( $_GET['wp-user-id'] ) ? sanitize_text_field( $_GET['wp-user-id'] ) : '';
-    $discord_user_id   = isset( $_GET['discord-user-id'] ) ? sanitize_text_field( $_GET['discord-user-id'] ) : '';
-    $datetime          = isset( $_GET['datetime'] ) ? sanitize_text_field( $_GET['datetime'] ) : '';
+	$error_message     = isset( $_GET['error-message'] ) ? sanitize_text_field( $_GET['error-message'] ) : '';
+	$wp_user_id        = isset( $_GET['wp-user-id'] ) ? sanitize_text_field( $_GET['wp-user-id'] ) : '';
+	$discord_user_id   = isset( $_GET['discord-user-id'] ) ? sanitize_text_field( $_GET['discord-user-id'] ) : '';
+	$datetime          = isset( $_GET['datetime'] ) ? sanitize_text_field( $_GET['datetime'] ) : '';
 
 	$where_clause = ' WHERE 1=1';
 
 	if ( isset( $_GET['ets-log-search-form'] ) ) {
 		if ( ! empty( $api_response_code ) ) {
-			$where_clause .= $wpdb->prepare( " AND api_response_code = %s", $api_response_code );
+			$where_clause .= $wpdb->prepare( ' AND api_response_code = %s', $api_response_code );
 		}
-	
+
 		if ( ! empty( $error_message ) ) {
-			$where_clause .= $wpdb->prepare( " AND error_message LIKE %s", '%' . $wpdb->esc_like( $error_message ) . '%' );
+			$where_clause .= $wpdb->prepare( ' AND error_message LIKE %s', '%' . $wpdb->esc_like( $error_message ) . '%' );
 		}
-	
+
 		if ( ! empty( $wp_user_id ) ) {
-			$where_clause .= $wpdb->prepare( " AND wp_user_id = %s", $wp_user_id );
+			$where_clause .= $wpdb->prepare( ' AND wp_user_id = %s', $wp_user_id );
 		}
-	
+
 		if ( ! empty( $discord_user_id ) ) {
-			$where_clause .= $wpdb->prepare( " AND discord_user_id = %s", $discord_user_id );
+			$where_clause .= $wpdb->prepare( ' AND discord_user_id = %s', $discord_user_id );
 		}
-	
+
 		if ( ! empty( $datetime ) ) {
-			$where_clause .= $wpdb->prepare( " AND datetime = %s", $datetime );
+			$where_clause .= $wpdb->prepare( ' AND datetime = %s', $datetime );
 		}
-	
+
 		if ( ! empty( $api_endpoint ) ) {
-			$where_clause .= $wpdb->prepare( " AND api_endpoint LIKE %s", '%' . $wpdb->esc_like( $api_endpoint ) . '%' );
+			$where_clause .= $wpdb->prepare( ' AND api_endpoint LIKE %s', '%' . $wpdb->esc_like( $api_endpoint ) . '%' );
 		}
-	
+
 		$logs = $wpdb->get_results(
-			"SELECT * FROM $table_name" . $where_clause . " ORDER BY datetime DESC LIMIT " . ( $current_page - 1 ) * $per_page . ", $per_page"
+			"SELECT * FROM $table_name" . $where_clause . ' ORDER BY datetime DESC LIMIT ' . ( $current_page - 1 ) * $per_page . ", $per_page"
 		);
-	} else{
+	} else {
 		$logs = $wpdb->get_results( "SELECT * FROM $table_name ORDER BY datetime DESC LIMIT " . ( $current_page - 1 ) * $per_page . ", $per_page" );
 	}
 
@@ -732,9 +732,21 @@ function ets_memberpress_discord_display_log_data() {
 	}
 }
 
+/**
+ * Return the formatted data
+ *
+ * @param mix The data to serialize
+ *
+ * @since 1.1.0
+ *
+ * @return void
+ */
 function ets_unserialize_and_format( $data ) {
-    $unserialized_data = unserialize( $data );
-    $formatted_data = json_encode( $unserialized_data, JSON_PRETTY_PRINT );
-    return $formatted_data;
+
+	// _deprecated_function( __FUNCTION__, 'For test prupose . to be removed ' );
+	$unserialized_data = unserialize( $data );
+	$formatted_data    = json_encode( $unserialized_data, JSON_PRETTY_PRINT );
+
+	return $formatted_data;
 }
 
