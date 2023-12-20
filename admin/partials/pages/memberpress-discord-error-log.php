@@ -1,28 +1,36 @@
-<form id="ets-log-search-form" method="GET" action="<?php echo esc_url( add_query_arg( array( 'page' => 'memberpress-discord', 'tab' => 'mepr_logs' ), admin_url( 'admin.php' ) ) ); ?>">
-    <label for="api-response-code"><?php esc_html_e( 'API Response Code:', 'connect-memberpress-discord-add-on' ); ?></label>
-    <input type="text" name="api-response-code" id="api-response-code" value="<?php echo esc_attr( isset( $_GET['api-response-code'] ) ? $_GET['api-response-code'] : '' ); ?>">
+<form id="ets-log-search-form" method="GET" action="<?php echo esc_url(
+	add_query_arg(
+		array(
+			'page' => 'memberpress-discord',
+		),
+		admin_url( 'admin.php' )
+	)
+); ?>#mepr_logs">
+	<label for="api-response-code"><?php esc_html_e( 'API Response Code:', 'connect-memberpress-discord-add-on' ); ?></label>
+	<input type="text" name="api-response-code" id="api-response-code" value="<?php echo esc_attr( isset( $_GET['api-response-code'] ) ? $_GET['api-response-code'] : '' ); ?>">
 
-    <label for="error-message"><?php esc_html_e( 'Error Message:', 'connect-memberpress-discord-add-on' ); ?></label>
-    <input type="text" name="error-message" id="error-message" value="<?php echo esc_attr( isset( $_GET['error-message'] ) ? $_GET['error-message'] : '' ); ?>">
+	<label for="error-message"><?php esc_html_e( 'Error Message:', 'connect-memberpress-discord-add-on' ); ?></label>
+	<input type="text" name="error-message" id="error-message" value="<?php echo esc_attr( isset( $_GET['error-message'] ) ? $_GET['error-message'] : '' ); ?>">
 
-    <label for="wp-user-id"><?php esc_html_e( 'WordPress User ID:', 'connect-memberpress-discord-add-on' ); ?></label>
-    <input type="text" name="wp-user-id" id="wp-user-id" value="<?php echo esc_attr( isset( $_GET['wp-user-id'] ) ? $_GET['wp-user-id'] : '' ); ?>">
+	<label for="wp-user-id"><?php esc_html_e( 'WordPress User ID:', 'connect-memberpress-discord-add-on' ); ?></label>
+	<input type="text" name="wp-user-id" id="wp-user-id" value="<?php echo esc_attr( isset( $_GET['wp-user-id'] ) ? $_GET['wp-user-id'] : '' ); ?>">
 
-    <label for="discord-user-id"><?php esc_html_e( 'Discord User ID:', 'connect-memberpress-discord-add-on' ); ?></label>
-    <input type="text" name="discord-user-id" id="discord-user-id" value="<?php echo esc_attr( isset( $_GET['discord-user-id'] ) ? $_GET['discord-user-id'] : '' ); ?>">
+	<label for="discord-user-id"><?php esc_html_e( 'Discord User ID:', 'connect-memberpress-discord-add-on' ); ?></label>
+	<input type="text" name="discord-user-id" id="discord-user-id" value="<?php echo esc_attr( isset( $_GET['discord-user-id'] ) ? $_GET['discord-user-id'] : '' ); ?>">
 
-    <label for="datetime"><?php esc_html_e( 'Datetime (YYYY-MM-DD HH:MM:SS):', 'connect-memberpress-discord-add-on' ); ?></label>
-    <input type="text" name="datetime" id="datetime" value="<?php echo esc_attr( isset( $_GET['datetime'] ) ? $_GET['datetime'] : '' ); ?>">
+	<label for="datetime"><?php esc_html_e( 'Datetime (YYYY-MM-DD HH:MM:SS):', 'connect-memberpress-discord-add-on' ); ?></label>
+	<input type="text" name="datetime" id="datetime" value="<?php echo esc_attr( isset( $_GET['datetime'] ) ? $_GET['datetime'] : '' ); ?>">
 
-    <!-- Add new search field for API endpoint -->
-    <label for="api-endpoint"><?php esc_html_e( 'API Endpoint:', 'connect-memberpress-discord-add-on' ); ?></label>
-    <input type="text" name="api-endpoint" id="api-endpoint" value="<?php echo esc_attr( isset( $_GET['api-endpoint'] ) ? $_GET['api-endpoint'] : '' ); ?>">
+	<!-- Add new search field for API endpoint -->
+	<label for="api-endpoint"><?php esc_html_e( 'API Endpoint:', 'connect-memberpress-discord-add-on' ); ?></label>
+	<input type="text" name="api-endpoint" id="api-endpoint" value="<?php echo esc_attr( isset( $_GET['api-endpoint'] ) ? $_GET['api-endpoint'] : '' ); ?>">
 
-    <input type="submit" class="ets-submit ets-bg-blue" value="<?php esc_attr_e( 'Search', 'connect-memberpress-discord-add-on' ); ?>">
+	<input type="submit" class="ets-submit ets-bg-blue" value="<?php esc_attr_e( 'Search', 'connect-memberpress-discord-add-on' ); ?>">
 </form>
 
 
 <?php
+
 $logs = ets_memberpress_discord_display_log_data();
 // var_dump( $logs );
 if ( $logs ) {
@@ -31,18 +39,17 @@ if ( $logs ) {
 	$total_logs  = count( $logs );
 	$total_pages = ceil( $total_logs / $per_page );
 	$offset      = ( $page - 1 ) * $per_page;
-
-	$sort_by    = isset( $_GET['sort_by'] ) ? sanitize_key( $_GET['sort_by'] ) : 'datetime';
-	$sort_order = isset( $_GET['sort_order'] ) ? strtoupper( sanitize_text_field( $_GET['sort_order'] ) ) : 'DESC';
+	$sort_by     = isset( $_GET['sort_by'] ) ? sanitize_key( $_GET['sort_by'] ) : 'datetime';
+	$sort_order  = isset( $_GET['sort_order'] ) ? strtoupper( sanitize_text_field( $_GET['sort_order'] ) ) : 'DESC';
 
 	usort(
 		$logs,
 		function ( $a, $b ) use ( $sort_by, $sort_order ) {
-			return strcasecmp( $sort_order === 'DESC' ? $b->$sort_by : $a->$sort_by, $sort_order === 'DESC' ? $a->$sort_by : $b->$sort_by );
+				 return strcasecmp( $sort_order === 'DESC' ? $b->$sort_by : $a->$sort_by, $sort_order === 'DESC' ? $a->$sort_by : $b->$sort_by );
 		}
 	);
-
 	$paginated_logs = array_slice( $logs, $offset, $per_page );
+
 	?>
 
 <div class="error-log">
@@ -64,7 +71,9 @@ if ( $logs ) {
 		</tr>
 	</thead>
 	<tbody>
-		<?php foreach ( $logs as $log ) : ?>
+		<?php
+		foreach ( $logs as $log ) :
+			?>
 			<tr>
 				<td><?php echo esc_html( $log->id ); ?></td>
 				<td><?php echo esc_html( $log->api_endpoint ); ?></td>
