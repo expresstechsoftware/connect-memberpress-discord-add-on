@@ -55,4 +55,40 @@ class ETS_Memberpress_Discord_Api_Logger {
 			)
 		);
 	}
+
+	/**
+	 * Clear the logs in the MemberPress Discord API Log tab.
+	 *
+	 * This function truncates the logs table, removing all log entries.
+	 *
+	 * @since 1.1.0
+	 */
+	public static function clear_log_tab() {
+		global $wpdb;
+
+		$table_name = $wpdb->prefix . 'ets_memberpress_discord_api_logs';
+
+		$wpdb->query( "TRUNCATE TABLE $table_name" );
+	}
+
+	/**
+	 * Clear MemberPress Discord API Logs.
+	 *
+	 * This function is used to clear all logs in the MemberPress Discord API Logs tab.
+	 * Users with administrator privileges can trigger this action.
+	 *
+	 * @since 1.1.0
+	 *
+	 * @return void
+	 */
+	public function ets_memberpress_discord_clear_log() {
+		if ( ! current_user_can( 'administrator' ) ) {
+			wp_send_json_error( 'You do not have sufficient rights', 403 );
+			exit();
+		}
+
+		self::clear_log_tab();
+	}
+
+
 }

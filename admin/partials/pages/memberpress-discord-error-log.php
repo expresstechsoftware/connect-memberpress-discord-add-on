@@ -128,8 +128,12 @@ if ( $logs ) {
 
 <div class="clrbtndiv">
 	<div class="form-group">
-		<input type="button" class="clrbtn ets-submit ets-bg-red" id="clrbtn" name="clrbtn" value="Clear Logs !">
-		<span class="clr-log spinner"></span>
+		<form method="post" action="<?php echo esc_attr( get_site_url() ) . '/wp-admin/admin-post.php'; ?>">
+		<input type="hidden" name="action" value="memberpress_discord_clear_log_table">
+		<input type="hidden" name="current_url" value="<?php echo esc_html( $current_url ); ?> " />
+		<input type="submit" class="clrbtn ets-submit ets-bg-red" id="clrbtn" name="clrbtn" value="Clear Logs !">
+		</form>
+		
 	</div>
 	<div class="form-group">
 		<input type="button" class="ets-submit ets-bg-green" value="Refresh" onClick="window.location.reload()">

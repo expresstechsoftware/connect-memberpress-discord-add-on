@@ -148,6 +148,7 @@ class ETS_Memberpress_Discord {
 	private function define_admin_hooks() {
 
 		$plugin_admin = new ETS_Memberpress_Discord_Admin( $this->get_plugin_name(), $this->get_version() );
+		$plugin_log   = new ETS_Memberpress_Discord_Api_Logger();
 
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
@@ -158,7 +159,8 @@ class ETS_Memberpress_Discord {
 		$this->loader->add_action( 'admin_post_memberpress_discord_save_appearance_settings', $plugin_admin, 'ets_memberpress_discord_save_appearance_settings' );
 		$this->loader->add_action( 'admin_post_memberpress_discord_send_support_mail', $plugin_admin, 'ets_memberpress_discord_send_support_mail' );
 		$this->loader->add_action( 'wp_ajax_memberpress_load_discord_roles', $plugin_admin, 'ets_memberpress_load_discord_roles' );
-		$this->loader->add_action( 'wp_ajax_memberpress_discord_clear_logs', $plugin_admin, 'ets_memberpress_discord_clear_logs' );
+		// $this->loader->add_action( 'wp_ajax_memberpress_discord_clear_logs', $plugin_admin, 'ets_memberpress_discord_clear_logs' );
+		$this->loader->add_action( 'admin_post_memberpress_discord_clear_log_table', $plugin_log, 'ets_memberpress_discord_clear_log' );
 		$this->loader->add_action( 'wp_ajax_memberpress_discord_member_table_run_api', $plugin_admin, 'ets_memberpress_discord_member_table_run_api' );
 		$this->loader->add_action( 'mepr-transaction-expired', $plugin_admin, 'ets_memberpress_discord_as_schdule_job_memberpress_expiry', 10, 2 );
 		$this->loader->add_action( 'mepr_pre_delete_transaction', $plugin_admin, 'ets_memberpress_discord_as_schdule_job_memberpress_delete_transaction' );
