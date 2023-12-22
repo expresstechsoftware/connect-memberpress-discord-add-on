@@ -10,6 +10,7 @@
 ?>
 	<form id="ets-log-search-form" method="GET" action="<?php echo esc_url( $action_url ); ?>">
 	<input type="hidden" name="page" value="memberpress-discord">
+	<input type="hidden" name="ets-log-search-form" value="search">
 		<label for="api-response-code"><?php esc_html_e( 'API Response Code:', 'connect-memberpress-discord-add-on' ); ?></label>
 		<input type="text" name="api-response-code" id="api-response-code" value="<?php echo esc_attr( isset( $_GET['api-response-code'] ) ? $_GET['api-response-code'] : '' ); ?>">
 
