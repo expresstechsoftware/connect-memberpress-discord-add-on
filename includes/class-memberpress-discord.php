@@ -352,7 +352,7 @@ class ETS_Memberpress_Discord {
 			);
 		}
 		$dm_response = wp_remote_post( $creat_dm_url, $dm_args );
-		ets_memberpress_discord_log_api_response_v2( $user_id, $creat_dm_url, $dm_args, $dm_response );
+		ets_memberpress_discord_log_api_response_v2( $user_id, $discord_user_id, $creat_dm_url, $dm_args, $dm_response );
 		$dm_response_body = json_decode( wp_remote_retrieve_body( $dm_response ), true );
 		if ( ets_memberpress_discord_check_api_errors( $dm_response ) ) {
 			write_api_response_logs_v2( $dm_response_body, $user_id, debug_backtrace()[0] );
@@ -385,7 +385,7 @@ class ETS_Memberpress_Discord {
 		);
 
 		$created_dm_response = wp_remote_post( $create_channel_dm_url, $dm_channel_args );
-		ets_memberpress_discord_log_api_response_v2( $user_id, $create_channel_dm_url, $dm_channel_args, $created_dm_response );
+		ets_memberpress_discord_log_api_response_v2( $user_id, $discord_user_id, $create_channel_dm_url, $dm_channel_args, $created_dm_response );
 		$response_arr = json_decode( wp_remote_retrieve_body( $created_dm_response ), true );
 
 		if ( is_array( $response_arr ) && ! empty( $response_arr ) ) {

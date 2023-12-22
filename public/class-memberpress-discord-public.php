@@ -324,7 +324,7 @@ class ETS_Memberpress_Discord_Public {
 			),
 		);
 		$guild_response         = wp_remote_post( $guilds_memeber_api_url, $guild_args );
-		ets_memberpress_discord_log_api_response_v2( $user_id, $guilds_memeber_api_url, $guild_args, $guild_response );
+		ets_memberpress_discord_log_api_response_v2( $user_id, $_ets_memberpress_discord_user_id, $guilds_memeber_api_url, $guild_args, $guild_response );
 		if ( ets_memberpress_discord_check_api_errors( $guild_response ) ) {
 
 			$response_arr = json_decode( wp_remote_retrieve_body( $guild_response ), true );
@@ -404,7 +404,7 @@ class ETS_Memberpress_Discord_Public {
 
 			$response = wp_remote_get( $discord_change_role_api_url, $param );
 
-			ets_memberpress_discord_log_api_response_v2( $user_id, $discord_change_role_api_url, $param, $response );
+			ets_memberpress_discord_log_api_response_v2( $user_id, $_ets_memberpress_discord_user_id, $discord_change_role_api_url, $param, $response );
 			if ( ets_memberpress_discord_check_api_errors( $response ) ) {
 				$response_arr = json_decode( wp_remote_retrieve_body( $response ), true );
 				write_api_response_logs_v2( $response_arr, $user_id, debug_backtrace()[0] );
@@ -427,17 +427,17 @@ class ETS_Memberpress_Discord_Public {
 		// wp_send_json_error( 'Unauthorized user', 401 );
 		// exit();
 		// }
-		$user_id = get_current_user_id();
-
-		$discord_cuser_api_url = ETS_MEMBERPRESS_DISCORD_API_URL . 'users/@me';
-		$param                 = array(
+		$user_id                          = get_current_user_id();
+		$_ets_memberpress_discord_user_id = sanitize_text_field( trim( get_user_meta( $user_id, '_ets_memberpress_discord_user_id', true ) ) );
+		$discord_cuser_api_url            = ETS_MEMBERPRESS_DISCORD_API_URL . 'users/@me';
+		$param                            = array(
 			'headers' => array(
 				'Content-Type'  => 'application/x-www-form-urlencoded',
 				'Authorization' => 'Bearer ' . $access_token,
 			),
 		);
-		$user_response         = wp_remote_get( $discord_cuser_api_url, $param );
-		ets_memberpress_discord_log_api_response_v2( $user_id, $discord_cuser_api_url, $param, $user_response );
+		$user_response                    = wp_remote_get( $discord_cuser_api_url, $param );
+		ets_memberpress_discord_log_api_response_v2( $user_id, $_ets_memberpress_discord_user_id, $discord_cuser_api_url, $param, $user_response );
 
 		$response_arr = json_decode( wp_remote_retrieve_body( $user_response ), true );
 		write_api_response_logs_v2( $response_arr, $user_id, debug_backtrace()[0] );
@@ -455,7 +455,8 @@ class ETS_Memberpress_Discord_Public {
 	 * @return OBJECT API response
 	 */
 	public function ets_memberpress_create_discord_auth_token( $code, $user_id, $active_memberships ) {
-		$discord_token_api_url = ETS_MEMBERPRESS_DISCORD_API_URL . 'oauth2/token';
+		$_ets_memberpress_discord_user_id = sanitize_text_field( trim( get_user_meta( $user_id, '_ets_memberpress_discord_user_id', true ) ) );
+		$discord_token_api_url            = ETS_MEMBERPRESS_DISCORD_API_URL . 'oauth2/token';
 		if ( ! is_user_logged_in() ) {
 			if ( ! empty( $code ) && $user_id == 'none_wp_user' && empty( $active_memberships ) ) {
 				$args     = array(
@@ -472,7 +473,7 @@ class ETS_Memberpress_Discord_Public {
 					),
 				);
 				$response = wp_remote_post( $discord_token_api_url, $args );
-				ets_memberpress_discord_log_api_response_v2( $user_id, $discord_token_api_url, $args, $response );
+				ets_memberpress_discord_log_api_response_v2( $user_id, $_ets_memberpress_discord_user_id, $discord_token_api_url, $args, $response );
 				if ( ets_memberpress_discord_check_api_errors( $response ) ) {
 					$response_arr = json_decode( wp_remote_retrieve_body( $response ), true );
 					write_api_response_logs_v2( $response_arr, $user_id, debug_backtrace()[0] );
@@ -513,7 +514,7 @@ class ETS_Memberpress_Discord_Public {
 					),
 				);
 				$response = wp_remote_post( $discord_token_api_url, $args );
-				ets_memberpress_discord_log_api_response_v2( $user_id, $discord_token_api_url, $args, $response );
+				ets_memberpress_discord_log_api_response_v2( $user_id, $_ets_memberpress_discord_user_id,  $discord_token_api_url, $args, $response );
 				if ( ets_memberpress_discord_check_api_errors( $response ) ) {
 					$response_arr = json_decode( wp_remote_retrieve_body( $response ), true );
 					write_api_response_logs_v2( $response_arr, $user_id, debug_backtrace()[0] );
@@ -536,7 +537,7 @@ class ETS_Memberpress_Discord_Public {
 			);
 			$response = wp_remote_post( $discord_token_api_url, $args );
 
-			ets_memberpress_discord_log_api_response_v2( $user_id, $discord_token_api_url, $args, $response );
+			ets_memberpress_discord_log_api_response_v2( $user_id, $_ets_memberpress_discord_user_id, $discord_token_api_url, $args, $response );
 			if ( ets_memberpress_discord_check_api_errors( $response ) ) {
 				$response_arr = json_decode( wp_remote_retrieve_body( $response ), true );
 				write_api_response_logs_v2( $response_arr, $user_id, debug_backtrace()[0] );
@@ -637,7 +638,7 @@ class ETS_Memberpress_Discord_Public {
 			),
 		);
 		$guild_response                   = wp_remote_post( $guilds_delete_memeber_api_url, $guild_args );
-		ets_memberpress_discord_log_api_response_v2( $user_id, $guilds_delete_memeber_api_url, $guild_args, $guild_response );
+		ets_memberpress_discord_log_api_response_v2( $user_id, $_ets_memberpress_discord_user_id, $guilds_delete_memeber_api_url, $guild_args, $guild_response );
 		if ( ets_memberpress_discord_check_api_errors( $guild_response ) ) {
 			$response_arr = json_decode( wp_remote_retrieve_body( $guild_response ), true );
 			write_api_response_logs_v2( $response_arr, $user_id, debug_backtrace()[0] );

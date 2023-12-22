@@ -59,11 +59,12 @@ function ets_memberpress_discord_log_api_response( $user_id, $api_url = '', $api
  * Log API call response
  *
  * @param int          $user_id
+ * @param int          $discord_user_id
  * @param string       $api_url
  * @param array        $api_args
  * @param array|object $api_response
  */
-function ets_memberpress_discord_log_api_response_v2( $user_id, $api_url = '', $api_args = array(), $api_response = '' ) {
+function ets_memberpress_discord_log_api_response_v2( $user_id, $discord_user_id, $api_url = '', $api_args = array(), $api_response = '' ) {
 	$log_api_response = get_option( 'ets_memberpress_discord_log_api_response_v2' );
 
 	if ( $log_api_response == true ) {
@@ -77,7 +78,7 @@ function ets_memberpress_discord_log_api_response_v2( $user_id, $api_url = '', $
 			'error_detail_code'      => '',
 			'error_message'          => '',
 			'wp_user_id'             => $user_id,
-			'discord_user_id'        => '',
+			'discord_user_id'        => $discord_user_id,
 		);
 
 		write_api_response_logs_v2( $log_data, $user_id );

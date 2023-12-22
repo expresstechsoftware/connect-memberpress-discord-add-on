@@ -2,13 +2,10 @@
 
 <div class="search-form-wrapper">
 <?php
-	// Get the existing query parameters
 	$existing_params = $_GET;
 
-	// Ensure 'page' parameter is always present
 	$existing_params['page'] = 'memberpress-discord';
 
-	// Build the action URL with existing parameters
 	$action_url = esc_url( add_query_arg( $existing_params, admin_url( 'admin.php' ) ) ) . '#mepr_logs';
 ?>
 	<form id="ets-log-search-form" method="GET" action="<?php echo esc_url( $action_url ); ?>">
@@ -118,7 +115,7 @@ if ( $logs ) {
 </div>
 	<?php
 } else {
-	echo 'No logs found.....';
+	// echo 'No logs found.....';
 }
 ?>
 
