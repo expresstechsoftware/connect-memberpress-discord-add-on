@@ -87,7 +87,13 @@ class ETS_Memberpress_Discord_Api_Logger {
 			exit();
 		}
 
-		self::clear_log_tab();
+		if ( isset( $_POST['action'] ) && $_POST['action'] == 'memberpress_discord_clear_log_table' ) {
+			self::clear_log_tab();
+			$message      = esc_html__( 'Log table cleared successfully.', 'connect-memberpress-discord-add-on' );
+			$pre_location = sanitize_text_field( $_POST['current_url'] ) . '&save_settings_msg=' . $message . '#mepr_logs';
+			wp_safe_redirect( $pre_location );
+		}
+
 	}
 
 
