@@ -31,6 +31,7 @@
 		<input type="text" name="api-endpoint" id="api-endpoint" value="<?php echo esc_attr( isset( $_GET['api-endpoint'] ) ? $_GET['api-endpoint'] : '' ); ?>">
 
 		<input type="submit" class="ets-submit ets-bg-blue" value="<?php esc_attr_e( 'Search', 'connect-memberpress-discord-add-on' ); ?>">
+		<button type="button" class="ets-submit ets-bg-red ets-clear-search" onclick="window.location.href = '<?php echo esc_url( admin_url( 'admin.php?page=memberpress-discord' ) ); ?>#mepr_logs';"><?php esc_html_e( 'Clear', 'connect-memberpress-discord-add-on' );?></button>
 	</form>
 </div>
 

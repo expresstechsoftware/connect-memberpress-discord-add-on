@@ -323,7 +323,7 @@
 		$('.ets-log-popup').on('click', function() {
 			$(this).fadeOut();
 		});
-		
+
 
 	});
 	/*Tab options*/

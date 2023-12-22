@@ -548,6 +548,16 @@ div.ets-memberpress-discord-review-notice div.ets-memberpress-discord-notice-con
   background-color: #3367d6;
 }
 
+.ets-clear-search {
+
+  cursor: pointer; 
+  
+}
+
+.ets-clear-search:hover {
+  background-color: #d00; 
+}
+
 
 /*
 Log tab
