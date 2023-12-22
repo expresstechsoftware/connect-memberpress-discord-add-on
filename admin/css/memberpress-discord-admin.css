@@ -518,15 +518,19 @@ div.ets-memberpress-discord-review-notice div.ets-memberpress-discord-notice-con
 
 /* Style for the search form */
 #ets-log-search-form {
+  padding-top: 10px;
   margin-bottom: 20px;
+  display: inline-block; 
 }
 
 #ets-log-search-form label {
-  display: block;
-  margin-bottom: 5px;
+  display: inline-block; 
+  margin-right: 10px; 
+  font-weight: bold;
 }
+
 #ets-log-search-form input[type="text"] {
-  width: 100%;
+  width: 150px; 
   padding: 8px;
   margin-bottom: 10px;
   box-sizing: border-box;
@@ -543,6 +547,7 @@ div.ets-memberpress-discord-review-notice div.ets-memberpress-discord-notice-con
 #ets-log-search-form input[type="submit"]:hover {
   background-color: #3367d6;
 }
+
 
 /*
 Log tab
@@ -614,5 +619,18 @@ Log tab
   background-color: #fff;
   border: 1px solid #ccc;
   z-index: 1000;
+}
+#toggle-search-form {
+  background-color: #3498db;
+  color: #fff;
+  padding: 10px 15px;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+#toggle-search-form:hover {
+  background-color: #2980b9;
 }
 

@@ -1,19 +1,18 @@
-<button id="toggle-search-form"><?php esc_html_e( 'Toggle Search Form', 'connect-memberpress-discord-add-on' ); ?></button>
+<button id="toggle-search-form"><?php esc_html_e( 'Toggle Search Log', 'connect-memberpress-discord-add-on' ); ?></button>
 
-<div class="search-form-wrapper" style="display: none;">
+<div class="search-form-wrapper">
+<?php
+	// Get the existing query parameters
+	$existing_params = $_GET;
 
-	<form id="ets-log-search-form" method="GET" action="
-	<?php
-	echo esc_url(
-		add_query_arg(
-			array(
-				'page' => 'memberpress-discord',
-			),
-			admin_url( 'admin.php' )
-		)
-	);
-	?>
-	#mepr_logs">
+	// Ensure 'page' parameter is always present
+	$existing_params['page'] = 'memberpress-discord';
+
+	// Build the action URL with existing parameters
+	$action_url = esc_url( add_query_arg( $existing_params, admin_url( 'admin.php' ) ) ) . '#mepr_logs';
+?>
+	<form id="ets-log-search-form" method="GET" action="<?php echo esc_url( $action_url ); ?>">
+	<input type="hidden" name="page" value="memberpress-discord">
 		<label for="api-response-code"><?php esc_html_e( 'API Response Code:', 'connect-memberpress-discord-add-on' ); ?></label>
 		<input type="text" name="api-response-code" id="api-response-code" value="<?php echo esc_attr( isset( $_GET['api-response-code'] ) ? $_GET['api-response-code'] : '' ); ?>">
 
@@ -35,15 +34,15 @@
 
 		<input type="submit" class="ets-submit ets-bg-blue" value="<?php esc_attr_e( 'Search', 'connect-memberpress-discord-add-on' ); ?>">
 	</form>
-
 </div>
+
 
 <?php
 
 $logs = ets_memberpress_discord_display_log_data();
 // var_dump( $logs );
 if ( $logs ) {
-	$page        = isset( $_GET['page'] ) ? absint( $_GET['page'] ) : 1;
+	$page        = isset( $_GET['paged'] ) ? absint( $_GET['paged'] ) : 1;
 	$per_page    = 10;
 	$total_logs  = count( $logs );
 	$total_pages = ceil( $total_logs / $per_page );

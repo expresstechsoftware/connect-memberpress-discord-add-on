@@ -310,7 +310,7 @@
 		});
 
 		$('#toggle-search-form').click(function() {
-            $('#search-form-wrapper').toggle();
+			$('.search-form-wrapper').slideToggle();
         });
 
 		
