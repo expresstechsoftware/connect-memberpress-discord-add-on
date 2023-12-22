@@ -31,14 +31,14 @@
 		<input type="text" name="api-endpoint" id="api-endpoint" value="<?php echo esc_attr( isset( $_GET['api-endpoint'] ) ? $_GET['api-endpoint'] : '' ); ?>">
 
 		<input type="submit" class="ets-submit ets-bg-blue" value="<?php esc_attr_e( 'Search', 'connect-memberpress-discord-add-on' ); ?>">
-		<button type="button" class="ets-submit ets-bg-red ets-clear-search" onclick="window.location.href = '<?php echo esc_url( admin_url( 'admin.php?page=memberpress-discord' ) ); ?>#mepr_logs';"><?php esc_html_e( 'Clear', 'connect-memberpress-discord-add-on' );?></button>
+		<button type="button" class="ets-submit ets-bg-red ets-clear-search" onclick="window.location.href = '<?php echo esc_url( admin_url( 'admin.php?page=memberpress-discord' ) ); ?>#mepr_logs';"><?php esc_html_e( 'Clear', 'connect-memberpress-discord-add-on' ); ?></button>
 	</form>
 </div>
 
 
 <?php
 
-$logs = ets_memberpress_discord_display_log_data();
+$logs = ETS_Memberpress_Discord_Api_Logger::ets_memberpress_discord_display_log_data();
 // var_dump( $logs );
 if ( $logs ) {
 	$page        = isset( $_GET['paged'] ) ? absint( $_GET['paged'] ) : 1;
