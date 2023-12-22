@@ -690,11 +690,20 @@ function ets_memberpress_discord_display_log_data() {
 		echo '<tbody>';
 
 		foreach ( $logs as $log ) {
+			$unserialize_request_params = unserialize( $log->request_params );
+			// $get_requets_params         = '<ul>';
+
+			if ( is_array( $unserialize_request_params ) ) {
+				$get_requets_params = ets_recursive_array_loop( $unserialize_request_params );
+			}
+			// $get_requets_params .= '</ul>';
+
 			echo '<tr>';
 			echo '<td>' . $log->id . '</td>';
 			echo '<td>' . esc_html( $log->api_endpoint ) . '</td>';
 			echo '<td>' . esc_html( $log->api_endpoint_version ) . '</td>';
-			echo '<td class="serialized-data" data-content="' . esc_html( ets_unserialize_and_format( $log->request_params ) ) . '">Click to view</td>';
+			// echo '<td class="serialized-data" data-content="' . esc_html( ets_unserialize_and_format( $log->request_params ) ) . '">Click to view</td>';
+			echo '<td>' . $get_requets_params . '</td>';
 			echo '<td>' . esc_html( unserialize( $log->api_response_header ) ) . '</td>';
 			echo '<td class="serialized-data" data-content="' . esc_html( ets_unserialize_and_format( $log->api_response_body ) ) . '">Click to view</td>';
 			// echo '<td>' . esc_html( unserialize( $log->api_response_body ) ) . '</td>';
@@ -749,5 +758,32 @@ function ets_unserialize_and_format( $data ) {
 	$formatted_data    = json_encode( $unserialized_data, JSON_PRETTY_PRINT );
 
 	return $formatted_data;
+}
+
+/**
+ * Recursively loop through a nested array and generate HTML list.
+ *
+ * @param array $array The nested array to loop through.
+ *
+ * @return string The generated HTML list.
+ */
+function ets_recursive_array_loop( $array ) {
+	$html = '<ul>';
+
+	foreach ( $array as $key => $value ) {
+		if ( is_array( $value ) ) {
+
+			$html .= '<li><b>' . $key . ' :</b> ' . ets_recursive_array_loop( $value ) . '</li>';
+		} else {
+			if ($key === 'Authorization' && strpos( $value, 'Bot' ) !== false) {
+				$html .= '<li><b>' . $key . ': </b> Bot XXXXXXXXXX</li>';
+			} else {
+				$html .= '<li><b>' . $key . ' : </b> ' . $value . '</li>';
+			}
+		}
+	}
+	$html .= '</ul>';
+
+	return $html;
 }
 
