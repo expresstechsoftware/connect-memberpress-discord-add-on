@@ -99,23 +99,37 @@ class ETS_Memberpress_Discord_Api_Logger {
 			echo '<tbody>';
 
 			foreach ( $logs as $log ) {
-				$unserialize_request_params = unserialize( $log->request_params );
-				// $get_requets_params         = '<ul>';
 
+				$unserialize_request_params = unserialize( $log->request_params );
 				if ( is_array( $unserialize_request_params ) ) {
 					$get_requets_params = self::ets_recursive_array_loop( $unserialize_request_params );
 				}
-				// $get_requets_params .= '</ul>';
+
+				if ( ! empty( $log->api_response_header ) ) {
+					$get_api_response_header = self::ets_extract_header_info( $log->api_response_header );
+				} else {
+					$get_api_response_header = '-';
+				}
+				echo '<pre>';
+				var_dump( unserialize( $log->api_response_body ) );
+				echo '</pre>';
+				$get_api_response_body = '-';
+				// if ( ! empty( $log->api_response_body ) ) {
+				// $get_api_response_body = self::ets_extract_body_info( $log->api_response_body );
+				// } else {
+				// $get_api_response_body = '-';
+				// }
 
 				echo '<tr>';
 				echo '<td>' . $log->id . '</td>';
 				echo '<td>' . esc_html( $log->api_endpoint ) . '</td>';
 				echo '<td>' . esc_html( $log->api_endpoint_version ) . '</td>';
-				// echo '<td class="serialized-data" data-content="' . esc_html( ets_unserialize_and_format( $log->request_params ) ) . '">Click to view</td>';
 				echo '<td>' . $get_requets_params . '</td>';
-				// echo '<td>' . esc_html( unserialize( $log->api_response_header ) ) . '</td>';
-				// echo '<td class="serialized-data" data-content="' . esc_html( ets_unserialize_and_format( $log->api_response_body ) ) . '">Click to view</td>';
-				// echo '<td>' . esc_html( unserialize( $log->api_response_body ) ) . '</td>';
+
+				echo '<td>' . $get_api_response_header . '</td>';
+
+				echo '<td>' . $get_api_response_body . '</td>';
+
 				echo '<td>' . esc_html( $log->api_response_http_code ) . '</td>';
 				echo '<td>' . esc_html( $log->error_detail_code ) . '</td>';
 				echo '<td>' . esc_html( $log->error_message ) . '</td>';
@@ -194,6 +208,54 @@ class ETS_Memberpress_Discord_Api_Logger {
 		$html .= '</ul>';
 
 		return $html;
+	}
+
+	/**
+	 * Extract relevant information from serialized header data.
+	 *
+	 * @param string $serialized_data Serialized header data.
+	 * @return array Extracted information.
+	 */
+	public static function ets_extract_header_info( $serialized_data ) {
+
+		$header_data = unserialize( $serialized_data );
+
+		if ( $header_data === false ) {
+			return 'Failed to unserialize header data';
+		}
+
+		$formatted_info = self::ets_recursive_array_loop( $header_data );
+		// foreach ( $header_data as $key => $value ) {
+		// $formatted_info .= $key . ': ' . $value . '<br>';
+		// }
+
+		return $formatted_info;
+	}
+
+	/**
+	 * Extract relevant information from serialized body data.
+	 *
+	 * @param string $serialized_data Serialized body data.
+	 * @return string Formatted information for display.
+	 */
+	public static function ets_extract_body_info( $serialized_data ) {
+
+		$body_data = unserialize( $serialized_data );
+
+		if ( $body_data === false ) {
+			return 'Failed to unserialize body data';
+		}
+
+		// If the first unserialize was successful, attempt a second time
+		$body_data = unserialize( $body_data );
+
+		if ( $body_data === false ) {
+			return 'Failed to unserialize body data on the second attempt';
+		}
+
+		$formatted_info = $formatted_info = self::ets_recursive_array_loop( $body_data );
+
+		return $formatted_info;
 	}
 
 	/**
