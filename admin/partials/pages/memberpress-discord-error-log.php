@@ -126,10 +126,10 @@ if ( $logs ) {
 
 <div class="clrbtndiv">
 	<div class="form-group">
-		<form method="post" action="<?php echo esc_attr( get_site_url() ) . '/wp-admin/admin-post.php'; ?>">
+		<form  method="post" action="<?php echo esc_attr( get_site_url() ) . '/wp-admin/admin-post.php'; ?>" onSubmit="return confirm('<?php esc_html_e( 'Clear Logs ?', 'connect-memberpress-discord-add-on' ); ?>') " >
 		<input type="hidden" name="action" value="memberpress_discord_clear_log_table">
 		<input type="hidden" name="current_url" value="<?php echo esc_html( ets_memberpress_discord_get_current_screen_url() ); ?> " />
-		<input type="submit" class="clrbtn ets-submit ets-bg-red" id="clrbtn" name="clrbtn" value="Clear Logs !">
+		<input type="submit" class="clrbtn ets-submit ets-bg-red" id="clrbtn" name="clrbtn" value="<?php esc_html_e( 'Clear Logs !', 'connect-memberpress-discord-add-on' ); ?>">
 		</form>
 		
 	</div>
