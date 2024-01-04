@@ -36,7 +36,9 @@ function ets_memberpress_discord_get_current_screen_url() {
 }
 
 /**
- * Log API call response
+ * @deprecated 1.1.0 Use ets_memberpress_discord_log_api_response_v2 instead.
+ *
+ * Log API call response. This function will be removed in future versions.
  *
  * @param INT          $user_id
  * @param STRING       $api_url
@@ -54,20 +56,56 @@ function ets_memberpress_discord_log_api_response( $user_id, $api_url = '', $api
 }
 
 /**
- * Add API error logs into log file
+ * Log API call response
  *
- * @param array  $response_arr
- * @param array  $backtrace_arr
- * @param string $error_type
+ * @param int          $user_id
+ * @param int          $discord_user_id
+ * @param string       $api_url
+ * @param array        $api_args
+ * @param array|object $api_response
+ */
+function ets_memberpress_discord_log_api_response_v2( $user_id, $discord_user_id, $api_url = '', $api_args = array(), $api_response = '' ) {
+	$log_api_response = get_option( 'ets_memberpress_discord_log_api_response_v2' );
+
+	if ( $log_api_response == true ) {
+		$log_data = array(
+			'api_endpoint'           => $api_url,
+			'api_endpoint_version'   => '',
+			'request_params'         => serialize( $api_args ),
+			'api_response_header'    => serialize( $api_response['headers'] ),
+			'api_response_body'      => serialize( $api_response['body'] ),
+			'api_response_http_code' => '',
+			'error_detail_code'      => '',
+			'error_message'          => '',
+			'wp_user_id'             => $user_id,
+			'discord_user_id'        => $discord_user_id,
+		);
+
+		write_api_response_logs_v2( $log_data, $user_id );
+	}
+}
+
+
+/**
+ * @deprecated 1.1.0 Use write_api_response_logs_v2() instead.
+ *
+ * Add API error logs into log file. This function will be removed in future versions.
+ *
+ * @param array $response_arr
+ * @param int   $user_id
+ * @param array $backtrace_arr
  * @return None
  */
 function write_api_response_logs( $response_arr, $user_id, $backtrace_arr = array() ) {
+
+	_deprecated_function( __FUNCTION__, '1.1.0', 'write_api_response_logs_v2()' );
+
 	$error        = current_time( 'mysql' );
 	$user_details = '';
 	if ( $user_id ) {
 		$user_details = '::User Id:' . $user_id;
 	}
-	$log_api_response = get_option( 'ets_memberpress_discord_log_api_response' );
+	$log_api_response = get_option( 'ets_memberpress_discord_log_api_response_v2' );
 	$uuid             = get_option( 'ets_memberpress_discord_uuid_file_name' );
 	$log_file_name    = $uuid . ETS_Memberpress_Discord_Admin::$log_file_name;
 
@@ -84,6 +122,131 @@ function write_api_response_logs( $response_arr, $user_id, $backtrace_arr = arra
 
 }
 
+/**
+ * Add API error logs into the database
+ *
+ * @param array $response_arr
+ * @param int   $user_id
+ * @param array $backtrace_arr
+ * @return None
+ */
+function write_api_response_logs_v2( $response_arr, $user_id, $backtrace_arr = array() ) {
+
+	$api_logger = new ETS_Memberpress_Discord_Api_Logger();
+
+	if ( is_array( $response_arr ) && array_key_exists( 'code', $response_arr ) ) {
+		update_option( 'get_response_arr_1_' . time(), $response_arr );
+
+		$api_endpoint           = $response_arr['api_endpoint'] ?? '';
+		$api_endpoint_version   = ( ! empty( $response_arr['api_endpoint_version'] ) ) ? $response_arr['api_endpoint_version'] : ets_memberpress_discord_extractEndpointVersion( $api_endpoint );
+		$request_params         = $response_arr['request_params'] ?? '';
+		$api_response_header    = $response_arr['api_response_header'] ?? '';
+		$api_response_body      = $response_arr['api_response_body'] ?? '';
+		$api_response_http_code = $response_arr['api_response_http_code'] ?? '';
+		$error_detail_code      = $response_arr['code'] ?? '';
+		$error_message          = $response_arr['message'] ?? '';
+		$discord_user_id        = $response_arr['discord_user_id'] ?? '';
+
+			$api_logger->log_api_request(
+				array(
+					'api_endpoint'           => $api_endpoint,
+					'api_endpoint_version'   => $api_endpoint_version,
+					'request_params'         => $request_params,
+					'api_response_header'    => $api_response_header,
+					'api_response_body'      => $api_response_body,
+					'api_response_http_code' => $api_response_http_code,
+					'error_detail_code'      => $error_detail_code,
+					'error_message'          => $error_message,
+					'wp_user_id'             => $user_id,
+					'discord_user_id'        => $discord_user_id,
+				)
+			);
+
+	} elseif ( is_array( $response_arr ) && array_key_exists( 'error', $response_arr ) ) {
+		update_option( 'get_response_arr_2_' . time(), $response_arr );
+
+			$api_logger->log_api_request(
+				array(
+					'api_endpoint'           => '',
+					'api_endpoint_version'   => '',
+					'request_params'         => '',
+					'api_response_header'    => '',
+					'api_response_body'      => '',
+					'api_response_http_code' => '',
+					'error_detail_code'      => '',
+					'error_message'          => $response_arr['error'],
+					'wp_user_id'             => $user_id,
+					'discord_user_id'        => '',
+				)
+			);
+
+	} elseif ( get_option( 'ets_memberpress_discord_log_api_response_v2' ) == true ) {
+		update_option( 'get_response_arr_3_b_' . time(), $response_arr );
+		if ( is_array( $response_arr ) ) {
+
+			$api_response_body = unserialize( $response_arr['api_response_body'] );
+			$message_body      = json_decode( $api_response_body['body'] );
+			if ( is_object( $message_body ) ) {
+				$error_detail_code = property_exists( $message_body, 'code' ) ? $message_body->code : null;
+				$error_message     = property_exists( $message_body, 'message' ) ? $message_body->message : null;
+
+			} elseif ( $api_response_body['response'] ) {
+
+				$error_detail_code = $api_response_body['response']['code'];
+				$error_message     = $api_response_body['response']['message'];
+
+			} else {
+
+				$error_detail_code = null;
+				$error_message     = null;
+			}
+
+			$api_endpoint           = $response_arr['api_endpoint'] ?? '';
+			$api_endpoint_version   = ( ! empty( $response_arr['api_endpoint_version'] ) ) ? $response_arr['api_endpoint_version'] : ets_memberpress_discord_extractEndpointVersion( $api_endpoint );
+			$request_params         = $response_arr['request_params'] ?? '';
+			$api_response_header    = $response_arr['api_response_header'];
+			$api_response_http_code = $response_arr['api_response_http_code'] ?? '';
+			$discord_user_id        = $response_arr['discord_user_id'] ?? '';
+
+				$api_logger->log_api_request(
+					array(
+						'api_endpoint'           => $api_endpoint,
+						'api_endpoint_version'   => $api_endpoint_version,
+						'request_params'         => $request_params,
+						'api_response_header'    => $api_response_header,
+						'api_response_body'      => $response_arr['api_response_body'],
+						'api_response_http_code' => $api_response_http_code,
+						'error_detail_code'      => $error_detail_code,
+						'error_message'          => $error_message,
+						'wp_user_id'             => $user_id,
+						'discord_user_id'        => $discord_user_id,
+					)
+				);
+
+		}
+	}
+}
+
+
+
+
+/**
+ * Function to extract API endpoint version from the full endpoint URL
+ *
+ * @param string $endpoint
+ *
+ * @return string
+ */
+function ets_memberpress_discord_extractEndpointVersion( $endpoint ) {
+
+	$version_pattern = '/\/v(\d+)\//';
+	preg_match( $version_pattern, $endpoint, $matches );
+	if ( isset( $matches[1] ) ) {
+		return $matches[1];
+	} else {
+		return '';
+	}
+}
 /**
  * Check API call response and detect conditions which can cause of action failure and retry should be attemped.
  *
@@ -443,3 +606,5 @@ function ets_memberpress_discord_get_rich_embed_message( $message ) {
 
 	return $rich_embed_message;
 }
+
+

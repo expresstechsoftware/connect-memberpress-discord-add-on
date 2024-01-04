@@ -1,5 +1,5 @@
 === Connect MemberPress To Discord ===
-Contributors: expresstechsoftware
+Contributors: expresstechsoftware, webbdeveloper, sunnysoni 
 Tags: Discord, Talk, Video Chat, Hang Out, Friends, Meberships, discord role management, sell private access.
 Requires at least: 4.7
 Donate link: https://paypal.me/supportets
@@ -7,7 +7,7 @@ Author URI: https://www.expresstechsoftwares.com
 Author: ExpressTech Software Solutions Pvt. Ltd.
 Tested up to: 6.3
 Requires PHP: 7.0
-Stable tag: 1.0.19
+Stable tag: 1.1.0
 License: GPLv2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 

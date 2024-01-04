@@ -515,3 +515,132 @@ div.ets-memberpress-discord-review-notice div.ets-memberpress-discord-notice-con
   border-radius: 50%;
   margin-left: 15px;
 }
+
+/* Style for the search form */
+#ets-log-search-form {
+  padding-top: 10px;
+  margin-bottom: 20px;
+  display: inline-block; 
+}
+
+#ets-log-search-form label {
+  display: inline-block; 
+  margin-right: 10px; 
+  font-weight: bold;
+}
+
+#ets-log-search-form input[type="text"] {
+  width: 150px; 
+  padding: 8px;
+  margin-bottom: 10px;
+  box-sizing: border-box;
+}
+
+#ets-log-search-form input[type="submit"] {
+  background-color: #4285f4;
+  color: #fff;
+  padding: 10px 15px;
+  border: none;
+  cursor: pointer;
+}
+
+#ets-log-search-form input[type="submit"]:hover {
+  background-color: #3367d6;
+}
+
+.ets-clear-search {
+
+  cursor: pointer; 
+  
+}
+
+.ets-clear-search:hover {
+  background-color: #d00; 
+}
+
+
+/*
+Log tab
+*/
+.log-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.log-table th, .log-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+.log-table th {
+  background-color: #f2f2f2;
+}
+
+.log-table tbody tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.log-table tbody tr:hover {
+  background-color: #e5e5e5;
+}
+.log-pagination {
+  margin-top: 20px;
+}
+
+.log-pagination a {
+  color: #0073aa;
+  display: inline-block;
+  padding: 6px 12px;
+  text-decoration: none;
+  border: 1px solid #ddd;
+  margin-right: 5px;
+}
+
+.log-pagination span {
+  color: #333;
+  display: inline-block;
+  padding: 6px 12px;
+  border: 1px solid #ddd;
+  margin-right: 5px;
+}
+
+.log-pagination a:hover {
+  background-color: #0073aa;
+  color: #fff;
+}
+
+.serialized-data {
+  max-width: 200px; 
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  cursor: pointer;
+}
+
+.ets-log-popup {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 20px;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  z-index: 1000;
+}
+#toggle-search-form {
+  background-color: #3498db;
+  color: #fff;
+  padding: 10px 15px;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+#toggle-search-form:hover {
+  background-color: #2980b9;
+}
+

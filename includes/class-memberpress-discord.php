@@ -82,8 +82,14 @@ class ETS_Memberpress_Discord {
 		require_once ETS_MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . 'includes/libraries/action-scheduler/action-scheduler.php';
 
 		/**
-			 * Define common functions.
-			 */
+		 * The class responsible for Logs
+		 * core plugin.
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-memberpress-discord-api-logger.php';
+
+		/**
+		 * Define common functions.
+		 */
 		require_once ETS_MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . 'includes/functions.php';
 
 		/**
@@ -142,6 +148,7 @@ class ETS_Memberpress_Discord {
 	private function define_admin_hooks() {
 
 		$plugin_admin = new ETS_Memberpress_Discord_Admin( $this->get_plugin_name(), $this->get_version() );
+		$plugin_log   = new ETS_Memberpress_Discord_Api_Logger();
 
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
@@ -152,7 +159,8 @@ class ETS_Memberpress_Discord {
 		$this->loader->add_action( 'admin_post_memberpress_discord_save_appearance_settings', $plugin_admin, 'ets_memberpress_discord_save_appearance_settings' );
 		$this->loader->add_action( 'admin_post_memberpress_discord_send_support_mail', $plugin_admin, 'ets_memberpress_discord_send_support_mail' );
 		$this->loader->add_action( 'wp_ajax_memberpress_load_discord_roles', $plugin_admin, 'ets_memberpress_load_discord_roles' );
-		$this->loader->add_action( 'wp_ajax_memberpress_discord_clear_logs', $plugin_admin, 'ets_memberpress_discord_clear_logs' );
+		// $this->loader->add_action( 'wp_ajax_memberpress_discord_clear_logs', $plugin_admin, 'ets_memberpress_discord_clear_logs' );
+		$this->loader->add_action( 'admin_post_memberpress_discord_clear_log_table', $plugin_log, 'ets_memberpress_discord_clear_log' );
 		$this->loader->add_action( 'wp_ajax_memberpress_discord_member_table_run_api', $plugin_admin, 'ets_memberpress_discord_member_table_run_api' );
 		$this->loader->add_action( 'mepr-transaction-expired', $plugin_admin, 'ets_memberpress_discord_as_schdule_job_memberpress_expiry', 10, 2 );
 		$this->loader->add_action( 'mepr_pre_delete_transaction', $plugin_admin, 'ets_memberpress_discord_as_schdule_job_memberpress_delete_transaction' );
@@ -344,10 +352,10 @@ class ETS_Memberpress_Discord {
 			);
 		}
 		$dm_response = wp_remote_post( $creat_dm_url, $dm_args );
-		ets_memberpress_discord_log_api_response( $user_id, $creat_dm_url, $dm_args, $dm_response );
+		ets_memberpress_discord_log_api_response_v2( $user_id, $discord_user_id, $creat_dm_url, $dm_args, $dm_response );
 		$dm_response_body = json_decode( wp_remote_retrieve_body( $dm_response ), true );
 		if ( ets_memberpress_discord_check_api_errors( $dm_response ) ) {
-			write_api_response_logs( $dm_response_body, $user_id, debug_backtrace()[0] );
+			write_api_response_logs_v2( $dm_response_body, $user_id, debug_backtrace()[0] );
 			// this should be catch by Action schedule failed action.
 			throw new Exception( 'Failed in function ets_memberpress_discord_send_dm' );
 		}
@@ -377,13 +385,13 @@ class ETS_Memberpress_Discord {
 		);
 
 		$created_dm_response = wp_remote_post( $create_channel_dm_url, $dm_channel_args );
-		ets_memberpress_discord_log_api_response( $user_id, $create_channel_dm_url, $dm_channel_args, $created_dm_response );
+		ets_memberpress_discord_log_api_response_v2( $user_id, $discord_user_id, $create_channel_dm_url, $dm_channel_args, $created_dm_response );
 		$response_arr = json_decode( wp_remote_retrieve_body( $created_dm_response ), true );
 
 		if ( is_array( $response_arr ) && ! empty( $response_arr ) ) {
 			// check if there is error in create dm response.
 			if ( array_key_exists( 'code', $response_arr ) || array_key_exists( 'error', $response_arr ) ) {
-				write_api_response_logs( $response_arr, $user_id, debug_backtrace()[0] );
+				write_api_response_logs_v2( $response_arr, $user_id, debug_backtrace()[0] );
 				if ( ets_memberpress_discord_check_api_errors( $created_dm_response ) ) {
 					// this should be catch by Action schedule failed action.
 					throw new Exception( 'Failed in function ets_memberpress_discord_create_member_dm_channel' );

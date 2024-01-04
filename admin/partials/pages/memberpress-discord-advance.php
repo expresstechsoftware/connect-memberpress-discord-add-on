@@ -1,6 +1,6 @@
 <?php
 $upon_failed_payment                                = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_payment_failed' ) ) );
-$log_api_res                                        = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_log_api_response' ) ) );
+$log_api_res                                        = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_log_api_response_v2' ) ) );
 $retry_failed_api                                   = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_retry_failed_api' ) ) );
 $set_job_cnrc                                       = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_job_queue_concurrency' ) ) );
 $set_job_q_batch_size                               = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_job_queue_batch_size' ) ) );
@@ -19,6 +19,14 @@ $ets_memberpress_discord_cancel_message             = sanitize_text_field( trim(
 $ets_memberpress_discord_data_erases                = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_data_erases' ) ) );
 $ets_memberpress_discord_embed_messaging_feature    = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_embed_messaging_feature' ) ) );
 $current_url                                        = ets_memberpress_discord_get_current_screen_url();
+
+// $response = get_option( '' );
+// // $api_response_body =  unserialize( $response['api_response_body'] );
+
+// echo '<pre>';
+// var_dump( $response);
+
+// echo '</pre>';
 ?>
 <form method="post" action="<?php echo esc_attr( get_site_url() ) . '/wp-admin/admin-post.php'; ?>">
 <input type="hidden" name="action" value="memberpress_discord_advance_settings">

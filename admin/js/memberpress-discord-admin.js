@@ -91,31 +91,31 @@
 
 
 			/*Clear log log call-back*/
-			$('#clrbtn').click(function (e) {
-				e.preventDefault();
-				$.ajax({
-					url: etsMemberpressParams.admin_ajax,
-					type: "POST",
-					data: { 'action': 'memberpress_discord_clear_logs', 'ets_memberpress_discord_nonce': etsMemberpressParams.ets_memberpress_discord_nonce, },
-					beforeSend: function () {
-						$(".clr-log.spinner").addClass("is-active").show();
-					},
-					success: function (data) {
-						if (data.error) {
-							// handle the error
-							alert(data.error.msg);
-						} else {
-							$('.error-log').html("Clear logs Sucesssfully !");
-						}
-					},
-					error: function (response) {
-						console.error(response);
-					},
-					complete: function () {
-						$(".clr-log.spinner").removeClass("is-active").hide();
-					}
-				});
-			});
+			// $('#clrbtn').click(function (e) {
+			// 	e.preventDefault();
+			// 	$.ajax({
+			// 		url: etsMemberpressParams.admin_ajax,
+			// 		type: "POST",
+			// 		data: { 'action': 'memberpress_discord_clear_logs', 'ets_memberpress_discord_nonce': etsMemberpressParams.ets_memberpress_discord_nonce, },
+			// 		beforeSend: function () {
+			// 			$(".clr-log.spinner").addClass("is-active").show();
+			// 		},
+			// 		success: function (data) {
+			// 			if (data.error) {
+			// 				// handle the error
+			// 				alert(data.error.msg);
+			// 			} else {
+			// 				$('.error-log').html("Clear logs Sucesssfully !");
+			// 			}
+			// 		},
+			// 		error: function (response) {
+			// 			console.error(response);
+			// 		},
+			// 		complete: function () {
+			// 			$(".clr-log.spinner").removeClass("is-active").hide();
+			// 		}
+			// 	});
+			// });
 
 			/*Call-back to manage member connection with discord from memberpress members-list*/
 			$('.ets-memberpress-run-api').on('click', function (e) {
@@ -308,6 +308,22 @@
 				}
 			});
 		});
+
+		$('#toggle-search-form').click(function() {
+			$('.search-form-wrapper').slideToggle();
+        });
+
+		
+		$('.serialized-data').on('click', function() {
+			// alert('ok');
+			var data = $(this).data('content');
+			$('.ets-log-popup').html('<pre>' + data + '</pre>').fadeIn();
+		});
+	
+		$('.ets-log-popup').on('click', function() {
+			$(this).fadeOut();
+		});
+
 
 	});
 	/*Tab options*/
