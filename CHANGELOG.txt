@@ -1,5 +1,9 @@
+= 1.0.21 =
+- Updated plugin to support WordPress version 6.5
+
 = 1.0.20 =
 - Update Contributors
+
 = 1.0.19 =
 - Fixe duplicate bagdes
 
