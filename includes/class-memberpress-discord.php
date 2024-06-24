@@ -179,6 +179,7 @@ class ETS_Memberpress_Discord {
 		}
 		$this->loader->add_action( 'admin_init', $plugin_admin, 'ets_memberperss_add_search_filter' );
 		$this->loader->add_action( 'wp_ajax_ets_memberpress_discord_notice_dismiss', $plugin_admin, 'ets_memberpress_discord_notice_dismiss' );
+		$this->loader->add_filter( 'disable_as_for_roles_management', $plugin_admin, 'ets_memberpress_discord_check_pro_version' );
 	}
 
 	/**

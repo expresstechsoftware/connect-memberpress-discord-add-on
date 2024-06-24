@@ -689,6 +689,10 @@ class ETS_Memberpress_Discord_Admin {
 	 * @param BOOL  $is_schedule
 	 */
 	private function ets_memberpress_discord_set_member_roles( $user_id, $expired_membership = false, $cancelled_membership = false, $is_schedule = true ) {
+		if (  apply_filters( 'disable_as_for_roles_management', true ) ) {
+			return;
+		}
+		
 		$memberpress_discord                                = new ETS_Memberpress_Discord();
 		$plugin_admin                                       = new ETS_Memberpress_Discord_Admin( $memberpress_discord->get_plugin_name(), $memberpress_discord->get_version() );
 		$plugin_public                                      = new ETS_Memberpress_Discord_Public( $memberpress_discord->get_plugin_name(), $memberpress_discord->get_version(), $plugin_admin );
@@ -994,6 +998,13 @@ class ETS_Memberpress_Discord_Admin {
 	 * @return OBJECT JSON response
 	 */
 	public function ets_memberpress_discord_member_table_run_api() {
+		if (  apply_filters( 'disable_as_for_roles_management', true ) ) {
+			$event_res = array(
+				'status'  => 1,
+				'message' => __( 'Pro vesrion is enbaled no need to run ', 'connect-memberpress-discord-add-on' ),
+			);
+			return wp_send_json( $event_res );
+		}
 		if ( ! is_user_logged_in() && current_user_can( 'edit_user' ) ) {
 			wp_send_json_error( 'Unauthorized user', 401 );
 			exit();
@@ -1303,5 +1314,23 @@ class ETS_Memberpress_Discord_Admin {
 
 		exit();
 	}
+
+	/**
+	 * Check if the MemberPress Pro Discord Addon is active.
+	 *
+	 * This function verifies whether the pro version of the MemberPress Discord Addon is active
+	 * by checking if the constant MEMBERPRESS_PRO_DISCORD_ADDON_VERSION is defined.
+	 *
+	 * @return bool True if the pro version is active, false otherwise.
+	 */
+	public function ets_memberpress_discord_check_pro_version() {
+
+		if ( defined( 'MEMBERPRESS_PRO_DISCORD_ADDON_VERSION' ) ) {
+			return true;
+		}
+
+		return false;
+	}
+
 
 }

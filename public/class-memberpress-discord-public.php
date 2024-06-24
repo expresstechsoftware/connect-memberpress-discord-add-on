@@ -801,6 +801,9 @@ class ETS_Memberpress_Discord_Public {
 
 	}
 	public function ets_memberpress_discord_listen_to_mepr_events( $event ) {
+		if(  apply_filters( 'disable_as_for_roles_management', true ) ) {
+			return;
+		}
 		$obj = $event->get_data();
 
 		if ( ! ( $obj instanceof MeprTransaction ) && ! ( $obj instanceof MeprSubscription ) ) {
