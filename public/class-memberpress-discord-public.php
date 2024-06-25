@@ -801,9 +801,6 @@ class ETS_Memberpress_Discord_Public {
 
 	}
 	public function ets_memberpress_discord_listen_to_mepr_events( $event ) {
-		if(  apply_filters( 'disable_as_for_roles_management', true ) ) {
-			return;
-		}
 		$obj = $event->get_data();
 
 		if ( ! ( $obj instanceof MeprTransaction ) && ! ( $obj instanceof MeprSubscription ) ) {
@@ -821,8 +818,12 @@ class ETS_Memberpress_Discord_Public {
 				$mapped_role_id = $ets_memberpress_discord_role_mapping[ 'level_id_' . $obj->product_id ];
 
 				if ( $member->is_active_on_membership( $obj ) ) {
-
-					$this->put_discord_role_api( $member->ID, $mapped_role_id );
+					
+					if (!apply_filters('disable_as_for_roles_management', true)) {
+						// If the filter returns false, then execute the method
+						$this->put_discord_role_api( $member->ID, $mapped_role_id );
+					}
+					
 				} else {
 					$this->admin_cls_instance->memberpress_delete_discord_role( $member->ID, $mapped_role_id );
 
