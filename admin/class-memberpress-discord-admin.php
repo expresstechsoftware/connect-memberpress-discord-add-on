@@ -715,10 +715,10 @@ class ETS_Memberpress_Discord_Admin {
 				if ( isset( $_ets_memberpress_discord_role_id ) && $_ets_memberpress_discord_role_id != '' && $_ets_memberpress_discord_role_id != 'none' ) {
 
 						// Check the filter before executing the method
-						if (!apply_filters('disable_as_for_roles_management', true)) {
-							// If the filter returns false, then execute the method
-							$this->memberpress_delete_discord_role($user_id, $_ets_memberpress_discord_role_id['role_id'], $is_schedule);
-						} 
+					if ( ! apply_filters( 'disable_as_for_roles_management', true ) ) {
+						// If the filter returns false, then execute the method
+						$this->memberpress_delete_discord_role( $user_id, $_ets_memberpress_discord_role_id['role_id'], $is_schedule );
+					}
 						delete_user_meta( $user_id, '_ets_memberpress_discord_role_id_for_' . $user_txn, true );
 				}
 				delete_user_meta( $user_id, '_ets_memberpress_discord_expitration_warning_dm_for_' . $user_txn );
@@ -731,7 +731,7 @@ class ETS_Memberpress_Discord_Admin {
 						$mapped_role_id = sanitize_text_field( trim( $ets_memberpress_discord_role_mapping[ 'level_id_' . $active_membership->product_id ] ) );
 						if ( $mapped_role_id && $expired_membership == false && $cancelled_membership == false ) {
 							// Check the filter before executing the method
-							if (!apply_filters('disable_as_for_roles_management', true)) {
+							if ( ! apply_filters( 'disable_as_for_roles_management', true ) ) {
 								// If the filter returns false, then execute the method
 								$plugin_public->put_discord_role_api( $user_id, $mapped_role_id, $is_schedule );
 							}
@@ -749,7 +749,7 @@ class ETS_Memberpress_Discord_Admin {
 			if ( $default_role != 'none' && $previous_default_role != $default_role ) {
 				if ( isset( $previous_default_role ) && $previous_default_role != '' && $previous_default_role != 'none' ) {
 					// Check the filter before executing the method
-					if (!apply_filters('disable_as_for_roles_management', true)) {
+					if ( ! apply_filters( 'disable_as_for_roles_management', true ) ) {
 						// If the filter returns false, then execute the method
 						$this->memberpress_delete_discord_role( $user_id, $previous_default_role, $is_schedule );
 					}
@@ -760,7 +760,7 @@ class ETS_Memberpress_Discord_Admin {
 			} elseif ( $default_role == 'none' ) {
 				if ( isset( $previous_default_role ) && $previous_default_role != '' && $previous_default_role != 'none' ) {
 					// Check the filter before executing the method
-					if (!apply_filters('disable_as_for_roles_management', true)) {
+					if ( ! apply_filters( 'disable_as_for_roles_management', true ) ) {
 						// If the filter returns false, then execute the method
 						$this->memberpress_delete_discord_role( $user_id, $previous_default_role, $is_schedule );
 					}
@@ -1189,7 +1189,7 @@ class ETS_Memberpress_Discord_Admin {
 				'scope'                => 'bot',
 				'guild_id'             => sanitize_text_field( trim( get_option( 'ets_memberpress_discord_server_id' ) ) ),
 				'disable_guild_select' => 'true',
-				'redirect_uri'         => sanitize_text_field( trim( get_option( 'ets_memberpress_discord_bot_auth_redirect ' ) ) ),
+				'redirect_uri'         => sanitize_text_field( trim( get_option( 'ets_memberpress_discord_bot_auth_redirect' ) ) ),
 			);
 			$discord_authorise_api_url = ETS_MEMBERPRESS_DISCORD_API_URL . 'oauth2/authorize?' . http_build_query( $params );
 
