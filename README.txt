@@ -7,7 +7,7 @@ Author URI: https://www.expresstechsoftwares.com
 Author: ExpressTech Software Solutions Pvt. Ltd.
 Tested up to: 6.5
 Requires PHP: 7.0
-Stable tag: 1.0.23
+Stable tag: 1.0.24
 License: GPLv2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -20,7 +20,7 @@ Engage your audience with voice, video, and chat features in a controlled enviro
 
 With over 19+ features, including automated role assignment, expiration handling, and direct messaging, you'll save time while boosting member engagement. Perfect for content creators, coaches, moderators, and community leaders looking to monetize their expertise. Elevate your membership offering and create a vibrant, interactive space for your most dedicated followers.
 
-[Manual](https://www.expresstechsoftwares.com/step-by-step-documentation-guide-on-how-to-connect-memberpress-and-discord-server-using-discord-pro-addon/?utm_source=wordpress.org&utm_medium=plugin_dir&utm_content=step-by-step&utm_term=step-by-step) | [Support](https://wordpress.org/support/plugin/expresstechsoftwares-memberpress-discord-add-on/) | [Demo](https://www.youtube.com/watch?v=2LHUGlwPxNI&feature=youtu.be) | [Premium Features] (https://www.expresstechsoftwares.com/memberpress-discord-pro-sell-access-automate-and-add-engaging-exclusive-discord-access-elevate-your-community/)
+[Manual](https://www.expresstechsoftwares.com/step-by-step-documentation-guide-on-how-to-connect-memberpress-and-discord-server-using-discord-pro-addon/?utm_source=wordpress.org&utm_medium=plugin_dir&utm_content=step-by-step&utm_term=step-by-step) | [Support](https://wordpress.org/support/plugin/expresstechsoftwares-memberpress-discord-add-on/) | [Demo](https://www.youtube.com/watch?v=2LHUGlwPxNI&feature=youtu.be) | [Premium Features](https://www.expresstechsoftwares.com/memberpress-discord-pro-sell-access-automate-and-add-engaging-exclusive-discord-access-elevate-your-community/)
 
 * **Unlock Exclusive Discord Realms:** Elevate your members' experience with access to private Discord servers tailored to their membership tier. Create an air of exclusivity that keeps subscribers coming back for more.
 
