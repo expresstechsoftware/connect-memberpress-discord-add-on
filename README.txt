@@ -20,7 +20,7 @@ Engage your audience with voice, video, and chat features in a controlled enviro
 
 With over 19+ features, including automated role assignment, expiration handling, and direct messaging, you'll save time while boosting member engagement. Perfect for content creators, coaches, moderators, and community leaders looking to monetize their expertise. Elevate your membership offering and create a vibrant, interactive space for your most dedicated followers.
 
-[Manual](https://www.expresstechsoftwares.com/step-by-step-documentation-guide-on-how-to-connect-memberpress-and-discord-server-using-discord-pro-addon/?utm_source=wordpress.org&utm_medium=plugin_dir&utm_content=step-by-step&utm_term=step-by-step) | [Support](https://wordpress.org/support/plugin/expresstechsoftwares-memberpress-discord-add-on/) | [Demo](https://www.youtube.com/watch?v=2LHUGlwPxNI&feature=youtu.be) | [Premium Features](https://www.expresstechsoftwares.com/memberpress-discord-pro-sell-access-automate-and-add-engaging-exclusive-discord-access-elevate-your-community/)
+[Manual](https://www.expresstechsoftwares.com/step-by-step-documentation-guide-on-how-to-connect-memberpress-and-discord-server-using-discord-pro-addon/?utm_source=wordpress.org&utm_medium=plugin_dir&utm_content=step-by-step&utm_term=step-by-step) | [Support](https://wordpress.org/support/plugin/expresstechsoftwares-memberpress-discord-add-on/) | [Demo](https://www.youtube.com/watch?v=2LHUGlwPxNI&feature=youtu.be) | [Premium Features](https://www.expresstechsoftwares.com/memberpress-discord-pro-sell-access-automate-and-add-engaging-exclusive-discord-access-elevate-your-community?utm_source=wordpress.org&utm_medium=plugin_directory&utm_content=premium_features&utm_term=mepr_discord_pro)
 
 * **Unlock Exclusive Discord Realms:** Elevate your members' experience with access to private Discord servers tailored to their membership tier. Create an air of exclusivity that keeps subscribers coming back for more.
 
@@ -69,7 +69,7 @@ Transform your membership site into a thriving Discord community with these powe
 * [Access free support here on](https://wordpress.org/support/plugin/expresstechsoftwares-memberpress-discord-add-on/)
 * [Steps Connecting Discord Addon.](https://www.expresstechsoftwares.com/step-by-step-documentation-guide-on-how-to-connect-memberpress-and-discord-server-using-discord-addon/?utm_source=wordpress.org&utm_medium=plugin_directory&utm_content=steps_connecting_mepr_and_discord)
 
-[Pro Version Addon Features for MemberPress-Discord](https://www.expresstechsoftwares.com/memberpress-discord-pro-sell-access-automate-and-add-engaging-exclusive-discord-access-elevate-your-community/)
+[Pro Version Addon Features for MemberPress-Discord](https://www.expresstechsoftwares.com/memberpress-discord-pro-sell-access-automate-and-add-engaging-exclusive-discord-access-elevate-your-community?utm_source=wordpress.org&utm_medium=plugin_directory&utm_content=mepr_pro_version_features&utm_term=mepr_discord_pro)
 
 * **A. Enhanced Role Management**
 The Pro version supercharges your Discord integration with cloud-powered API calls. This advanced feature takes role management to new heights, ensuring lightning-fast synchronization between your membership site and Discord server. Experience seamless, efficient role updates that keep your community perfectly organized with minimal effort.
