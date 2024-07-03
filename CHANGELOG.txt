@@ -1,3 +1,6 @@
+= 1.0.25 =
+- Update readme file
+
 = 1.0.24 =
 - Fixe Pro link in readme file
 
