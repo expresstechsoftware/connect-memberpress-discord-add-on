@@ -1,3 +1,6 @@
+= 1.0.26 =
+- Updated readme file to comply with WordPress.org recommendation to limit plugin tags to 5
+
 = 1.0.25 =
 - Update readme file
 
