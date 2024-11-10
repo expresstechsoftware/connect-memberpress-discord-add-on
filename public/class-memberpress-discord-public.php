@@ -657,7 +657,7 @@ class ETS_Memberpress_Discord_Public {
 			}
 		}
 		delete_user_meta( $user_id, '_ets_memberpress_discord_default_role_id' );
-		delete_user_meta( $user_id, '_ets_memberpress_discord_username' );
+		//delete_user_meta( $user_id, '_ets_memberpress_discord_username' );
 		delete_user_meta( $user_id, '_ets_memberpress_discord_expires_in' );
 		delete_user_meta( $user_id, '_ets_memberpress_discord_avatar' );
 	}

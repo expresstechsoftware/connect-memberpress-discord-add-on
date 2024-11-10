@@ -16,6 +16,7 @@
  * Author:            ExpressTech Softwares Solutions Pvt Ltd
  * Author URI:        https://www.expresstechsoftwares.com
  * License:           GPL-2.0+
+ * Requires Plugins:  memberpress
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
  * Text Domain:       connect-memberpress-discord-add-on
  * Domain Path:       /languages
