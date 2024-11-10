@@ -1,3 +1,18 @@
+= 1.0.26 =
+- Updated readme file to comply with WordPress.org recommendation to limit plugin tags to 5
+
+= 1.0.25 =
+- Update readme file
+
+= 1.0.24 =
+- Fixe Pro link in readme file
+
+= 1.0.23 =
+- Update the readme file
+
+= 1.0.22 =
+- Added the `disable_as_for_roles_management` filter to allow customization of role-based management settings. This filter provides developers the flexibility to disable specific aspects of role management based on custom logic.
+
 = 1.0.21 =
 - Updated plugin to support WordPress version 6.5
 
