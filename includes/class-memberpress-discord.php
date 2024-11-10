@@ -109,6 +109,8 @@ class ETS_Memberpress_Discord {
 		 */
 		require_once ETS_MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . 'public/class-memberpress-discord-public.php';
 
+		require_once ETS_MEMBERPRESS_DISCORD_PLUGIN_DIR_PATH . 'includes/class-memberpress-discord-admin-notices.php';
+
 		$this->loader = new ETS_Memberpress_Discord_Loader();
 
 	}
@@ -171,11 +173,13 @@ class ETS_Memberpress_Discord {
 		$this->loader->add_action( 'before_delete_post', $plugin_admin, 'ets_memberpress_discord_as_schedule_job_membership_level_deleted' );
 		$this->loader->add_action( 'admin_init', $plugin_admin, 'ets_memberpress_discord_connect_bot' );
 		$this->loader->add_action( 'delete_user', $plugin_admin, 'ets_memberpress_discord_remove_user_from_server' );
-		$this->loader->add_action( 'mepr_table_controls_search', $plugin_admin, 'ets_memberpress_discord_search_by_discord', 10, 2);
+		$this->loader->add_action( 'mepr_table_controls_search', $plugin_admin, 'ets_memberpress_discord_search_by_discord', 10, 2 );
 		if ( is_multisite() ) {
 			$this->loader->add_action( 'remove_user_from_blog', $plugin_admin, 'ets_memberpress_discord_remove_user_from_server' );
 		}
 		$this->loader->add_action( 'admin_init', $plugin_admin, 'ets_memberperss_add_search_filter' );
+		$this->loader->add_action( 'wp_ajax_ets_memberpress_discord_notice_dismiss', $plugin_admin, 'ets_memberpress_discord_notice_dismiss' );
+		$this->loader->add_filter( 'disable_as_for_roles_management', $plugin_admin, 'ets_memberpress_discord_check_pro_version' );
 	}
 
 	/**
@@ -288,6 +292,7 @@ class ETS_Memberpress_Discord {
 		$ets_memberpress_discord_expiration_expired_message = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_expiration_expired_message' ) ) );
 		$ets_memberpress_discord_welcome_message            = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_welcome_message' ) ) );
 		$ets_memberpress_discord_cancel_message             = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_cancel_message' ) ) );
+		$ets_memberpress_discord_embed_messaging_feature    = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_embed_messaging_feature' ) ) );
 		// Check if DM channel is already created for the user.
 		$user_dm = get_user_meta( $user_id, '_ets_memberpress_discord_dm_channel', true );
 
@@ -316,19 +321,30 @@ class ETS_Memberpress_Discord {
 		}
 
 		$creat_dm_url = ETS_MEMBERPRESS_DISCORD_API_URL . '/channels/' . $dm_channel_id . '/messages';
-		$dm_args      = array(
-			'method'  => 'POST',
-			'headers' => array(
-				'Content-Type'  => 'application/json',
-				'Authorization' => 'Bot ' . $discord_bot_token,
-			),
-			'body'    => wp_json_encode(
-				array(
-					'content' => sanitize_text_field( trim( wp_unslash( $message ) ) ),
-				)
-			),
-		);
-		$dm_response  = wp_remote_post( $creat_dm_url, $dm_args );
+		if ( $ets_memberpress_discord_embed_messaging_feature ) {
+			$dm_args = array(
+				'method'  => 'POST',
+				'headers' => array(
+					'Content-Type'  => 'application/json',
+					'Authorization' => 'Bot ' . $discord_bot_token,
+				),
+				'body'    => ets_memberpress_discord_get_rich_embed_message( trim( $message ) ),
+			);
+		} else {
+			$dm_args = array(
+				'method'  => 'POST',
+				'headers' => array(
+					'Content-Type'  => 'application/json',
+					'Authorization' => 'Bot ' . $discord_bot_token,
+				),
+				'body'    => wp_json_encode(
+					array(
+						'content' => sanitize_text_field( trim( wp_unslash( $message ) ) ),
+					)
+				),
+			);
+		}
+		$dm_response = wp_remote_post( $creat_dm_url, $dm_args );
 		ets_memberpress_discord_log_api_response( $user_id, $creat_dm_url, $dm_args, $dm_response );
 		$dm_response_body = json_decode( wp_remote_retrieve_body( $dm_response ), true );
 		if ( ets_memberpress_discord_check_api_errors( $dm_response ) ) {

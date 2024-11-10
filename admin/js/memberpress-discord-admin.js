@@ -284,6 +284,31 @@
 		}
 		$('#ets_memberpress_btn_color').wpColorPicker();
 		$('#ets_memberpress_discord_btn_disconnect_color').wpColorPicker();
+
+		$(' .ets-memberpress-discord-review-notice > button.notice-dismiss' ).on('click', function() {
+			$.ajax({
+				type: "POST",
+				dataType: "JSON",
+				url: etsMemberpressParams.admin_ajax,
+				data: { 
+					'action': 'ets_memberpress_discord_notice_dismiss', 
+					'ets_memberpress_discord_nonce' : etsMemberpressParams.ets_memberpress_discord_nonce 
+				},
+				beforeSend: function () {
+					console.log('sending...');
+				},
+				success: function (response) {
+					console.log(response);
+				},
+				error: function (response) {
+					console.error(response);
+				},
+				complete: function () {
+					// 
+				}
+			});
+		});
+
 	});
 	/*Tab options*/
 	$.skeletabs.setDefaults({

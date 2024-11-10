@@ -1,3 +1,49 @@
+= 1.0.26 =
+- Updated readme file to comply with WordPress.org recommendation to limit plugin tags to 5
+
+= 1.0.25 =
+- Update readme file
+
+= 1.0.24 =
+- Fixe Pro link in readme file
+
+= 1.0.23 =
+- Update the readme file
+
+= 1.0.22 =
+- Added the `disable_as_for_roles_management` filter to allow customization of role-based management settings. This filter provides developers the flexibility to disable specific aspects of role management based on custom logic.
+
+= 1.0.21 =
+- Updated plugin to support WordPress version 6.5
+
+= 1.0.20 =
+- Update Contributors
+
+= 1.0.19 =
+- Fixe duplicate bagdes
+
+= 1.0.18 =
+- Update the dismissible notification asking for review
+
+= 1.0.17 =
+- Add dismissible notification asking for review
+
+= 1.0.16 =
+- Update support WordPress 6.3
+
+= 1.0.15 =
+- Update user meta 'discord_role_id_for_' when RUN API button
+
+= 1.0.14 =
+- Update support WordPress 6.2
+- Add Opt-out delete all data associated with the plugin when it is uninstalled.
+
+= 1.0.12 =
+- Add link to plugin support forum
+
+= 1.0.11 =
+- Add custom message for roles assigned or to be assigned.
+
 = 1.0.10 =
 - added visual clues to demonstrate the error connect to bot cases.
 
