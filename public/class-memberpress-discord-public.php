@@ -589,8 +589,7 @@ class ETS_Memberpress_Discord_Public {
 				}
 			}
 			// delete all user_meta keys
-			// Not deleting keys as data be used for debug purpose.
-			//ets_memberpress_discord_remove_usermeta( $user_id );
+			ets_memberpress_discord_remove_usermeta( $user_id );
 
 		}
 		$event_res = array(
@@ -768,6 +767,7 @@ class ETS_Memberpress_Discord_Public {
 
 		$discord_exist_user_id = sanitize_text_field( trim( get_user_meta( $user_id, '_ets_memberpress_discord_user_id', true ) ) );
 		$access_token          = sanitize_text_field( trim( $res_body['access_token'] ) );
+		
 		update_user_meta( $user_id, '_ets_memberpress_discord_access_token', $access_token );
 		if ( array_key_exists( 'refresh_token', $res_body ) ) {
 			$refresh_token = sanitize_text_field( trim( $res_body['refresh_token'] ) );

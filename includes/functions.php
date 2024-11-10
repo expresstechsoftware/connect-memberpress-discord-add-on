@@ -341,8 +341,9 @@ function ets_memberpress_discord_remove_usermeta( $user_id ) {
 	global $wpdb;
 	$usermeta_table      = $wpdb->prefix . 'usermeta';
 	$usermeta_sql        = 'DELETE FROM ' . $usermeta_table . " WHERE `user_id` = %d AND  `meta_key` LIKE '_ets_memberpress_discord%'; ";
-	$delete_usermeta_sql = $wpdb->prepare( $usermeta_sql, $user_id );
-	$wpdb->query( $delete_usermeta_sql );
+	//$delete_usermeta_sql = $wpdb->prepare( $usermeta_sql, $user_id );
+	delete_user_meta( $user_id, '_ets_memberpress_discord_access_token' );
+	//$wpdb->query( $delete_usermeta_sql );
 }
 
 function ets_memberpress_discord_get_roles_color_name( $all_roles, $mapped_role_id, $role_color, $ets_memberpress_connecttodiscord_btn ) {

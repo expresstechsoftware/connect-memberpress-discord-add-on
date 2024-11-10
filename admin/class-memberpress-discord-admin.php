@@ -1215,7 +1215,6 @@ class ETS_Memberpress_Discord_Admin {
 			$plugin_public->memberpress_delete_member_from_guild( $user_id, false );
 
 			// delete all user_meta keys.
-			// Not deleting keys as data be used for debug purpose.
 			ets_memberpress_discord_remove_usermeta( $user_id );
 		}
 	}
