@@ -589,7 +589,8 @@ class ETS_Memberpress_Discord_Public {
 				}
 			}
 			// delete all user_meta keys
-			ets_memberpress_discord_remove_usermeta( $user_id );
+			// Not deleting keys as data be used for debug purpose.
+			//ets_memberpress_discord_remove_usermeta( $user_id );
 
 		}
 		$event_res = array(
