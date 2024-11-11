@@ -1,3 +1,7 @@
+= 1.1.0 =
+- Added admin notification for requeesing review our addon.
+- Only delete access token when member disconnect.
+
 = 1.0.26 =
 - Updated readme file to comply with WordPress.org recommendation to limit plugin tags to 5
 
