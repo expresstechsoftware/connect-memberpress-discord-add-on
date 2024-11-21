@@ -568,7 +568,7 @@ class ETS_Memberpress_Discord_Public {
 		$previous_default_role                = get_user_meta( $user_id, '_ets_memberpress_discord_default_role_id', true );
 		if ( $user_id ) {
 			if ( $memberpress_member_kick_out == true ) {
-				$this->memberpress_delete_member_from_guild( $user_id, false );
+				$this->memberpress_delete_member_from_guild( $user_id, true );
 			} else {
 				// check for roles assigned, and delete them
 				  $active_memberships = ets_memberpress_discord_get_active_memberships( $user_id );

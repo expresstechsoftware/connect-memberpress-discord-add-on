@@ -1,5 +1,6 @@
 = 1.1.1 = 
 - 1.1.0 commit failed to update on wp.org 
+- - Reason: Required Plugin header do not work for plugins who are not hosted with wp.org 
 
 = 1.1.0 =
 - Added admin notification for requeesing review our addon.

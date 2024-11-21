@@ -769,7 +769,7 @@ class ETS_Memberpress_Discord_Admin {
 			}
 
 			if ( isset( $user_id ) && $allow_none_member == 'no' && empty( $active_memberships ) ) {
-				$plugin_public->memberpress_delete_member_from_guild( $user_id, false );
+				$plugin_public->memberpress_delete_member_from_guild( $user_id, true );
 			}
 
 			// Send DM about expiry, but only when allow_none_member setting is yes
@@ -796,7 +796,9 @@ class ETS_Memberpress_Discord_Admin {
 		if ( $is_schedule ) {
 			as_schedule_single_action( ets_memberpress_discord_get_random_timestamp( ets_memberpress_discord_get_highest_last_attempt_timestamp() ), 'ets_memberpress_discord_as_schedule_delete_role', array( $user_id, $ets_role_id, $is_schedule ), ETS_MEMBERPRESS_DISCORD_AS_GROUP_NAME );
 		} else {
-			$this->ets_memberpress_discord_as_handler_delete_memberrole( $user_id, $ets_role_id, $is_schedule );
+			if (!apply_filters('disable_as_for_roles_management', true)) {
+				$this->ets_memberpress_discord_as_handler_delete_memberrole( $user_id, $ets_role_id, $is_schedule );
+			}
 		}
 	}
 
@@ -1212,7 +1214,7 @@ class ETS_Memberpress_Discord_Admin {
 			$memberpress_discord = new ETS_Memberpress_Discord();
 			$plugin_admin        = new ETS_Memberpress_Discord_Admin( $memberpress_discord->get_plugin_name(), $memberpress_discord->get_version() );
 			$plugin_public       = new ETS_Memberpress_Discord_Public( $memberpress_discord->get_plugin_name(), $memberpress_discord->get_version(), $plugin_admin );
-			$plugin_public->memberpress_delete_member_from_guild( $user_id, false );
+			$plugin_public->memberpress_delete_member_from_guild( $user_id, true );
 
 			// delete all user_meta keys.
 			ets_memberpress_discord_remove_usermeta( $user_id );
