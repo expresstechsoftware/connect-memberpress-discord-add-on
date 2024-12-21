@@ -145,7 +145,7 @@ class ETS_Memberpress_Discord_Public {
 			} elseif ( current_user_can( 'memberpress_authorized' ) && $mapped_role_ids || $allow_none_member == 'yes' ) {
 				$connect_btn_bg_color                  = 'style="background-color:' . esc_attr( $ets_memberpress_discord_btn_color ) . '"';
 				$ets_memberpress_connecttodiscord_btn .= '<div class="ets-discord-connection-wrapper"><label class="ets-connection-lbl">' . esc_html__( 'Discord connection: ', 'connect-memberpress-discord-add-on' ) . '</label>';
-				$ets_memberpress_connecttodiscord_btn .= '<a href="?action=memberpress-discord-login" class="btn-connect ets-btn" ' . $connect_btn_bg_color . ' >' . esc_html__( $ets_memberpress_discord_loggedin_button_text, 'connect-memberpress-discord-add-on' ) . ETS_Memberpress_Discord::get_discord_logo_white() . '</a>';
+				$ets_memberpress_connecttodiscord_btn .= '<a href="?action=memberpress-discord-login" class="btn-connect ets-btn test" ' . $connect_btn_bg_color . ' >' . esc_html__( $ets_memberpress_discord_loggedin_button_text, 'connect-memberpress-discord-add-on' ) . ETS_Memberpress_Discord::get_discord_logo_white() . '</a>';
 				if ( $mapped_role_ids || $default_role_name ) {
 					$ets_memberpress_connecttodiscord_btn .= '<p class="ets_assigned_role">';
 					$ets_memberpress_connecttodiscord_btn .= $ets_memberpress_discord_member_facing_text;
@@ -324,10 +324,13 @@ class ETS_Memberpress_Discord_Public {
 			),
 		);
 		$guild_response         = wp_remote_post( $guilds_memeber_api_url, $guild_args );
-		ets_memberpress_discord_log_api_response( $user_id, $guilds_memeber_api_url, $guild_args, $guild_response );
+
+		ets_memberpress_discord_log_api_response( $user_id, $guilds_memeber_api_url, $guild_args, $guild_response, debug_backtrace()[0] );
+
 		if ( ets_memberpress_discord_check_api_errors( $guild_response ) ) {
 
 			$response_arr = json_decode( wp_remote_retrieve_body( $guild_response ), true );
+
 			write_api_response_logs( $response_arr, $user_id, debug_backtrace()[0] );
 			// this should be catch by Action schedule failed action.
 			throw new Exception( 'Failed in function ets_as_handler_add_member_to_guild' );
@@ -404,7 +407,7 @@ class ETS_Memberpress_Discord_Public {
 
 			$response = wp_remote_get( $discord_change_role_api_url, $param );
 
-			ets_memberpress_discord_log_api_response( $user_id, $discord_change_role_api_url, $param, $response );
+			ets_memberpress_discord_log_api_response( $user_id, $discord_change_role_api_url, $param, $response, debug_backtrace()[0]  );
 			if ( ets_memberpress_discord_check_api_errors( $response ) ) {
 				$response_arr = json_decode( wp_remote_retrieve_body( $response ), true );
 				write_api_response_logs( $response_arr, $user_id, debug_backtrace()[0] );
@@ -437,7 +440,7 @@ class ETS_Memberpress_Discord_Public {
 			),
 		);
 		$user_response         = wp_remote_get( $discord_cuser_api_url, $param );
-		ets_memberpress_discord_log_api_response( $user_id, $discord_cuser_api_url, $param, $user_response );
+		ets_memberpress_discord_log_api_response( $user_id, $discord_cuser_api_url, $param, $user_response, debug_backtrace()[0]  );
 
 		$response_arr = json_decode( wp_remote_retrieve_body( $user_response ), true );
 		write_api_response_logs( $response_arr, $user_id, debug_backtrace()[0] );
@@ -472,7 +475,7 @@ class ETS_Memberpress_Discord_Public {
 					),
 				);
 				$response = wp_remote_post( $discord_token_api_url, $args );
-				ets_memberpress_discord_log_api_response( $user_id, $discord_token_api_url, $args, $response );
+				ets_memberpress_discord_log_api_response( $user_id, $discord_token_api_url, $args, $response , debug_backtrace()[0] );
 				if ( ets_memberpress_discord_check_api_errors( $response ) ) {
 					$response_arr = json_decode( wp_remote_retrieve_body( $response ), true );
 					write_api_response_logs( $response_arr, $user_id, debug_backtrace()[0] );
@@ -513,7 +516,7 @@ class ETS_Memberpress_Discord_Public {
 					),
 				);
 				$response = wp_remote_post( $discord_token_api_url, $args );
-				ets_memberpress_discord_log_api_response( $user_id, $discord_token_api_url, $args, $response );
+				ets_memberpress_discord_log_api_response( $user_id, $discord_token_api_url, $args, $response, debug_backtrace()[0]  );
 				if ( ets_memberpress_discord_check_api_errors( $response ) ) {
 					$response_arr = json_decode( wp_remote_retrieve_body( $response ), true );
 					write_api_response_logs( $response_arr, $user_id, debug_backtrace()[0] );
@@ -536,7 +539,7 @@ class ETS_Memberpress_Discord_Public {
 			);
 			$response = wp_remote_post( $discord_token_api_url, $args );
 
-			ets_memberpress_discord_log_api_response( $user_id, $discord_token_api_url, $args, $response );
+			ets_memberpress_discord_log_api_response( $user_id, $discord_token_api_url, $args, $response, debug_backtrace()[0]  );
 			if ( ets_memberpress_discord_check_api_errors( $response ) ) {
 				$response_arr = json_decode( wp_remote_retrieve_body( $response ), true );
 				write_api_response_logs( $response_arr, $user_id, debug_backtrace()[0] );
@@ -568,7 +571,7 @@ class ETS_Memberpress_Discord_Public {
 		$previous_default_role                = get_user_meta( $user_id, '_ets_memberpress_discord_default_role_id', true );
 		if ( $user_id ) {
 			if ( $memberpress_member_kick_out == true ) {
-				$this->memberpress_delete_member_from_guild( $user_id, true );
+				$this->memberpress_delete_member_from_guild( $user_id, false );
 			} else {
 				// check for roles assigned, and delete them
 				  $active_memberships = ets_memberpress_discord_get_active_memberships( $user_id );
@@ -637,7 +640,7 @@ class ETS_Memberpress_Discord_Public {
 			),
 		);
 		$guild_response                   = wp_remote_post( $guilds_delete_memeber_api_url, $guild_args );
-		ets_memberpress_discord_log_api_response( $user_id, $guilds_delete_memeber_api_url, $guild_args, $guild_response );
+		ets_memberpress_discord_log_api_response( $user_id, $guilds_delete_memeber_api_url, $guild_args, $guild_response , debug_backtrace()[0] );
 		if ( ets_memberpress_discord_check_api_errors( $guild_response ) ) {
 			$response_arr = json_decode( wp_remote_retrieve_body( $guild_response ), true );
 			write_api_response_logs( $response_arr, $user_id, debug_backtrace()[0] );
@@ -782,11 +785,11 @@ class ETS_Memberpress_Discord_Public {
 		}
 
 		if ( is_array( $user_body ) && array_key_exists( 'discriminator', $user_body ) ) {
-			$discord_user_number           = $user_body['discriminator'];
+			//$discord_user_number           = $user_body['discriminator'];
 			$discord_user_name             = $user_body['username'];
-			$discord_user_name_with_number = $discord_user_name . '#' . $discord_user_number;
+			//$discord_user_name_with_number = $discord_user_name . '#' . $discord_user_number;
 			$discord_user_avatar           = $user_body['avatar'];
-			update_user_meta( $user_id, '_ets_memberpress_discord_username', $discord_user_name_with_number );
+			update_user_meta( $user_id, '_ets_memberpress_discord_username', $discord_user_name );
 			update_user_meta( $user_id, '_ets_memberpress_discord_avatar', $discord_user_avatar );
 		}
 		if ( is_array( $user_body ) && array_key_exists( 'id', $user_body ) ) {
