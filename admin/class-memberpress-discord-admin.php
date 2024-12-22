@@ -557,7 +557,7 @@ class ETS_Memberpress_Discord_Admin {
 			);
 			$guild_response          = wp_remote_post( $discod_server_roles_api, $guild_args );
 
-			//ets_memberpress_discord_log_api_response( $user_id, $discod_server_roles_api, $guild_args, $guild_response, debug_backtrace()[0]  );
+			//ets_memberpress_discord_log_api_response( $user_id, $discod_server_roles_api, $guild_args, $guild_response, debug_backtrace()[0] );
 
 			$response_arr = json_decode( wp_remote_retrieve_body( $guild_response ), true );
 

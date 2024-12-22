@@ -343,13 +343,19 @@ class ETS_Memberpress_Discord_Public {
 				);
 				update_user_meta( $user_id, '_ets_memberpress_discord_role_id_for_' . $active_memberships[ $key ]['txn_number'], $assigned_role );
 				if ( $discord_role && $discord_role != 'none' && isset( $user_id ) ) {
-					$this->put_discord_role_api( $user_id, $discord_role );
+					// If PRO version is enabled.
+					if (!apply_filters('disable_as_for_roles_management', true)) {
+						$this->put_discord_role_api( $user_id, $discord_role );
+					}
 				}
 			}
 		}
 
 		if ( $default_role && 'none' !== $default_role && isset( $user_id ) ) {
-			$this->put_discord_role_api( $user_id, $default_role );
+			// If PRO version is enabled.
+			if (!apply_filters('disable_as_for_roles_management', true)) {
+				$this->put_discord_role_api( $user_id, $default_role );
+			}
 			update_user_meta( $user_id, '_ets_memberpress_discord_default_role_id', $default_role );
 		}
 		if ( empty( get_user_meta( $user_id, '_ets_memberpress_discord_join_date', true ) ) ) {
