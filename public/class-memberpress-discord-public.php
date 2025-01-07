@@ -200,7 +200,6 @@ class ETS_Memberpress_Discord_Public {
 				}
 				$code     = sanitize_text_field( trim( $_GET['code'] ) );
 				$response = $this->ets_memberpress_create_discord_auth_token( $code, $user_id, $active_memberships );
-
 				if ( ! empty( $response ) && ! is_wp_error( $response ) ) {
 					$res_body              = json_decode( wp_remote_retrieve_body( $response ), true );
 					$discord_exist_user_id = sanitize_text_field( trim( get_user_meta( $user_id, '_ets_memberpress_discord_user_id', true ) ) );
@@ -215,10 +214,19 @@ class ETS_Memberpress_Discord_Public {
 								$_ets_memberpress_discord_user_id = sanitize_text_field( trim( $user_body['id'] ) );
 								if ( $discord_exist_user_id === $_ets_memberpress_discord_user_id ) {
 									foreach ( $active_memberships as $active_membership ) {
-										$_ets_memberpress_discord_role_id = get_user_meta( $user_id, '_ets_memberpress_discord_role_id_for_' . $active_membership['txn_number'], true );
-										if ( ! empty( $_ets_memberpress_discord_role_id ) && $_ets_memberpress_discord_role_id['role_id'] != 'none' ) {
-											$this->admin_cls_instance->memberpress_delete_discord_role( $user_id, $_ets_memberpress_discord_role_id['role_id'] );
+
+										if (is_array($active_membership) && isset($active_membership['txn_number'])) {
+											$_ets_memberpress_discord_role_id = get_user_meta( $user_id, '_ets_memberpress_discord_role_id_for_' . $active_membership['txn_number'], true );
+
+											if (!empty($_ets_memberpress_discord_role_id) 
+													&& is_array($_ets_memberpress_discord_role_id) 
+													&& $_ets_memberpress_discord_role_id['role_id'] !== 'none'
+												)
+												{
+												$this->admin_cls_instance->memberpress_delete_discord_role( $user_id, $_ets_memberpress_discord_role_id['role_id'] );
+											}
 										}
+
 									}
 								}
 								update_user_meta( $user_id, '_ets_memberpress_discord_user_id', $_ets_memberpress_discord_user_id );
