@@ -29,7 +29,7 @@ if ( ! defined( 'WPINC' ) ) {
 /**
  * Currently plugin version.
  */
-define( 'ETS_MEMBERPRESS_DISCORD_VERSION', '1.0.26' );
+define( 'ETS_MEMBERPRESS_DISCORD_VERSION', '1.1.2' );
 
 /**
  * Discord API URL
