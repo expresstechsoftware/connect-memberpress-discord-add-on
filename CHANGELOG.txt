@@ -1,4 +1,13 @@
+= 1.1.2 =
+- Reverting Schedule disconnect and delete member to previous instant delete.
+- Removed code to save discord descriminator.
+- Improved logging and now capture more events like cancel, expire.
+- Testing with WP 6.7.1
+- Fix Maximum Call Stack Overflow Due to Exponential DOM Element Duplication GH#161
+
 = 1.1.1 = 
+- Schedule delete the member after disconnect 
+
 - 1.1.0 commit failed to update on wp.org 
 - - Reason: Required Plugin header do not work for plugins who are not hosted with wp.org 
 

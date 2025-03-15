@@ -43,13 +43,26 @@ function ets_memberpress_discord_get_current_screen_url() {
  * @param ARRAY        $api_args
  * @param ARRAY|OBJECT $api_response
  */
-function ets_memberpress_discord_log_api_response( $user_id, $api_url = '', $api_args = array(), $api_response = '' ) {
+function ets_memberpress_discord_log_api_response( $user_id, $api_url = '', $api_args = array(), $api_response = '', $backtrace_arr = array() ) {
+	
 	$log_api_response = get_option( 'ets_memberpress_discord_log_api_response' );
+	$uuid             = get_option( 'ets_memberpress_discord_uuid_file_name' );
+	$log_file_name    = $uuid . ETS_Memberpress_Discord_Admin::$log_file_name;
+
+	$log_string        = current_time( 'mysql' );
+	$log_string  .= '==>USER::' . $user_id;
+	$log_string  .= '==>URL::' . $api_url;
+
+	unset($api_args['headers']['Authorization']);
+
+	$log_string .= '==>ARGS::' . print_r( $api_args, true );
+
+	$response_arr = json_decode( wp_remote_retrieve_body( $api_response ), true );
+
+	$log_string .= '==>File::' . $backtrace_arr['file'] . '==>Line::' . $backtrace_arr['line'] . '==>Function::' . $backtrace_arr['function'] . '==>::' . print_r($response_arr,true);
+
 	if ( $log_api_response == true ) {
-		$log_string  = '==>' . $api_url;
-		$log_string .= '-::-' . serialize( $api_args );
-		$log_string .= '-::-' . serialize( $api_response );
-		write_api_response_logs( $log_string, $user_id );
+		file_put_contents( WP_CONTENT_DIR . '/' . $log_file_name, $log_string . PHP_EOL, FILE_APPEND | LOCK_EX );
 	}
 }
 

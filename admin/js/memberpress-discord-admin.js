@@ -62,19 +62,36 @@
 						$("#maaping_json_val").html(mapjson);
 						$.each(JSON.parse(mapjson), function (key, val) {
 							var arrayofkey = key.split('id_');
-							var preclone = $('*[data-role_id="' + val + '"]').clone();
-							if(preclone.length>1){
+							
+							// 1. Clone ONLY original elements (exclude those with data-level_id)
+							var preclone = $('[data-role_id="' + val + '"]:not([data-level_id])').clone();
+							
+							if (preclone.length > 1) {
 								preclone.slice(1).hide();
 							}
-							if (jQuery('*[data-level_id="' + arrayofkey[1] + '"]').find('*[data-role_id="' + val + '"]').length == 0) {
-								$('*[data-level_id="' + arrayofkey[1] + '"]').append(preclone).attr('data-drop-role_id', val).find('span').css({ 'order': '2' });
-							}
-							if ($('*[data-level_id="' + arrayofkey[1] + '"]').find('.makeMeDraggable').length >= 1) {
-								$('*[data-level_id="' + arrayofkey[1] + '"]').droppable("destroy");
-							}
-							preclone.css({ 'width': '100%', 'left': '0', 'top': '0', 'margin-bottom': '0px', 'order': '1' }).attr('data-level_id', arrayofkey[1]);
-							makeDrag(preclone);
 							
+							// 2. Check if the target level container needs the element
+							var $targetLevel = $('[data-level_id="' + arrayofkey[1] + '"]');
+							if ($targetLevel.find('[data-role_id="' + val + '"]').length === 0) {
+								// 3. Append the clone and mark it with data-level_id
+								preclone
+									.attr('data-level_id', arrayofkey[1])
+									.css({ 'width': '100%', 'left': '0', 'top': '0', 'margin-bottom': '0px', 'order': '1' });
+								
+								$targetLevel
+									.append(preclone)
+									.attr('data-drop-role_id', val)
+									.find('span')
+									.css({ 'order': '2' });
+							}
+							
+							// 4. Conditionally destroy droppable
+							if ($targetLevel.find('.makeMeDraggable').length >= 1) {
+								$targetLevel.droppable("destroy");
+							}
+							
+							// 5. Initialize dragging AFTER appending
+							makeDrag(preclone);
 						});
 					}
 

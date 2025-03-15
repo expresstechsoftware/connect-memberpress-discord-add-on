@@ -557,7 +557,7 @@ class ETS_Memberpress_Discord_Admin {
 			);
 			$guild_response          = wp_remote_post( $discod_server_roles_api, $guild_args );
 
-			ets_memberpress_discord_log_api_response( $user_id, $discod_server_roles_api, $guild_args, $guild_response );
+			//ets_memberpress_discord_log_api_response( $user_id, $discod_server_roles_api, $guild_args, $guild_response, debug_backtrace()[0] );
 
 			$response_arr = json_decode( wp_remote_retrieve_body( $guild_response ), true );
 
@@ -769,7 +769,7 @@ class ETS_Memberpress_Discord_Admin {
 			}
 
 			if ( isset( $user_id ) && $allow_none_member == 'no' && empty( $active_memberships ) ) {
-				$plugin_public->memberpress_delete_member_from_guild( $user_id, true );
+				$plugin_public->memberpress_delete_member_from_guild( $user_id, false );
 			}
 
 			// Send DM about expiry, but only when allow_none_member setting is yes
@@ -826,7 +826,7 @@ class ETS_Memberpress_Discord_Admin {
 			);
 
 			$response = wp_remote_request( $discord_delete_role_api_url, $param );
-			ets_memberpress_discord_log_api_response( $user_id, $discord_delete_role_api_url, $param, $response );
+			ets_memberpress_discord_log_api_response( $user_id, $discord_delete_role_api_url, $param, $response, debug_backtrace()[0]  );
 			if ( ets_memberpress_discord_check_api_errors( $response ) ) {
 				$response_arr = json_decode( wp_remote_retrieve_body( $response ), true );
 				write_api_response_logs( $response_arr, $user_id, debug_backtrace()[0] );
@@ -1048,7 +1048,7 @@ class ETS_Memberpress_Discord_Admin {
 				/**
 				 * The member cannot take advantage of the hospitality of the server.
 				 */
-				$plugin_public->memberpress_delete_member_from_guild( $user_id, true );
+				$plugin_public->memberpress_delete_member_from_guild( $user_id, false );
 
 			} elseif ( is_null( $active_memberships ) && $allow_none_member == 'yes' ) {
 				/**
@@ -1214,7 +1214,7 @@ class ETS_Memberpress_Discord_Admin {
 			$memberpress_discord = new ETS_Memberpress_Discord();
 			$plugin_admin        = new ETS_Memberpress_Discord_Admin( $memberpress_discord->get_plugin_name(), $memberpress_discord->get_version() );
 			$plugin_public       = new ETS_Memberpress_Discord_Public( $memberpress_discord->get_plugin_name(), $memberpress_discord->get_version(), $plugin_admin );
-			$plugin_public->memberpress_delete_member_from_guild( $user_id, true );
+			$plugin_public->memberpress_delete_member_from_guild( $user_id, false );
 
 			// delete all user_meta keys.
 			ets_memberpress_discord_remove_usermeta( $user_id );

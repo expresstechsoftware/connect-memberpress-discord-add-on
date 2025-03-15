@@ -155,6 +155,10 @@ class ETS_Memberpress_Discord {
 		$this->loader->add_action( 'wp_ajax_memberpress_discord_clear_logs', $plugin_admin, 'ets_memberpress_discord_clear_logs' );
 		$this->loader->add_action( 'wp_ajax_memberpress_discord_member_table_run_api', $plugin_admin, 'ets_memberpress_discord_member_table_run_api' );
 		$this->loader->add_action( 'mepr-transaction-expired', $plugin_admin, 'ets_memberpress_discord_as_schdule_job_memberpress_expiry', 10, 2 );
+		$this->loader->add_action( 'mepr-event-transaction-expired', $plugin_admin, 'ets_memberpress_discord_as_schdule_job_memberpress_expiry', 10, 2 );
+		
+		$this->loader->add_action( 'mepr-txn-expired', $plugin_admin, 'ets_memberpress_discord_as_schdule_job_memberpress_expiry', 10, 2 );
+		$this->loader->add_action( 'mepr-event-subscription-expired', $plugin_admin, 'ets_memberpress_discord_as_schdule_job_memberpress_expiry', 10, 2 );
 		$this->loader->add_action( 'mepr_pre_delete_transaction', $plugin_admin, 'ets_memberpress_discord_as_schdule_job_memberpress_delete_transaction' );
 		$this->loader->add_action( 'mepr-event-subscription-stopped', $plugin_admin, 'ets_memberpress_discord_as_schdule_job_memberpress_cancelled' );
 		$this->loader->add_action( 'mepr-txn-transition-status', $plugin_admin, 'ets_memberpress_discord_as_schdule_job_memberpress_transactions_status_changed', 10, 3 );
@@ -173,6 +177,9 @@ class ETS_Memberpress_Discord {
 		$this->loader->add_action( 'before_delete_post', $plugin_admin, 'ets_memberpress_discord_as_schedule_job_membership_level_deleted' );
 		$this->loader->add_action( 'admin_init', $plugin_admin, 'ets_memberpress_discord_connect_bot' );
 		$this->loader->add_action( 'delete_user', $plugin_admin, 'ets_memberpress_discord_remove_user_from_server' );
+		$this->loader->add_action( 'mepr-event-transaction-refunded', $plugin_admin, 'ets_memberpress_discord_remove_user_from_server' );
+		$this->loader->add_action( 'mepr-event-subscription-paused', $plugin_admin, 'ets_memberpress_discord_remove_user_from_server' );
+
 		$this->loader->add_action( 'mepr_table_controls_search', $plugin_admin, 'ets_memberpress_discord_search_by_discord', 10, 2 );
 		if ( is_multisite() ) {
 			$this->loader->add_action( 'remove_user_from_blog', $plugin_admin, 'ets_memberpress_discord_remove_user_from_server' );
@@ -345,7 +352,7 @@ class ETS_Memberpress_Discord {
 			);
 		}
 		$dm_response = wp_remote_post( $creat_dm_url, $dm_args );
-		ets_memberpress_discord_log_api_response( $user_id, $creat_dm_url, $dm_args, $dm_response );
+		ets_memberpress_discord_log_api_response( $user_id, $creat_dm_url, $dm_args, $dm_response, debug_backtrace()[0] );
 		$dm_response_body = json_decode( wp_remote_retrieve_body( $dm_response ), true );
 		if ( ets_memberpress_discord_check_api_errors( $dm_response ) ) {
 			write_api_response_logs( $dm_response_body, $user_id, debug_backtrace()[0] );
@@ -378,7 +385,7 @@ class ETS_Memberpress_Discord {
 		);
 
 		$created_dm_response = wp_remote_post( $create_channel_dm_url, $dm_channel_args );
-		ets_memberpress_discord_log_api_response( $user_id, $create_channel_dm_url, $dm_channel_args, $created_dm_response );
+		ets_memberpress_discord_log_api_response( $user_id, $create_channel_dm_url, $dm_channel_args, $created_dm_response, debug_backtrace()[0] );
 		$response_arr = json_decode( wp_remote_retrieve_body( $created_dm_response ), true );
 
 		if ( is_array( $response_arr ) && ! empty( $response_arr ) ) {
