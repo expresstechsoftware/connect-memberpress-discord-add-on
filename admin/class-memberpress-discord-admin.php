@@ -1007,6 +1007,108 @@ class ETS_Memberpress_Discord_Admin {
 	}
 
 	/**
+	 * Run API function that will handle call if PRO version is active.
+	 * @param NONE
+	 * @param NONE
+	*/
+	public function ets_memberspress_discord_run_api_pro() {
+		if ( ! defined( 'ABSPATH' ) ) { exit; }
+
+		global $wpdb;
+		// Get and validate user_id
+		$user_id = isset( $_POST['user_id'] ) ? absint( $_POST['user_id'] ) : 0;
+		if ( ! $user_id ) {
+			return new WP_Error( 'invalid_user_id', 'Invalid user_id.' );
+		}		
+
+		$mepr_members_table = $wpdb->prefix . 'mepr_members';
+    	$events_log_table   = $wpdb->prefix . 'ets_mepr_events_log';
+
+		// Fetch memberships string e.g. "(9,11)"
+		$memberships_raw = $wpdb->get_var(
+			$wpdb->prepare(
+				"SELECT memberships FROM {$mepr_members_table} WHERE user_id = %d LIMIT 1",
+				$user_id
+			)
+		);
+
+		if ( is_null( $memberships_raw ) ) {
+        	return new WP_Error( 'not_found', 'No mepr_members row found for this user_id.' );
+    	}
+
+		// Normalize: strip parentheses/spaces, split by comma
+		$clean = trim( $memberships_raw );
+		$clean = preg_replace( '/^\((.*)\)$/', '$1', $clean ); // remove outer ( )
+		$parts = array_filter( array_map( 'trim', explode( ',', $clean ) ) );
+
+		// Keep only positive integers, unique
+    	$membership_ids = array_values( array_unique( array_map( 'absint', $parts ) ) );
+    	$membership_ids = array_filter( $membership_ids, function( $v ){ return $v > 0; } );
+
+		if ( empty( $membership_ids ) ) {
+        	return new WP_Error( 'no_memberships', 'No valid membership IDs found for this user.' );
+    	}
+
+		// Prepare multi-row INSERT
+		$now_mysql   = current_time( 'mysql' );        // site-local time; switch to current_time('mysql', true) if you want GMT
+		$event_name  = 'RUN_API';
+		$status      = 'pending';
+		$args_json   = '{}';
+		$endpoint    = 'DISCORD_API_GUILD_MEMBER_ROLE';
+		$retry_count = 0;
+
+		// Columns we’ll insert (exclude id & last_updated which is auto)
+		// event_key, event_name, event_time, status_of_api, user_id, membership_id, args_from_event, processed_time, retry_count, error_message, endpoint_url
+		$placeholders_row = "(%s,%s,%s,%s,%d,%d,%s,NULL,%d,NULL,%s)";
+		// If you truly need "processed_time = '0000-00-00 00:00:00'", replace NULL above with %s and pass '0000-00-00 00:00:00' in the args,
+		// and ensure your MySQL SQL_MODE allows it.
+
+		$placeholders = [];
+		$values       = [];
+
+		foreach ( $membership_ids as $mid ) {
+			$placeholders[] = $placeholders_row;
+			$values[] = wp_generate_uuid4(); // event_key
+			$values[] = $event_name;
+			$values[] = $now_mysql;
+			$values[] = $status;
+			$values[] = $user_id;
+			$values[] = $mid;
+			$values[] = $args_json;
+			// processed_time is NULL literal in SQL
+			$values[] = $retry_count;
+			// error_message is NULL literal in SQL
+			$values[] = $endpoint;
+		}
+
+		$sql = "
+        INSERT INTO {$events_log_table}
+            (event_key, event_name, event_time, status_of_api, user_id, membership_id, args_from_event, processed_time, retry_count, error_message, endpoint_url)
+        VALUES " . implode( ",", $placeholders );
+
+    	$prepared = $wpdb->prepare( $sql, $values );
+
+		$rows = $wpdb->query( $prepared );
+		if ( false === $rows ) {
+			return new WP_Error( 'db_error', 'Insert failed: ' . $wpdb->last_error );
+		}
+
+		// Optionally return a structured result; for AJAX you can wp_send_json_success()
+		// return array(
+		// 	'inserted_rows'   => $rows,
+		// 	'user_id'         => $user_id,
+		// 	'membership_ids'  => $membership_ids,
+		// 	'status'          => 'ok',
+		// );
+		
+		$event_res = array(
+			'status'  => 1,
+			'message' => __( 'success', 'connect-memberpress-discord-add-on' ),
+		);
+		return wp_send_json( $event_res );
+	}
+
+	/**
 	 * Manage user roles api calls
 	 *
 	 * @param NONE
@@ -1023,6 +1125,12 @@ class ETS_Memberpress_Discord_Admin {
 		if ( ! wp_verify_nonce( $_POST['ets_memberpress_discord_nonce'], 'ets-memberpress-discord-ajax-nonce' ) ) {
 				wp_send_json_error( 'You do not have sufficient rights', 403 );
 				exit();
+		}
+
+		// Check the filter before executing the method
+		if ( apply_filters( 'disable_as_for_roles_management', true ) ) {
+			$this->ets_memberspress_discord_run_api_pro();
+			return;
 		}
 
 		$memberpress_discord = new ETS_Memberpress_Discord();
