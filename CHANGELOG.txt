@@ -1,3 +1,6 @@
+= 1.1.3 =
+- Add RUN API implementation for Pro version to bulk insert membership events into wp_ets_mepr_events_log.
+
 = 1.1.2 =
 - Reverting Schedule disconnect and delete member to previous instant delete.
 - Removed code to save discord descriminator.
