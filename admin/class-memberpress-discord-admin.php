@@ -66,8 +66,10 @@ class ETS_Memberpress_Discord_Admin {
 	 */
 	public function enqueue_scripts() {
 		$min_js = ( defined( 'WP_DEBUG' ) && true === WP_DEBUG ) ? '' : '.min';
+		// Add timestamp to force cache refresh for JavaScript updates
+		$cache_buster = $this->version . '.' . filemtime( plugin_dir_path( __FILE__ ) . 'js/memberpress-discord-admin.js' );
 		wp_register_script( $this->plugin_name . 'tabs_js', plugin_dir_url( __FILE__ ) . 'js/skeletabs.js', array( 'jquery' ), $this->version, false );
-		wp_register_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/memberpress-discord-admin' . $min_js . '.js', array( 'jquery' ), $this->version, false );
+		wp_register_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/memberpress-discord-admin' . $min_js . '.js', array( 'jquery' ), $cache_buster, false );
 		wp_register_script( $this->plugin_name . '-search', plugin_dir_url( __FILE__ ) . 'js/memberpress-discord-search' . $min_js . '.js', array( 'jquery' ), $this->version, false );
 		$script_params = array(
 			'admin_ajax'                    => admin_url( 'admin-ajax.php' ),
@@ -75,6 +77,7 @@ class ETS_Memberpress_Discord_Admin {
 			'is_admin'                      => is_admin(),
 			'ets_memberpress_discord_nonce' => wp_create_nonce( 'ets-memberpress-discord-ajax-nonce' ),
 			'discord_icon'                  => ETS_Memberpress_Discord::get_discord_logo_white(),
+			'is_pro_version'                => ets_memberpress_discord_is_pro_active(),
 		);
 
 		wp_localize_script( $this->plugin_name, 'etsMemberpressParams', $script_params );
@@ -711,32 +714,68 @@ class ETS_Memberpress_Discord_Admin {
 
 			if ( $user_txn !== null ) {
 				$_ets_memberpress_discord_role_id = get_user_meta( $user_id, '_ets_memberpress_discord_role_id_for_' . $user_txn, true );
-				// delete already assigned role.
+				// delete already assigned role(s).
 				if ( isset( $_ets_memberpress_discord_role_id ) && $_ets_memberpress_discord_role_id != '' && $_ets_memberpress_discord_role_id != 'none' ) {
 
-						// Check the filter before executing the method
+					// Check the filter before executing the method
 					if ( ! apply_filters( 'disable_as_for_roles_management', true ) ) {
-						// If the filter returns false, then execute the method
-						$this->memberpress_delete_discord_role( $user_id, $_ets_memberpress_discord_role_id['role_id'], $is_schedule );
+						// Handle both old format (array with role_id key) and new format (string or array of role IDs)
+						$role_ids_to_delete = array();
+
+						if ( is_array( $_ets_memberpress_discord_role_id ) ) {
+							if ( isset( $_ets_memberpress_discord_role_id['role_id'] ) ) {
+								// Old format or new format with single/multiple role IDs
+								$role_id_value = $_ets_memberpress_discord_role_id['role_id'];
+								if ( is_array( $role_id_value ) ) {
+									// Multiple roles
+									$role_ids_to_delete = $role_id_value;
+								} else {
+									// Single role
+									$role_ids_to_delete = array( $role_id_value );
+								}
+							}
+						} else {
+							// Direct string value
+							$role_ids_to_delete = array( $_ets_memberpress_discord_role_id );
+						}
+
+						// Delete all roles
+						foreach ( $role_ids_to_delete as $role_id ) {
+							if ( $role_id && $role_id != 'none' ) {
+								$this->memberpress_delete_discord_role( $user_id, $role_id, $is_schedule );
+							}
+						}
 					}
-						delete_user_meta( $user_id, '_ets_memberpress_discord_role_id_for_' . $user_txn, true );
+					delete_user_meta( $user_id, '_ets_memberpress_discord_role_id_for_' . $user_txn, true );
 				}
 				delete_user_meta( $user_id, '_ets_memberpress_discord_expitration_warning_dm_for_' . $user_txn );
 			}
 
 			if ( is_array( $active_memberships ) && count( $active_memberships ) != 0 ) {
-				// Assign role which is mapped to the mmebership level.
+				// Assign role(s) which are mapped to the membership level.
 				foreach ( $active_memberships as $active_membership ) {
-					if ( is_array( $ets_memberpress_discord_role_mapping ) && array_key_exists( 'level_id_' . $active_membership->product_id, $ets_memberpress_discord_role_mapping ) ) {
-						$mapped_role_id = sanitize_text_field( trim( $ets_memberpress_discord_role_mapping[ 'level_id_' . $active_membership->product_id ] ) );
-						if ( $mapped_role_id && $expired_membership == false && $cancelled_membership == false ) {
+					if ( is_array( $ets_memberpress_discord_role_mapping ) ) {
+						$mapped_role_ids = ets_memberpress_discord_get_mapped_roles(
+							$ets_memberpress_discord_role_mapping,
+							$active_membership->product_id
+						);
+
+						if ( ! empty( $mapped_role_ids ) && $expired_membership == false && $cancelled_membership == false ) {
 							// Check the filter before executing the method
 							if ( ! apply_filters( 'disable_as_for_roles_management', true ) ) {
-								// If the filter returns false, then execute the method
-								$plugin_public->put_discord_role_api( $user_id, $mapped_role_id, $is_schedule );
+								// Assign all mapped roles
+								foreach ( $mapped_role_ids as $role_id ) {
+									$mapped_role_id = sanitize_text_field( trim( $role_id ) );
+									if ( $mapped_role_id && $mapped_role_id != 'none' ) {
+										$plugin_public->put_discord_role_api( $user_id, $mapped_role_id, $is_schedule );
+									}
+								}
 							}
+
+							// Store role assignment in user meta
+							$role_data = count( $mapped_role_ids ) > 1 ? $mapped_role_ids : $mapped_role_ids[0];
 							$assigned_role = array(
-								'role_id'    => $mapped_role_id,
+								'role_id'    => $role_data,
 								'product_id' => $active_membership->product_id,
 							);
 							update_user_meta( $user_id, '_ets_memberpress_discord_role_id_for_' . $active_membership->txn_number, $assigned_role );
@@ -1190,17 +1229,36 @@ class ETS_Memberpress_Discord_Admin {
 				$all_subscriptions     = $memberpress_user->active_product_subscriptions( 'transactions', true, false ); // We need to force here, and we do not want to exclude expired
 				$expired_subscriptions = array_diff( $all_subscriptions, $all_memberships ); // return values from $all_subscriptions which are NOT also present in $current_subscriptions
 				foreach ( $expired_subscriptions as $expired_subscription ) {
-					if ( is_array( $ets_memberpress_discord_role_mapping ) && array_key_exists( 'level_id_' . $expired_subscription->product_id, $ets_memberpress_discord_role_mapping ) ) {
-						$mapped_role_id = sanitize_text_field( trim( $ets_memberpress_discord_role_mapping[ 'level_id_' . $expired_subscription->product_id ] ) );
-						$plugin_admin->memberpress_delete_discord_role( $user_id, $mapped_role_id );
+					if ( is_array( $ets_memberpress_discord_role_mapping ) ) {
+						$mapped_role_ids = ets_memberpress_discord_get_mapped_roles(
+							$ets_memberpress_discord_role_mapping,
+							$expired_subscription->product_id
+						);
+
+						// Remove all mapped roles for this expired subscription
+						foreach ( $mapped_role_ids as $role_id ) {
+							$mapped_role_id = sanitize_text_field( trim( $role_id ) );
+							$plugin_admin->memberpress_delete_discord_role( $user_id, $mapped_role_id );
+						}
 						delete_user_meta( $user_id, '_ets_memberpress_discord_role_id_for_' . $expired_subscription->trans_num );
 					}
 				}
 				foreach ( $all_memberships as $all_membership ) {
-					if ( is_array( $ets_memberpress_discord_role_mapping ) && array_key_exists( 'level_id_' . $all_membership->product_id, $ets_memberpress_discord_role_mapping ) ) {
-						$mapped_role_id = sanitize_text_field( trim( $ets_memberpress_discord_role_mapping[ 'level_id_' . $all_membership->product_id ] ) );
-						$plugin_public->put_discord_role_api( $user_id, $mapped_role_id );
-						update_user_meta( $user_id, '_ets_memberpress_discord_role_id_for_' . $all_membership->trans_num, $mapped_role_id );
+					if ( is_array( $ets_memberpress_discord_role_mapping ) ) {
+						$mapped_role_ids = ets_memberpress_discord_get_mapped_roles(
+							$ets_memberpress_discord_role_mapping,
+							$all_membership->product_id
+						);
+
+						// Assign all mapped roles for this active membership
+						foreach ( $mapped_role_ids as $role_id ) {
+							$mapped_role_id = sanitize_text_field( trim( $role_id ) );
+							$plugin_public->put_discord_role_api( $user_id, $mapped_role_id );
+						}
+
+						// Store role assignments in user meta
+						$role_data = count( $mapped_role_ids ) > 1 ? $mapped_role_ids : $mapped_role_ids[0];
+						update_user_meta( $user_id, '_ets_memberpress_discord_role_id_for_' . $all_membership->trans_num, $role_data );
 					}
 				}
 

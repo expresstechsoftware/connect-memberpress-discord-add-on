@@ -106,10 +106,17 @@ class ETS_Memberpress_Discord_Public {
 		$ets_memberpress_discord_member_facing_text   = sanitize_text_field( trim( get_option( 'ets_memberpress_discord_member_facing_text' ) ) );
 		if ( $active_memberships && is_array( $all_roles ) ) {
 			foreach ( $active_memberships as $active_membership ) {
-				if ( is_array( $ets_memberpress_discord_role_mapping ) && array_key_exists( 'level_id_' . $active_membership->product_id, $ets_memberpress_discord_role_mapping ) ) {
-					$mapped_role_id = $ets_memberpress_discord_role_mapping[ 'level_id_' . $active_membership->product_id ];
-					if ( array_key_exists( $mapped_role_id, $all_roles ) && ! in_array( $mapped_role_id, $mapped_role_ids, true ) ) {
-						array_push( $mapped_role_ids, $mapped_role_id );
+				if ( is_array( $ets_memberpress_discord_role_mapping ) ) {
+					$membership_role_ids = ets_memberpress_discord_get_mapped_roles(
+						$ets_memberpress_discord_role_mapping,
+						$active_membership->product_id
+					);
+
+					// Add all mapped roles for this membership
+					foreach ( $membership_role_ids as $role_id ) {
+						if ( array_key_exists( $role_id, $all_roles ) && ! in_array( $role_id, $mapped_role_ids, true ) ) {
+							array_push( $mapped_role_ids, $role_id );
+						}
 					}
 				}
 			}
@@ -311,9 +318,24 @@ class ETS_Memberpress_Discord_Public {
 		$discord_roles                           = array();
 		if ( is_array( $active_memberships ) ) {
 			foreach ( $active_memberships as $active_membership ) {
-				if ( is_array( $ets_memberpress_discord_role_mapping ) && array_key_exists( 'level_id_' . $active_membership['product_id'], $ets_memberpress_discord_role_mapping ) ) {
-						$discord_role = sanitize_text_field( trim( $ets_memberpress_discord_role_mapping[ 'level_id_' . $active_membership['product_id'] ] ) );
-						array_push( $discord_roles, $discord_role );
+				if ( is_array( $ets_memberpress_discord_role_mapping ) ) {
+					$mapped_role_ids = ets_memberpress_discord_get_mapped_roles(
+						$ets_memberpress_discord_role_mapping,
+						$active_membership['product_id']
+					);
+
+					// Add all mapped roles for this membership
+					foreach ( $mapped_role_ids as $role_id ) {
+						$discord_role = sanitize_text_field( trim( $role_id ) );
+						array_push(
+							$discord_roles,
+							array(
+								'role_id'    => $discord_role,
+								'product_id' => $active_membership['product_id'],
+								'txn_number' => $active_membership['txn_number'],
+							)
+						);
+					}
 				}
 			}
 		}
@@ -344,18 +366,34 @@ class ETS_Memberpress_Discord_Public {
 			throw new Exception( 'Failed in function ets_as_handler_add_member_to_guild' );
 		}
 		if ( is_array( $discord_roles ) ) {
-			foreach ( $discord_roles as $key => $discord_role ) {
-				$assigned_role = array(
-					'role_id'    => $discord_role,
-					'product_id' => $active_memberships[ $key ]['product_id'],
-				);
-				update_user_meta( $user_id, '_ets_memberpress_discord_role_id_for_' . $active_memberships[ $key ]['txn_number'], $assigned_role );
-				if ( $discord_role && $discord_role != 'none' && isset( $user_id ) ) {
+			// Group roles by transaction number for user meta storage
+			$roles_by_txn = array();
+			foreach ( $discord_roles as $role_data ) {
+				$txn_number = $role_data['txn_number'];
+				if ( ! isset( $roles_by_txn[ $txn_number ] ) ) {
+					$roles_by_txn[ $txn_number ] = array(
+						'role_ids'   => array(),
+						'product_id' => $role_data['product_id'],
+					);
+				}
+				$roles_by_txn[ $txn_number ]['role_ids'][] = $role_data['role_id'];
+
+				// Assign each role via API
+				if ( $role_data['role_id'] && $role_data['role_id'] != 'none' && isset( $user_id ) ) {
 					// If PRO version is enabled.
 					//if (!apply_filters('disable_as_for_roles_management', true)) {
-						$this->put_discord_role_api( $user_id, $discord_role );
+						$this->put_discord_role_api( $user_id, $role_data['role_id'] );
 					//}
 				}
+			}
+
+			// Store role assignments in user meta
+			foreach ( $roles_by_txn as $txn_number => $data ) {
+				$assigned_role = array(
+					'role_id'    => count( $data['role_ids'] ) > 1 ? $data['role_ids'] : $data['role_ids'][0],
+					'product_id' => $data['product_id'],
+				);
+				update_user_meta( $user_id, '_ets_memberpress_discord_role_id_for_' . $txn_number, $assigned_role );
 			}
 		}
 

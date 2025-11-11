@@ -234,10 +234,22 @@ function ets_memberpress_discord_get_formatted_dm( $user_id, $membership, $messa
 	$user_obj                             = get_user_by( 'id', $user_id );
 	$ets_memberpress_discord_role_mapping = json_decode( get_option( 'ets_memberpress_discord_role_mapping' ), true );
 	$all_roles                            = json_decode( get_option( 'ets_memberpress_discord_all_roles' ), true );
-	$mapped_role_id                       = $ets_memberpress_discord_role_mapping[ 'level_id_' . $membership['product_id'] ];
+	$mapped_role_ids                      = ets_memberpress_discord_get_mapped_roles( $ets_memberpress_discord_role_mapping, $membership['product_id'] );
 	$MEMBER_USERNAME                      = $user_obj->user_login;
 	$MEMBER_EMAIL                         = $user_obj->user_email;
-	if ( is_array( $all_roles ) && array_key_exists( $mapped_role_id, $all_roles ) ) {
+
+	// Check if any of the mapped roles exist
+	$has_role = false;
+	if ( is_array( $all_roles ) ) {
+		foreach ( $mapped_role_ids as $role_id ) {
+			if ( array_key_exists( $role_id, $all_roles ) ) {
+				$has_role = true;
+				break;
+			}
+		}
+	}
+
+	if ( $has_role ) {
 		$MEMBERSHIP_LEVEL = get_the_title( $membership['product_id'] );
 	} else {
 		$MEMBERSHIP_LEVEL = '';
@@ -456,4 +468,41 @@ function ets_memberpress_discord_get_rich_embed_message( $message ) {
 	);
 
 	return $rich_embed_message;
+}
+
+/**
+ * Check if pro version is active
+ *
+ * @return BOOL
+ */
+function ets_memberpress_discord_is_pro_active() {
+	return defined( 'MEMBERPRESS_PRO_DISCORD_ADDON_VERSION' );
+}
+
+/**
+ * Get role IDs for a membership level (handles both string and array formats)
+ * This function provides backward compatibility for role mappings:
+ * - Pro version with multiple roles: returns array ["role1", "role2"]
+ * - Free version or single role: converts string to array ["role1"]
+ *
+ * @param array $role_mapping The role mapping array
+ * @param int   $product_id The membership product ID
+ * @return array Array of role IDs (always returns array, even for single role)
+ */
+function ets_memberpress_discord_get_mapped_roles( $role_mapping, $product_id ) {
+	$role_key = 'level_id_' . $product_id;
+
+	if ( ! isset( $role_mapping[ $role_key ] ) ) {
+		return array();
+	}
+
+	$role_value = $role_mapping[ $role_key ];
+
+	// Check if it's already an array (pro version with multiple roles)
+	if ( is_array( $role_value ) ) {
+		return $role_value;
+	}
+
+	// Single role (free version or pro with 1 role)
+	return array( $role_value );
 }

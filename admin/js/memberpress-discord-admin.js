@@ -1,3 +1,4 @@
+// Cache-Bust: 1761475618
 (function ($) {
 	'use strict';
 	$(document).ready(function () {
@@ -43,9 +44,22 @@
 							}
 
 							if (key != 'previous_mapping' && isbot == false && val.name != '@everyone') {
-								$('.discord-roles').append('<div class="makeMeDraggable" style="background-color:#' + val.color.toString(16) + '" data-role_id="' + val.id + '" >' + val.name + '</div>');
-								$('#defaultRole').append('<option value="' + val.id + '" >' + val.name + '</option>');
-								makeDrag($('.makeMeDraggable'));
+								// CRITICAL FIX: Check if this role already exists before appending
+								if ($('.discord-roles [data-role_id="' + val.id + '"]').length === 0) {
+									// Create the new role element
+									var newRole = $('<div class="makeMeDraggable" style="background-color:#' + val.color.toString(16) + '" data-role_id="' + val.id + '">' + val.name + '</div>');
+
+									// Append to discord-roles
+									$('.discord-roles').append(newRole);
+
+									// Initialize draggable ONLY on the new element (not all elements!)
+									makeDrag(newRole);
+								}
+
+								// Add to dropdown (check if already exists)
+								if ($('#defaultRole option[value="' + val.id + '"]').length === 0) {
+									$('#defaultRole').append('<option value="' + val.id + '">' + val.name + '</option>');
+								}
 							}
 						});
 						var defaultRole = $('#selected_default_role').val();
@@ -60,38 +74,51 @@
 						}
 
 						$("#maaping_json_val").html(mapjson);
+						var isProVersion = etsMemberpressParams.is_pro_version || false;
+
 						$.each(JSON.parse(mapjson), function (key, val) {
 							var arrayofkey = key.split('id_');
-							
-							// 1. Clone ONLY original elements (exclude those with data-level_id)
-							var preclone = $('[data-role_id="' + val + '"]:not([data-level_id])').clone();
-							
-							if (preclone.length > 1) {
-								preclone.slice(1).hide();
+							var roleIds = [];
+
+							// Check if val is array (pro version with multiple roles) or string (free version or single role)
+							if (Array.isArray(val)) {
+								roleIds = val;
+							} else {
+								roleIds = [val];
 							}
-							
-							// 2. Check if the target level container needs the element
-							var $targetLevel = $('[data-level_id="' + arrayofkey[1] + '"]');
-							if ($targetLevel.find('[data-role_id="' + val + '"]').length === 0) {
-								// 3. Append the clone and mark it with data-level_id
-								preclone
-									.attr('data-level_id', arrayofkey[1])
-									.css({ 'width': '100%', 'left': '0', 'top': '0', 'margin-bottom': '0px', 'order': '1' });
-								
-								$targetLevel
-									.append(preclone)
-									.attr('data-drop-role_id', val)
-									.find('span')
-									.css({ 'order': '2' });
-							}
-							
-							// 4. Conditionally destroy droppable
-							if ($targetLevel.find('.makeMeDraggable').length >= 1) {
-								$targetLevel.droppable("destroy");
-							}
-							
-							// 5. Initialize dragging AFTER appending
-							makeDrag(preclone);
+
+							// Loop through all role IDs and clone them
+							$.each(roleIds, function(index, roleId) {
+								// 1. Clone ONLY the FIRST original element (exclude those with data-level_id)
+								var preclone = $('[data-role_id="' + roleId + '"]:not([data-level_id])').eq(0).clone();
+
+								// Remove any nested draggable elements to prevent nesting
+								preclone.find('.makeMeDraggable').remove();
+
+								// 2. CRITICAL FIX: ONLY select the membership level CONTAINER, not role elements
+								var $targetLevel = $('.makeMeDroppable[data-level_id="' + arrayofkey[1] + '"]');
+								if ($targetLevel.find('[data-role_id="' + roleId + '"][data-level_id="' + arrayofkey[1] + '"]').length === 0) {
+									// 3. Append the clone and mark it with data-level_id
+									preclone
+										.attr('data-level_id', arrayofkey[1])
+										.removeAttr('data-drop-role_id')  // Ensure role element is not droppable
+										.css({ 'width': '100%', 'left': '0', 'top': '0', 'margin-bottom': '0px', 'order': '1' });
+
+									$targetLevel
+										.append(preclone)
+										.attr('data-drop-role_id', roleId)  // Only the container should be droppable
+										.find('span')
+										.css({ 'order': '2' });
+								}
+
+								// 4. Conditionally destroy droppable - only for free version or last role
+								if (!isProVersion && $targetLevel.find('.makeMeDraggable').length >= 1) {
+									$targetLevel.droppable("destroy");
+								}
+
+								// 5. Initialize dragging AFTER appending
+								makeDrag(preclone);
+							});
 						});
 					}
 
@@ -103,6 +130,14 @@
 				complete: function () {
 					$(".discord-roles .spinner").removeClass("is-active").css({ "float": "right" });
 					$("#skeletabsTab1 .spinner").removeClass("is-active").css({ "float": "right", "display": "none" });
+
+					// Clean up any role elements that have data-drop-role_id (safety check)
+					$('.makeMeDraggable').each(function() {
+						$(this).removeAttr('data-drop-role_id');
+						if($(this).hasClass('ui-droppable')) {
+							$(this).droppable('destroy');
+						}
+					});
 				}
 			});
 
@@ -168,6 +203,17 @@
 
 			/*Create droppable element*/
 			function init() {
+				// CRITICAL FIX: Clean up any role elements that have data-drop-role_id
+				// Role elements should NEVER be droppable, only membership containers
+				$('.makeMeDraggable').each(function() {
+					$(this).removeAttr('data-drop-role_id');
+					// Destroy droppable if it was applied to role elements
+					if($(this).hasClass('ui-droppable')) {
+						$(this).droppable('destroy');
+					}
+				});
+
+				// Only membership containers should be droppable
 				$('.makeMeDroppable').droppable({
 					drop: handleDropEvent,
 					hoverClass: 'hoverActive',
@@ -187,7 +233,10 @@
 					revert: "invalid",
 					helper: 'clone',
 					start: function(e, ui) {
-					ui.helper.css({"width":"45%"});
+						ui.helper.css({"width":"45%"});
+						// Clean the helper: remove any nested draggable elements and droppable attributes
+						ui.helper.find('.makeMeDraggable').remove();
+						ui.helper.removeAttr('data-drop-role_id');
 					}
 				});
 			}
@@ -195,35 +244,57 @@
 			/*Handel droppable event for saved mapping*/
 			function handlePreviousDropEvent(event, ui) {
 				var draggable = ui.draggable;
+				var isProVersion = etsMemberpressParams.is_pro_version || false;
+
 				if(draggable.data('level_id')){
 					$(ui.draggable).remove().hide();
 				}
-				
+
 				$(this).append(draggable);
-				$('*[data-drop-role_id="' + draggable.data('role_id') + '"]').droppable({
+				// Only make membership level containers droppable, not role elements
+				$('.makeMeDroppable[data-drop-role_id="' + draggable.data('role_id') + '"]').droppable({
 					drop: handleDropEvent,
 					hoverClass: 'hoverActive',
 				});
-				$('*[data-drop-role_id="' + draggable.data('role_id') + '"]').attr('data-drop-role_id', '');
+				$('.makeMeDroppable[data-drop-role_id="' + draggable.data('role_id') + '"]').attr('data-drop-role_id', '');
 
 				var oldItems = JSON.parse(localStorage.getItem('MemberPressMapArray')) || [];
+
+				// CRITICAL FIX: Filter out null/undefined values and remove the specific role mapping
+				oldItems = oldItems.filter(function(item) {
+					if (!item) return false; // Remove null/undefined/empty
+					var arrayofval = item.split(',');
+					// Keep items that DON'T match the role being removed
+					return !(arrayofval[0] == 'level_id_' + draggable.data('level_id') && arrayofval[1] == draggable.data('role_id'));
+				});
+
+				// Build JSON mapping with support for multiple roles
+				var mappingObj = {};
 				$.each(oldItems, function (key, val) {
 					if (val) {
 						var arrayofval = val.split(',');
-						if (arrayofval[0] == 'level_id_' + draggable.data('level_id') && arrayofval[1] == draggable.data('role_id')) {
-							delete oldItems[key];
+						var levelKey = arrayofval[0];
+						var roleId = arrayofval[1];
+
+						if (!mappingObj[levelKey]) {
+							mappingObj[levelKey] = [];
 						}
+						mappingObj[levelKey].push(roleId);
 					}
 				});
+
+				// Format output based on pro version
 				var jsonStart = "{";
-				$.each(oldItems, function (key, val) {
-					if (val) {
-						var arrayofval = val.split(',');
-						if (arrayofval[0] != 'level_id_' + draggable.data('level_id') || arrayofval[1] != draggable.data('role_id')) {
-							jsonStart = jsonStart + '"' + arrayofval[0] + '":' + '"' + arrayofval[1] + '",';
-						}
+				$.each(mappingObj, function (levelKey, roleIds) {
+					if (isProVersion && roleIds.length > 1) {
+						// Multiple roles: store as array
+						jsonStart += '"' + levelKey + '":' + JSON.stringify(roleIds) + ',';
+					} else {
+						// Single role: store as string (backward compatible)
+						jsonStart += '"' + levelKey + '":"' + roleIds[0] + '",';
 					}
 				});
+
 				localStorage.setItem('MemberPressMapArray', JSON.stringify(oldItems));
 				var lastChar = jsonStart.slice(-1);
 				if (lastChar == ',') {
@@ -240,39 +311,89 @@
 			function handleDropEvent(event, ui) {
 				var draggable = ui.draggable;
 				var newItem = [];
-				
+
 				var newClone = $(ui.helper).clone();
-				if($(this).find(".makeMeDraggable").length >= 1){
+
+				// Remove any nested draggable elements to prevent nesting
+				newClone.find('.makeMeDraggable').remove();
+
+				// Remove data-drop-role_id from cloned element to prevent it from becoming droppable
+				newClone.removeAttr('data-drop-role_id');
+
+				// Check if pro version is enabled
+				var isProVersion = etsMemberpressParams.is_pro_version || false;
+
+				// Only prevent multiple roles if NOT pro version
+				if(!isProVersion && $(this).find(".makeMeDraggable").length >= 1){
 					return false;
 				}
-				$('*[data-drop-role_id="' + newClone.data('role_id') + '"]').droppable({
+				// Only make membership level containers droppable, not role elements
+				$('.makeMeDroppable[data-drop-role_id="' + newClone.data('role_id') + '"]').droppable({
 					drop: handleDropEvent,
 					hoverClass: 'hoverActive',
 				});
-				$('*[data-drop-role_id="' + newClone.data('role_id') + '"]').attr('data-drop-role_id', '');
+				$('.makeMeDroppable[data-drop-role_id="' + newClone.data('role_id') + '"]').attr('data-drop-role_id', '');
+
+				// Only process if dropped on a membership level container (not on another role)
+				if (!$(this).hasClass('makeMeDroppable')) {
+					return false;
+				}
+
 				if ($(this).data('drop-role_id') != newClone.data('role_id')) {
 					var oldItems = JSON.parse(localStorage.getItem('MemberPressMapArray')) || [];
+
+					// CRITICAL FIX: Filter out null/undefined values from previous deletes
+					oldItems = oldItems.filter(function(item) {
+						return item !== null && item !== undefined && item !== '';
+					});
+
 					$(this).attr('data-drop-role_id', newClone.data('role_id'));
 					newClone.attr('data-level_id', $(this).data('level_id'));
 
+					var levelId = $(this).data('level_id');
+					var newkey = 'level_id_' + levelId;
+					var newItem = newkey + ',' + newClone.data('role_id');
+
+					// If NOT pro version, remove existing mapping for this level (single role only)
+					if (!isProVersion) {
+						oldItems = oldItems.filter(function(item) {
+							if (item) {
+								var arrayofval = item.split(',');
+								return arrayofval[0] !== newkey;
+							}
+							return false;
+						});
+					}
+
+					// CRITICAL FIX: Only add if this exact combination doesn't already exist
+					if (oldItems.indexOf(newItem) === -1) {
+						oldItems.push(newItem);
+					}
+
+					// Build JSON mapping
+					var mappingObj = {};
 					$.each(oldItems, function (key, val) {
 						if (val) {
 							var arrayofval = val.split(',');
-							if (arrayofval[0] == 'level_id_' + $(this).data('level_id') ) {
-								delete oldItems[key];
+							var levelKey = arrayofval[0];
+							var roleId = arrayofval[1];
+
+							if (!mappingObj[levelKey]) {
+								mappingObj[levelKey] = [];
 							}
+							mappingObj[levelKey].push(roleId);
 						}
 					});
 
-					var newkey = 'level_id_' + $(this).data('level_id');
-					oldItems.push(newkey + ',' + newClone.data('role_id'));
+					// Format output based on pro version
 					var jsonStart = "{";
-					$.each(oldItems, function (key, val) {
-						if (val) {
-							var arrayofval = val.split(',');
-							if (arrayofval[0] == 'level_id_' + $(this).data('level_id') || arrayofval[1] != newClone.data('role_id') && arrayofval[0] != 'level_id_' + $(this).data('level_id') || arrayofval[1] == newClone.data('role_id')) {
-								jsonStart = jsonStart + '"' + arrayofval[0] + '":' + '"' + arrayofval[1] + '",';
-							}
+					$.each(mappingObj, function (levelKey, roleIds) {
+						if (isProVersion && roleIds.length > 1) {
+							// Multiple roles: store as array
+							jsonStart += '"' + levelKey + '":' + JSON.stringify(roleIds) + ',';
+						} else {
+							// Single role: store as string (backward compatible)
+							jsonStart += '"' + levelKey + '":"' + roleIds[0] + '",';
 						}
 					});
 
@@ -287,16 +408,25 @@
 					$("#maaping_json_val").html(MemberPressMappingjson);
 				}
 
-				// $(this).append(ui.draggable);
-				// $(this).find('span').css({ 'order': '2' });
-				$(this).append(newClone);
-				$(this).find('span').css({ 'order': '2' });
-				if (jQuery(this).find('.makeMeDraggable').length >= 1) {
-					$(this).droppable("destroy");
-			    }
-				makeDrag($('.makeMeDraggable'));
+				// Check if this role is already in this membership level (prevent duplicates)
+				var roleId = newClone.data('role_id');
+				var levelId = $(this).data('level_id');
+				var existingRole = $(this).find('[data-role_id="' + roleId + '"][data-level_id="' + levelId + '"]');
 
-				newClone.css({ 'width': '100%','margin-bottom': '0px', 'left': '0', 'position':'unset', 'order': '1' });
+				// Only append if role doesn't already exist in this level
+				if (existingRole.length === 0) {
+					// $(this).append(ui.draggable);
+					// $(this).find('span').css({ 'order': '2' });
+					$(this).append(newClone);
+					$(this).find('span').css({ 'order': '2' });
+					// Only destroy droppable if NOT pro version
+					if (!isProVersion && jQuery(this).find('.makeMeDraggable').length >= 1) {
+						$(this).droppable("destroy");
+					}
+					makeDrag($('.makeMeDraggable'));
+
+					newClone.css({ 'width': '100%','margin-bottom': '0px', 'left': '0', 'position':'unset', 'order': '1' });
+				}
 			}
 		}
 		$('#ets_memberpress_btn_color').wpColorPicker();
