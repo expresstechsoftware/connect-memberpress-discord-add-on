@@ -1,3 +1,6 @@
+= 1.1.4 =
+- Updated plugin name as per request from wp.org directory.
+
 = 1.1.3 =
 - Add RUN API implementation for Pro version to bulk insert membership events into wp_ets_mepr_events_log.
 

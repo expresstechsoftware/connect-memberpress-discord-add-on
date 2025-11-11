@@ -9,10 +9,10 @@
  * @package           ETS_Memberpress_Discord
  *
  * @wordpress-plugin
- * Plugin Name:       Connect MemberPress To Discord
+ * Plugin Name:       ExpressTechSoftwares Addon for MemberPress and Discord
  * Plugin URI:        https://www.expresstechsoftwares.com/memberpress-discord-add-on/
  * Description:       Allow memberpress users to connect their site to discord and allow them to be part of your discord community, site admin can allow discord roles based on the membership a member have and can sell private content in role specific discord channels.
- * Version:           1.1.3
+ * Version:           1.1.4
  * Author:            ExpressTech Softwares Solutions Pvt Ltd
  * Author URI:        https://www.expresstechsoftwares.com
  * License:           GPL-2.0+
@@ -29,7 +29,7 @@ if ( ! defined( 'WPINC' ) ) {
 /**
  * Currently plugin version.
  */
-define( 'ETS_MEMBERPRESS_DISCORD_VERSION', '1.1.3' );
+define( 'ETS_MEMBERPRESS_DISCORD_VERSION', '1.1.4' );
 
 /**
  * Discord API URL
